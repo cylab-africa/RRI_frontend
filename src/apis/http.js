@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getToke } from "../utils/localStorageUtils";
 
 export let ip = "http://127.0.0.1:8081"
 
@@ -10,25 +11,20 @@ export class API {
 
   baseFormHeaders = {
     "Content-Type": "multipart/form-data",
-    Athorization: "Token " + this.token,
+    Athorization:  this.token,
   };
-  token = "";
-
-  constructor () {
-    this.token = localStorage.getItem('token')
-    // restoreToken().then((res)=>{
-    //     if(res){
-    //       this.token =  `${res}`
-    //     }
-    // })
-  }
+  token = null
 
   async getHeaders (protectedRoute=false) {
     // this.token = await restoreToken()
     // console.log(`There it is again ${this.token}`)
+    const response = getToke()
+    if(response){
+      this.token = response
+    } 
 
-    const headers = protectedRoute
-      ? { ...this.baseJsonHeaders, Authorization: "Token " + this.token }
+    const headers = (protectedRoute && this.token)
+      ? { ...this.baseJsonHeaders, Authorization: this.token }
       : this.baseJsonHeaders;
 
     // console.log(headers)

@@ -1,7 +1,17 @@
+/* body{
+    padding-top: 8%;
+} */
 
 .conatiner{
-    padding-left: 5%;
-    padding-right: 5%;
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-bottom: 5%;
+    background-color: rgb(224, 226, 228);
+    padding-top: 8%;
+
+}
+input[type='radio'] {
+    accent-color: #29a703;
 }
 .question{
     /* background-color: green; */
@@ -31,4 +41,158 @@ p{
     justify-content: space-around;
     width: 80%;
 
+}
+
+/* Score page */
+
+.scores-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: red;
+    margin: 0;
+    background-color: #f4f4f4;
+    font-family: 'Arial', sans-serif;
+}
+.score-container {
+    text-align: center;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    max-width: 70%;
+
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.score-title {
+    color: #333;
+}
+
+.score-text {
+    color: #555;
+    font-size: 18px;
+}
+
+.score-value {
+    color: #3498db;
+}
+
+/* Home page */
+
+.home-body {
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.home-title {
+    color: #333;
+}
+
+.home-description {
+    color: #555;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.home-start-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #3498db;
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.start-button:hover {
+    background-color: #2980b9;
+}
+
+/* Contacts page */
+
+.contact-body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+    padding-top: 8%;
+    height: 100vh;
+}
+
+.contact-page-title {
+    color: #333;
+}
+
+.contact-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.contact {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.contact-name {
+    margin-top: 0;
+    color: #3498db;
+}
+
+.contact-info {
+    margin: 0;
+    color: #555;
+}
+
+/* About us page */
+
+.about-body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+    padding-top: 8%;
+    height: 100vh;
+}
+
+.about-title {
+    color: #333;
+}
+
+.about-description {
+    color: #555;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.team-member {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #fff;
+}
+
+.member-name {
+    margin-top: 0;
+    color: #3498db;
+}
+
+.member-role {
+    margin: 0;
+    color: #777;
 }
