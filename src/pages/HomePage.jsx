@@ -63,7 +63,7 @@ const HomePage = () => {
     <div className="home-body">
       <h1 className="home-title">Welcome to the RRI evaluation platform</h1>
       <p className="home-description">
-        We're excited to have you! Click the button below to start the
+        We are excited to have you! Click the button below to start the
         evaluation.
       </p>
       <a onClick={createProject} className="home-start-button">

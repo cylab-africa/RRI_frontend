@@ -3,7 +3,7 @@ import { API } from "../apis/http";
 import swal from "sweetalert";
 import { useHistory, useLocation } from "react-router-dom";
 
-const ScoresPage = () => {
+const DashboardScreen = () => {
   const api = new API()
   const [evaluation, setEvaluation] = useState({})
   const location = useLocation();
@@ -23,18 +23,39 @@ const ScoresPage = () => {
   }
 
   useEffect(()=>{
-    getEvaluationsByProjectId()
+    // getEvaluationsByProjectId()
   },[])
   return (
     <div className="scores-body">
-      <div class="score-container">
+      {/* <div class="score-container">
         <h1 class="score-title">PROJECT NAME</h1>
         <pre class="score-text">
           {JSON.stringify(evaluation)}
         </pre>
+      </div> */}
+
+      <div style={{ width:'100%'}} className="row">
+        <div className="col-md-3">
+          <div className="score-container">
+            <h1>Layer 1</h1>
+          </div>
+
+          <div className="score-container">
+            <h1>Layer 2</h1>
+          </div>
+
+          <div className="score-container">
+            <h1>Layer 3</h1>
+          </div>
+        </div>
+        <div className="col-md-9">
+        <div className="score-lights">
+            <h1>Traffic lights</h1>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default ScoresPage;
+export default DashboardScreen;

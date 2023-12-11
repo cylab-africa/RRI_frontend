@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
+    <!-- <meta charset="utf-8" /> -->
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1" /> -->
     <meta name="theme-color" content="#000000" />
-    <meta
+    <!-- <meta
       name="description"
       content="Web site created using create-react-app"
-    />
+    /> -->
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -24,7 +24,396 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta
+      name="author"
+      content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
+    />
+    <meta name="generator" content="Hugo 0.98.0" />
+    <title>CyLab Portal</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://kit.fontawesome.com/7d71ffbf17.js"
+      crossorigin="anonymous"
+    ></script>
+    <meta name="theme-color" content="#712cf9" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+    />
+
+    <!--Temporary for testing -->
+    <style>
+      body {
+        font-family: "GraphikWeb", "Helvetica Neue", Helvetica, Arial,
+          sans-serif;
+      }
+
+      .left-align {
+        float: left;
+      }
+      .cancel-input {
+        float: right;
+        color: red;
+        cursor: pointer;
+      }
+
+      .logo-upanzi {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+      }
+
+      .logo-upanzi-mobile {
+        display: none;
+      }
+
+      .pad-left-5 {
+        padding-left: 5px;
+      }
+
+      @media only screen and (max-width: 600px) {
+        .logo-upanzi {
+          display: none;
+        }
+        .logo-upanzi-mobile {
+          display: block;
+        }
+        .not-mobile {
+          display: none;
+        }
+        .removeTopSpace {
+          padding-top: 0px;
+        }
+        .system-sub-title {
+          clear: both;
+        }
+      }
+
+      @media only screen and (min-width: 600px) {
+        .btn-red {
+          width: 300px;
+        }
+      }
+
+      a,
+      a:focus,
+      a:hover {
+        color: #636360;
+        text-decoration: none;
+      }
+
+      /* Custom default button */
+      .btn-default,
+      .btn-default:hover,
+      .btn-default:focus {
+        color: #333;
+        /* text-shadow: none; Prevent inheritence from `body` */
+        background-color: #fff;
+        border: 1px solid #fff;
+      }
+
+      /*
+ * Base structure
+ */
+
+      html,
+      body {
+        font-family: "GraphikWeb", "Helvetica Neue", Helvetica, Arial,
+          sans-serif;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+
+        height: 100%;
+        background-color: #fff; /* #fc9a00; /*#b00*/
+        color: rgba(7, 0, 0, 0.849);
+        text-align: center;
+        /* text-shadow: 0 1px 3px rgba(0,0,0,.5); */
+      }
+
+      /* Extra markup and styles for table-esque vertical and horizontal centering */
+      .site-wrapper {
+        display: table;
+        width: 100%;
+        height: 100%; /* For at least Firefox */
+        min-height: 100%;
+        -webkit-box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5);
+        box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5);
+      }
+      .site-wrapper-inner {
+        display: table-cell;
+        vertical-align: top;
+      }
+      .cover-container {
+        margin-right: auto;
+        margin-left: auto;
+      }
+
+      /* Padding for spacing */
+      .inner {
+        padding: 30px;
+      }
+
+      /*
+ * Header
+ */
+      .masthead {
+        color: #b00;
+      }
+      .masthead-brand {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+
+      .masthead-nav > li {
+        display: inline-block;
+      }
+      .masthead-nav > li + li {
+        margin-left: 20px;
+      }
+      .masthead-nav > li > a {
+        padding-right: 0;
+        padding-left: 0;
+        font-size: 16px;
+        font-weight: bold;
+        color: #f30d0d; /* IE8 proofing */
+        color: rgba(243, 13, 13, 0.95);
+        border-bottom: 2px solid transparent;
+      }
+      .masthead-nav > li > a:hover,
+      .masthead-nav > li > a:focus {
+        background-color: transparent;
+        border-bottom-color: #b00;
+        border-bottom-color: rgba(255, 255, 255, 0.25);
+      }
+      .masthead-nav > .active > a,
+      .masthead-nav > .active > a:hover,
+      .masthead-nav > .active > a:focus {
+        color: #f30d0d;
+        border-bottom-color: rgba(243, 13, 13, 0.95);
+      }
+
+      @media (min-width: 768px) {
+        .masthead-brand {
+          float: left;
+        }
+        .masthead-nav {
+          float: right;
+        }
+      }
+
+      /*
+ * Cover
+ */
+
+      .cover {
+        padding: 0 20px;
+      }
+      .cover .btn-lg {
+        padding: 10px 20px;
+        font-weight: bold;
+      }
+
+      /*
+ * Footer
+ */
+
+      .mastfoot {
+        color: rgb(223, 14, 14); /* IE8 proofing */
+      }
+
+      /*
+ * Affix and center
+ */
+
+      @media (min-width: 768px) {
+        /* Pull out the header and footer */
+        .masthead {
+          position: fixed;
+          top: 0;
+        }
+        .mastfoot {
+          position: fixed;
+          bottom: 0;
+        }
+        /* Start the vertical centering */
+        .site-wrapper-inner {
+          vertical-align: middle;
+        }
+        /* Handle the widths */
+        .masthead,
+        .mastfoot,
+        .cover-container {
+          width: 100%; /* Must be percentage or pixels for horizontal alignment */
+        }
+      }
+
+      @media (min-width: 992px) {
+        .masthead,
+        .mastfoot,
+        .cover-container {
+          width: 1180px;
+        }
+      }
+
+      .btn-info {
+        color: #fff;
+        background-color: #b00;
+        border-color: #b00;
+      }
+
+      .btn-info:hover {
+        color: rgb(212, 208, 208);
+        background-color: rgb(143, 23, 23);
+      }
+
+      .system-name {
+        color: #b00;
+        font-size: 22px !important;
+        font-weight: 600;
+      }
+      .nav-links {
+        color: #b00 !important;
+        font-weight: 500;
+      }
+      .nav-links:hover {
+        text-decoration: underline;
+      }
+      .system-sub-title {
+        font-size: 25px;
+        font-weight: 500;
+        line-height: 25px;
+        margin-bottom: 25px;
+        color: rgb(99, 96, 96);
+      }
+      .system-info-details {
+        font-size: 17px;
+        line-height: 30px;
+        color: inherit;
+      }
+      .phone-details {
+        line-height: 10px;
+        font-weight: 700;
+      }
+      .form-footer {
+        display: flex;
+        justify-content: space-between !important;
+        flex-direction: row;
+      }
+      .form-check {
+      }
+      .isscam-input {
+        text-align: left;
+        font-size: 13px;
+      }
+      .terms-conditions {
+        font-size: 13px;
+      }
+      .btn-submit {
+        width: 100%;
+        background: #b00;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      .btn-submit:hover {
+        background: #e30d0db3;
+      }
+
+      /* uI enhancements */
+
+      /* Policy page */
+
+      .pages-title {
+        font-size: 20px;
+        font-weight: 400;
+      }
+
+      /* All pages */
+
+      .back-home {
+        margin-top: 40px;
+        margin-bottom: 20px;
+      }
+      .back-home-link:hover {
+        text-decoration: underline;
+      }
+
+      .sidebar-nav {
+        margin-top: 20px;
+        padding: 0;
+        list-style: none;
+      }
+
+      .one-msg {
+        border: 2px solid white;
+        padding: 5px;
+        margin-bottom: 5px;
+      }
+
+      .logo-upanzi {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+      }
+
+      .logo-upanzi-mobile {
+        display: none;
+      }
+
+      .pad-left-5 {
+        padding-left: 5px;
+      }
+
+      .bottom_item {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+      }
+
+      .mobile-top {
+        display: none;
+      }
+      .desktop-top {
+        position: relative;
+        display: flex;
+      }
+
+      @media only screen and (max-width: 600px) {
+        .desktop-top {
+          display: none;
+        }
+        .mobile-top {
+          display: block;
+        }
+        .logo-upanzi {
+          display: none;
+        }
+        .logo-upanzi-mobile {
+          display: block;
+        }
+        .not-mobile {
+          display: none;
+        }
+        .removeTopSpace {
+          padding-top: 0px;
+        }
+        .system-sub-title {
+          clear: both;
+        }
+      }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
