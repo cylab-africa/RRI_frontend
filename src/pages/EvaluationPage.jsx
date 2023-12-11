@@ -54,7 +54,7 @@ const EvaluationPage = (props) => {
         setShowConfirm(true)
       }else{
         history.push({
-          pathname: "/score",
+          pathname: "/dashboard",
           state: { projectId: projectId },
         });
       }

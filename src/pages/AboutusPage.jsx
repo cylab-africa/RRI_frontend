@@ -3,7 +3,7 @@ import React from 'react'
 const AboutusPage = () => {
   return (
     <div className='about-body'>
-        <h1 className="about-title">About Us</h1>
+        <h4 className="about-title">About Us</h4>
 
 <p className="about-description">RRI Is a project Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sint temporibus vero veritatis ullam blanditiis provident odit, incidunt debitis illum ipsa saepe aliquam architecto quos! Nisi accusantium consectetur a velit eveniet</p>
 
