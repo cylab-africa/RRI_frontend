@@ -103,8 +103,9 @@ p{
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: #fff;
     /* justify-content: center; */
-    height: 100vh;
+    min-height: 100vh;
 }
 
 .home-title {
@@ -129,6 +130,10 @@ p{
     transition: background-color 0.3s ease;
 }
 
+.home-layer-container{
+    display: 'flex';
+
+}
 .start-button:hover {
     background-color: #2980b9;
 }
@@ -141,7 +146,7 @@ p{
     padding: 20px;
     background-color: #f4f4f4;
     padding-top: 8%;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 .contact-page-title {

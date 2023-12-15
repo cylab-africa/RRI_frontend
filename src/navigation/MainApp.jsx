@@ -25,7 +25,7 @@ export default function MainApp() {
                 class="logo-upanzi-mobile"
               />
               <a
-                href="{% url 'honeynet:index' %}"
+                href="/"
                 class="d-flex align-items-center text-dark text-decoration-none"
               >
                 <span class="fs-4 system-name">CyLab Africa &bull; RRI</span>
@@ -69,13 +69,13 @@ export default function MainApp() {
 
         <main>
           <div
-            class="jumbotron removeTopSpace"
-            style={{ position: "relative" }}
+            class="removeTopSpace"
+            style={{ position: "relative", padding:0 }}
           >
-            <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
-              <h3 class="system-sub-title not-mobile">
+            <div style={{padding:0, margin:0}} class="pricing-header p-3 pb-md-4 mx-auto text-center">
+              {/* <h3 class="system-sub-title not-mobile">
                 RRI Project Evaluation{" "}
-              </h3>
+              </h3> */}
               <Switch>
                 <Route exact path="/" component={HomePage} />
                 <Route exact path="/evaluation" component={EvaluationPage} />
@@ -92,7 +92,7 @@ export default function MainApp() {
             <div class="col-md-12">
               <small class="d-block mb-3 text-muted">
                 &copy;{new Date().getFullYear()} CyLab-Africa{" "}
-                <a href="{% url 'honeynet:index' %}">RRI</a>
+                <a href="/about">RRI</a>
               </small>
             </div>
           </div>
