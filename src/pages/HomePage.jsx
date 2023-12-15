@@ -66,7 +66,7 @@ const HomePage = () => {
 
   return (
     <div className="home-body">
-      <div style={{ backgroundColor: "#E7ECFF", padding: "10%" }}>
+      <div style={{ backgroundColor: "#E7ECFF", borderTopLeftRadius:5, borderTopRightRadius:5, padding: "10%" }}>
         <h1 className="home-title">
           Towards Responsible Innovation for Digital Public Goods: Responsible
           Innovation by Design

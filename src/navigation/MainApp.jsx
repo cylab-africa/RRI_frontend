@@ -25,7 +25,7 @@ export default function MainApp() {
                 class="logo-upanzi-mobile"
               />
               <a
-                href="{% url 'honeynet:index' %}"
+                href="/"
                 class="d-flex align-items-center text-dark text-decoration-none"
               >
                 <span class="fs-4 system-name">CyLab Africa &bull; RRI</span>
@@ -92,7 +92,7 @@ export default function MainApp() {
             <div class="col-md-12">
               <small class="d-block mb-3 text-muted">
                 &copy;{new Date().getFullYear()} CyLab-Africa{" "}
-                <a href="{% url 'honeynet:index' %}">RRI</a>
+                <a href="/about">RRI</a>
               </small>
             </div>
           </div>
