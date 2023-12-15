@@ -119,7 +119,7 @@ const EvaluationPage = (props) => {
     //  console.log(lisOfAnswers)
   }
   return (
-    <div class="conatiner">
+    <div class="jumbotron conatiner">
       <h3>Layer {layerId}</h3>
     <form id="form">
       <ol>

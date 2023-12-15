@@ -26,7 +26,7 @@ const DashboardScreen = () => {
     // getEvaluationsByProjectId()
   },[])
   return (
-    <div className="scores-body">
+    <div className="jumbotron scores-body">
       {/* <div class="score-container">
         <h1 class="score-title">PROJECT NAME</h1>
         <pre class="score-text">

@@ -69,13 +69,13 @@ export default function MainApp() {
 
         <main>
           <div
-            class="jumbotron removeTopSpace"
-            style={{ position: "relative" }}
+            class="removeTopSpace"
+            style={{ position: "relative", padding:0 }}
           >
-            <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
-              <h3 class="system-sub-title not-mobile">
+            <div style={{padding:0, margin:0}} class="pricing-header p-3 pb-md-4 mx-auto text-center">
+              {/* <h3 class="system-sub-title not-mobile">
                 RRI Project Evaluation{" "}
-              </h3>
+              </h3> */}
               <Switch>
                 <Route exact path="/" component={HomePage} />
                 <Route exact path="/evaluation" component={EvaluationPage} />
