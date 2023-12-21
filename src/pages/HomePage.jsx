@@ -45,7 +45,7 @@ const HomePage = () => {
 
         swal({
           title: "Project created",
-          text: `${project.name}`,
+          text: `${project.project}`,
           button: "Start",
         }).then((val) => {
           history.push({
@@ -55,8 +55,9 @@ const HomePage = () => {
         });
       })
       .catch((err) => {
+        console.log(err)
         if (err) {
-          swal("Error!", `${err}`);
+          swal("Error!", `${err.response.data.message}`);
         } else {
           swal.stopLoading();
           swal.close();

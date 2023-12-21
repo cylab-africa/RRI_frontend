@@ -64,8 +64,14 @@ p{
     border-radius: 8px;
     margin-bottom: 20px;
     /* max-width: 70%; */
-
+    cursor: pointer;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.score-container-finished{
+    background-color: rgb(190, 188, 188);
+    color: grey;
+    cursor: text;
 }
 
 .score-lights{
@@ -78,6 +84,9 @@ p{
 
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     height: 95%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .score-title {
     color: #333;
@@ -91,6 +100,62 @@ p{
 .score-value {
     color: #3498db;
 }
+
+.bg-red{
+    background-color: red;
+    color: #fff;
+    animation:  10s hidder;
+
+}
+
+.bg-green{
+    background-color: green;
+    color: #fff;
+    animation:  10s hidder;
+
+}
+
+.bg-yellow{
+    background-color: yellow;
+    color: #111;
+    animation:  10s hidder;
+
+}
+
+.bg-normal{
+    background-color: rgb(204, 201, 201);
+    color: #111;
+    animation:  2s hidder;
+
+}
+.traffic-description{
+    /* min-width: 40%; */
+    /* min-height: 200px; */
+    max-width: 50%;
+    border-radius: 5px;
+    margin-top: 2%;
+    /* background-color: rgb(175, 8, 8); */
+    /* background-color: #29a703; */
+    /* background-color: yellow; */
+    padding: 2%;
+    /* color: #fff; */
+
+}
+
+
+.traffic-actions{
+    margin-top: 3%;
+}
+
+.dashboard-layers{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 2%;
+    /* background-color: red; */
+    width: 80%;
+}
+
 
 /* Home page */
 
@@ -215,3 +280,180 @@ p{
     margin: 0;
     color: #777;
 }
+
+
+
+
+/* Traffic lights */
+
+
+.trafficlight{
+    background: #222;
+    background-image: linear-gradient(transparent 2%, #111 2%, transparent 3%, #111 30%);
+    width: 70%;
+    height: 130px;
+    border-radius: 20px;
+    position: relative;
+    border: solid 5px #333;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+  }
+  
+  .active{
+    opacity: 1;
+  }
+  .disactivated{
+    opacity: .1;
+  }
+  
+  .red{
+    /* opacity: .1; */
+    background: red;
+    background-image: radial-gradient(brown, transparent);
+    background-size: 5px 5px; 
+    width: 15%;
+    height: 85%;
+    border-radius: 50%;
+    /* position: absolute; */
+    top: 20px;
+    left: 35px;
+    animation: 6s red;
+    border: dotted 2px red;
+    box-shadow: 
+      0 0 20px #111 inset,
+      0 0 10px red;
+  }
+  
+  .yellow{
+    /* opacity: .1; */
+    background: yellow;
+    background-image: radial-gradient(orange, transparent);
+    background-size: 5px 5px;
+    width: 15%;
+    height: 85%;
+    border-radius: 50%;
+    border: dotted 2px yellow;
+    top: 145px;
+    left: 35px;
+    animation: 6s yellow;
+    box-shadow: 
+      0 0 20px #111 inset,
+      0 0 10px yellow;
+  }
+  
+  .green{
+    /* opacity: .1; */
+    background: green;
+    background-image: radial-gradient(lime, transparent);
+    background-size: 5px 5px;
+    width: 15%;
+    height: 85%;
+    border-radius: 50%;
+    border: dotted 2px lime;
+    /* position: absolute; */
+    top: 270px;
+    left: 35px;
+    box-shadow: 
+      0 0 20px #111 inset,
+      0 0 10px lime;
+    animation: 6s green;
+  }
+
+  /* Text typing animation */
+
+  .typing-demo {
+    width: 22ch;
+    animation: typing 2s steps(22), blink .5s step-end alternate;
+    /* white-space: nowrap; */
+    /* overflow: auto; */
+    border-right: 3px solid;
+    font-family: monospace;
+    font-size: 2em;
+    /* word-wrap: break-word; */
+  }
+  
+    
+  /* Animations */
+
+
+  @keyframes typing {
+    from {
+      width: 0
+    }
+  }
+      
+  @keyframes blink {
+    50% {
+      border-color: transparent
+    }
+  }
+
+
+  @keyframes red{
+    0%{opacity: .1}
+    20%{opacity: .1}
+    40%{opacity: 1}
+    50%{opacity: .1}
+    60%{opacity: .1}
+    80%{opacity: .1}
+    100%{opacity: 1}
+  }
+  
+  @keyframes yellow{
+    0%{opacity: .1}
+    20%{opacity: .1}
+    40%{opacity: 1}
+    50%{opacity: .1}
+    60%{opacity: .1}
+    80%{opacity: .1}
+    100%{opacity: 1}
+  }
+
+  @keyframes hidder {
+    /* 0%{opacity: .1}
+    10%{opacity: .2}
+    20%{opacity: .3}
+    30%{opacity: .3}
+    40%{opacity: .3}
+    50%{opacity: .6}
+    60%{opacity: .6}
+    70%{opacity: .6}
+    80%{opacity: .8}
+    90%{opacity: .8}
+    100%{opacity: 1} */
+
+    0%{display: none}
+    10%{display: none}
+    20%{display: none}
+    30%{display: none}
+    40%{display: none}
+    50%{display: none}
+    60%{display: none}
+    70%{display: none}
+    80%{display: block}
+    90%{display: block}
+    100%{display: block}
+  }
+  
+  @keyframes green{
+    0%{opacity: .1}
+    20%{opacity: .1}
+    40%{opacity: 1}
+    50%{opacity: .1}
+    60%{opacity: .1}
+    80%{opacity: .1}
+    100%{opacity: 1}
+    /* 0%{opacity: .1}
+    20%{opacity: .1}
+    40%{opacity: .1}
+    60%{opacity: 1}
+    80%{opacity: 1}
+    83%{opacity: .1}
+    86%{opacity: 1}
+    89%{opacity: .1}
+    93%{opacity: 1}
+    96%{opacity: .1}
+    100%{opacity: 1} */
+  }
