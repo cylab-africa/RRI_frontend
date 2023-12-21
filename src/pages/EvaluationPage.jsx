@@ -10,15 +10,15 @@ import { useHistory, useLocation } from "react-router-dom";
 
 const EvaluationPage = (props) => {
   const api = new API()
+  const location = useLocation();
   const [answers, setAnswers] = useState([]);
   const [questions, setQuestions] = useState([]);
-  const [layerId, setLayerId] = useState(1);
+  const [layerId, setLayerId] = useState(location.state.project.layersDone+1);
   const [loading, setLoading] = useState(true);
   const [showConfirm, setShowConfirm] = useState(false)
   const [projectId, setProjectId] = useState()
   const [project, setProject] = useState()
   let history = useHistory();
-  const location = useLocation();
    
   const validateForm = ()=>{
     if(questions.length != answers.length){
@@ -44,7 +44,7 @@ const EvaluationPage = (props) => {
       response = await api.postRequest('/answers', body, true)
     }
 
-
+   
     if(response.status === 200){
       // Some stuffs will be recorded here
     }
@@ -64,8 +64,17 @@ const EvaluationPage = (props) => {
   }catch(e){
     // console.log(e)
     setLoading(false)
-
+    
     swal(e.response.data.message)
+    setTimeout(()=>{
+      if(e.response.status === 401){
+        history.push({
+          pathname: "/dashboard",
+          state: { projectId: projectId },
+        });
+      }
+    },1000)
+    
   }
     // some codes here 
 
@@ -101,10 +110,18 @@ const EvaluationPage = (props) => {
     setShowConfirm(false)
   }
 
+  
   useEffect(()=>{
+        if(layerId > 3){
+          history.push({
+            pathname: "/dashboard",
+            state: { projectId: location.state.project.id },
+          });
+        }
         getQuestionsLayer()
         setProjectId(location.state.project.id)
         setProject(location.state.project)
+
   },[layerId])
 
   const selectScore =(selected)=>{
@@ -146,7 +163,7 @@ const EvaluationPage = (props) => {
             setShowConfirm(false)
 
             history.push({
-              pathname: "/score",
+              pathname: "/dashboard",
               state: { projectId: projectId },
             });
         }}
