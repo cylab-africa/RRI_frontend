@@ -47,11 +47,13 @@ export default function MainApp() {
 
           <div class="desktop-top">
             <div class="upanzi-logo-desktop">
-              {" "}
+              <a href="/">
               <img
                 src={require("../images/Upanzi_Network_logo.jpg")}
                 alt="Upanzi Network"
-              />{" "}
+              />
+              </a>
+              
             </div>
             <div class="bottom_item">
               <a class="me-3 py-2 text-dark nav-links" href="/">

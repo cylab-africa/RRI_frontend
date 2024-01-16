@@ -1,6 +1,7 @@
-/* body{
-    padding-top: 8%;
-} */
+body{
+    /* padding-top: 8%; */
+    background-color: #fcfeff !important;
+}
 
 .conatiner{
     padding-left: 3%;
@@ -102,23 +103,29 @@ p{
 }
 
 .bg-red{
-    background-color: red;
-    color: #fff;
-    animation:  10s hidder;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border:solid; */
+    border-width: 2px;
+    background-color: #fcebeb;
+    color: red;
+    animation:  7s hidder;
 
 }
 
 .bg-green{
-    background-color: green;
-    color: #fff;
-    animation:  10s hidder;
+    background-color: rgb(226, 252, 226);
+    color: green;
+    animation:  7s hidder;
 
 }
 
 .bg-yellow{
-    background-color: yellow;
-    color: #111;
-    animation:  10s hidder;
+    background-color: rgb(250, 250, 191);
+    color: orange;
+    animation:  7s hidder;
 
 }
 
@@ -319,7 +326,7 @@ p{
     /* position: absolute; */
     top: 20px;
     left: 35px;
-    animation: 6s red;
+    animation: 4s red;
     border: dotted 2px red;
     box-shadow: 
       0 0 20px #111 inset,
@@ -328,16 +335,21 @@ p{
   
   .yellow{
     /* opacity: .1; */
-    background: yellow;
-    background-image: radial-gradient(orange, transparent);
+    /* background: yellow; */
+    background-color: orange;
+    /* background-image: radial-gradient(orange, transparent); */
+    background-image: radial-gradient(yellow, transparent);
+
     background-size: 5px 5px;
     width: 15%;
     height: 85%;
     border-radius: 50%;
-    border: dotted 2px yellow;
+    /* border: dotted 2px yellow; */
+    border: dotted 2px orange;
     top: 145px;
     left: 35px;
-    animation: 6s yellow;
+    animation: 4s yellow;
+    animation-delay: 0.5s;
     box-shadow: 
       0 0 20px #111 inset,
       0 0 10px yellow;
@@ -358,21 +370,11 @@ p{
     box-shadow: 
       0 0 20px #111 inset,
       0 0 10px lime;
-    animation: 6s green;
+    animation: 4s green;
+    animation-delay: 0.3s;
   }
 
-  /* Text typing animation */
-
-  .typing-demo {
-    width: 22ch;
-    animation: typing 2s steps(22), blink .5s step-end alternate;
-    /* white-space: nowrap; */
-    /* overflow: auto; */
-    border-right: 3px solid;
-    font-family: monospace;
-    font-size: 2em;
-    /* word-wrap: break-word; */
-  }
+  
   
     
   /* Animations */
@@ -456,4 +458,29 @@ p{
     93%{opacity: 1}
     96%{opacity: .1}
     100%{opacity: 1} */
+  }
+
+
+  /* Create Project Modal CSS */
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 20%;
+    padding-right: 20%;
+  }
+  
+  .modal-body {
+    /* width: 70%; */
+    height: 60%;
+    background-color: #fff;
+    padding: 2% !important;
+    /* position: relative; */
   }
