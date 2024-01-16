@@ -13,7 +13,7 @@ const AboutusPage = () => {
       </p>
 
       <div className="team-member">
-        <h2 className="member-name">Wambuwi C</h2>
+        <h2 className="member-name">Wambui</h2>
         <p className="member-role">Reseach Associate</p>
       </div>
 

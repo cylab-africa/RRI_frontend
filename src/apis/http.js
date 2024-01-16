@@ -44,7 +44,7 @@ export class API {
 
       return response;
     } catch (e) {
-      return { error: e };
+        throw e
     }
   }
 

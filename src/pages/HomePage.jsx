@@ -3,11 +3,30 @@ import swal from "sweetalert";
 import { API } from "../apis/http";
 import { useHistory, useLocation } from "react-router-dom";
 import { addToken } from "../utils/localStorageUtils";
+import CreateProjectModel from "../components/CreateProjectModel";
 
 const HomePage = () => {
   const api = new API();
   const history = useHistory();
   const [projectName, setProjectName] = useState();
+  const [isModalOpen, setModalOpen] = useState(false);
+
+
+  const registerProject= async()=>{
+
+    // Validate name
+    if(!projectName || projectName.length < 2)
+    {
+      setModalOpen(false)
+      return
+    }
+    try{
+    const respo = await api.postRequest("/project", { projectName: projectName }, true);
+    console.log(respo)
+    }catch(e){
+      console.log(e)
+    }
+  }
   const createProject = async () => {
     swal({
       text: "What's the name of your project?",
@@ -77,7 +96,7 @@ const HomePage = () => {
           commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus
           et magnis dis parturient montes, nascetur ridiculus
         </p>
-        <a onClick={createProject} className="home-start-button btn btn-dark">
+        <a onClick={()=>{setModalOpen(true)}} className="home-start-button btn btn-dark">
           Take the test
         </a>
       </div>
@@ -147,6 +166,7 @@ const HomePage = () => {
           </div>
         </div>
       </div>
+      <CreateProjectModel isModalOpen={isModalOpen}  setModalOpen={setModalOpen} setProjectName={setProjectName} />
     </div>
   );
 };
