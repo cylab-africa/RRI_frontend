@@ -31,7 +31,7 @@ export default function MainApp() {
                 href="/"
                 class="d-flex align-items-center text-dark text-decoration-none"
               >
-                <span class="fs-4 system-name">CyLab Africa &bull; Upanzi Network &bull; RRI</span>
+                <span class="fs-5 system-name">CyLab Africa &bull; Upanzi Network &bull; RRI</span>
               </a>
 
               <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">

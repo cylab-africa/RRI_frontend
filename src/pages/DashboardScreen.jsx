@@ -251,13 +251,13 @@ const DashboardScreen = () => {
               <Accordion style={{ width: "95%" }} defaultActiveKey="0">
                 <Accordion.Item  style={{ margin: 10 }} eventKey="0" >
                   <Accordion.Header >LAYER I  <Badge style={{marginLeft:10}}>70%</Badge> </Accordion.Header>
-                  <Accordion.Body style={{textAlign:'left', fontSize:12}}>
+                  <Accordion.Body style={{textAlign:'left'}}>
                       This score represents an average of your performance on questions related to Layer 1 of the RRI Framework. These questions cover topics such as privacy, security, and various other aspects.  
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item style={{ margin: 10 }} eventKey="1">
                   <Accordion.Header>LAYER II  <Badge style={{marginLeft:10}}>70%</Badge></Accordion.Header>
-                  <Accordion.Body style={{textAlign:'left', fontSize:12}} >
+                  <Accordion.Body style={{textAlign:'left'}} >
                       This score represents an average of your performance on questions related to Layer 2 of the RRI Framework. These questions cover topics such as Transparency and accountabiity, Gender equity and inclusion, Fairness and various other aspects.  
                   </Accordion.Body>
                 </Accordion.Item>

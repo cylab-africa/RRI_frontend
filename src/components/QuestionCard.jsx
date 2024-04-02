@@ -24,37 +24,39 @@ const ChoiceQuestion = (props) => {
     let answer = answers.find(answer => answer.id === question.id);
     
     return (
-      <div  key={question.id}>
+
+
+      <div   key={question.id}>
               <div  class="question">
                   <p> {number}. {question.questionText} </p>
                   <div  class="scores-phone">
                     <div  class="scores">
                         <div class="score">
                             <p style={{padding: 0, margin: 0}}>N/A</p>
-                            <input checked={answer && 0===answer.score} onClick={()=>{select(question.id, 0)}}  type="radio" name={question.id} id=""/>
+                            <input checked={answer && 0==answer.score} onClick={()=>{select(question.id, 0)}}  type="radio"  id=""/>
                         </div>
                         <div class="score">
                             <p style={{padding: 0, margin: 0}}>Much disagry</p>
-                            <input checked={answer && 1===answer.score} onClick={()=>{select(question.id, 1)}}  type="radio" name={question.id} id=""/>
+                            <input checked={answer && 1==answer.score} onClick={()=>{select(question.id, 1)}}  type="radio"  id=""/>
                         </div>
                         <div class="score">
                             <p style={{padding: 0, margin: 0}}>Disagree</p>
-                            <input  checked={answer && 2.5===answer.score} onClick={()=>{select(question.id, 2.5)}} type="radio" name={question.id} id=""/>
+                            <input  checked={answer && 2.5==answer.score} onClick={()=>{select(question.id, 2.5)}} type="radio"  id=""/>
                         </div>
                     </div>    
                     <div  class="scores">
                         
                         <div class="score">
                             <p style={{padding: 0, margin: 0}}>Neutral</p>
-                            <input checked={ answer && 5===answer.score} onClick={()=>{select(question.id, 5)}} value="3" type="radio" name={question.id} id=""/>
+                            <input checked={ answer && 5==answer.score} onClick={()=>{select(question.id, 5)}} value="3" type="radio"  id=""/>
                         </div>
                         <div class="score">
                             <p style={{padding: 0, margin: 0}}>Agree</p>
-                            <input checked={answer && 7.5===answer.score} onClick={()=>{select(question.id, 7.5)}}  type="radio" name={question.id} id=""/>
+                            <input checked={answer && 7.5==answer.score} onClick={()=>{select(question.id, 7.5)}}  type="radio"  id=""/>
                         </div>
                         <div class="score">
                             <p style={{padding: 0, margin: 0}}>Much agree</p>
-                            <input checked={answer && 10===answer.score} onClick={()=>{select(question.id, 10)}}  type="radio" name={question.id} id=""/>
+                            <input checked={answer && 10==answer.score} onClick={()=>{select(question.id, 10)}}  type="radio"  id=""/>
                         </div>
 
                     </div>  
@@ -63,27 +65,28 @@ const ChoiceQuestion = (props) => {
                   <div  class="scores">
                         <div class="score">
                             <p style={{padding: 0, margin: 0}}>N/A</p>
-                            <input checked={answer && 0===answer.score} onClick={()=>{select(question.id, 0)}}  type="radio" name={question.id} id=""/>
+                            <input checked={answer && 0==answer.score} onChange={()=>{select(question.id, 0)}}  type="radio"  id=""/>
+                        
                         </div>
                         <div class="score">
                             <p style={{padding: 0, margin: 0}}>Strongly disagry</p>
-                            <input checked={answer && 1===answer.score} onClick={()=>{select(question.id, 1)}}  type="radio" name={question.id} id=""/>
+                            <input checked={answer && 1==answer.score} onChange={()=>{select(question.id, 1)}}  type="radio"  id=""/>
                         </div>
                         <div class="score">
                             <p style={{padding: 0, margin: 0}}>Disagree</p>
-                            <input checked={answer && 2.5===answer.score} onClick={()=>{select(question.id, 2.5)}} type="radio" name={question.id} id=""/>
+                            <input checked={answer && 2.5==answer.score} onChange={()=>{select(question.id, 2.5)}} type="radio"  id=""/>
                         </div>
                         <div class="score">
                             <p style={{padding: 0, margin: 0}}>Neutral</p>
-                            <input checked={answer && 5===answer.score} onClick={()=>{select(question.id, 5)}} value="3" type="radio" name={question.id} id=""/>
+                            <input checked={answer && 5==answer.score} onChange={()=>{select(question.id, 5)}} value="3" type="radio"  id=""/>
                         </div>
                         <div class="score">
                             <p style={{padding: 0, margin: 0}}>Agree</p>
-                            <input checked={answer && 7.5===answer.score} onClick={()=>{select(question.id, 7.5)}}  type="radio" name={question.id} id=""/>
+                            <input checked={answer && 7.5==answer.score} onChange={()=>{select(question.id, 7.5)}}  type="radio"  id=""/>
                         </div>
                         <div class="score">
                             <p style={{padding: 0, margin: 0}}>Strongly agree</p>
-                            <input checked={answer && 10===answer.score} onClick={()=>{select(question.id, 10)}}  type="radio" name={question.id} id=""/>
+                            <input checked={answer && 10==answer.score} onChange={()=>{select(question.id, 10)}}  type="radio"  id=""/>
                         </div>
 
                 </div>

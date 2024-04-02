@@ -149,7 +149,7 @@ const EvaluationPage = (props) => {
   return (
     <div class="jumbotron conatiner">
       
-   {!loading ? <EvaluationForm questions={questions} scrollUp={()=>{window.scrollTo(60,60)}} />:
+   {!loading ? <EvaluationForm projectId={projectId} questions={questions} scrollUp={()=>{window.scrollTo(60,60)}} />:
 
    <div>
           <Placeholder  animation="glow">
