@@ -1,25 +1,36 @@
 import React, {useState, useEffect} from "react";
 import QuestionCard from "../components/QuestionCard";
 import { API } from "../apis/http";
-import { Button, Col, Row } from "react-bootstrap";
+import { Button, Col, Placeholder, Row } from "react-bootstrap";
 import LoadingModal from "../components/LoadingModal";
 import ConfirmModal from "../components/ConfirmModal";
 import { addToken } from "../utils/localStorageUtils";
 import swal from 'sweetalert';
 import { useHistory, useLocation } from "react-router-dom";
+import EvaluationForm from "../components/Questionaire";
 
 const EvaluationPage = (props) => {
   const api = new API()
   const location = useLocation();
+  // console.log(location)
   const [answers, setAnswers] = useState([]);
   const [questions, setQuestions] = useState([]);
-  const [layerId, setLayerId] = useState(location.state.project.layersDone+1);
+  const [layerId, setLayerId] = useState(1);
   const [loading, setLoading] = useState(true);
   const [showConfirm, setShowConfirm] = useState(false)
   const [projectId, setProjectId] = useState()
   const [project, setProject] = useState()
   let history = useHistory();
-   
+
+  // console.log(project)
+
+  const DisplayQuestions=(questions)=>{
+    if(layerId === 1){
+
+    }
+  }
+
+
   const validateForm = ()=>{
     if(questions.length != answers.length){
       swal("Please assign a score to each question.");
@@ -84,7 +95,7 @@ const EvaluationPage = (props) => {
     setLoading(true)
     try{
       
-        const response = await api.getRequest('/questions?id='+layerId)
+        const response = await api.getRequest('/questions')
         // console.log(response)
         setQuestions(response.data.questions)
     }catch(e){
@@ -133,26 +144,32 @@ const EvaluationPage = (props) => {
         lisOfAnswers.push(selected);
       }
      setAnswers(lisOfAnswers)
-    //  console.log(lisOfAnswers)
   }
+
   return (
     <div class="jumbotron conatiner">
-      <h3>Layer {layerId}</h3>
-    <form id="form">
-      <ol>
-        {questions.map((question)=>{
-            return <QuestionCard question={question} selectScore={selectScore}  />
+      
+   {!loading ? <EvaluationForm projectId={projectId} questions={questions} scrollUp={()=>{window.scrollTo(60,60)}} />:
 
-        })}
-      </ol>
-      </form>
-      <Row>
-        <Col></Col>
-        <Col xs={6}></Col>
-        <Col style={{display:'flex', justifyContent:'flex-end'}}>
-        <Button onClick={submitEvaluation} style={{minWidth:'80%'}} variant="dark">Submit</Button>
-        </Col>
-      </Row>
+   <div>
+          <Placeholder  animation="glow">
+            <Placeholder style={{height:30, margin:5}} xs={10} />
+            <Placeholder style={{height:30, margin:5}} xs={10} />
+            <Placeholder style={{height:30, margin:5}} xs={10} />   
+            {/* <Placeholder style={{height:30, margin:5}} xs={10} />
+            <Placeholder style={{height:30, margin:5}} xs={10} />
+            <Placeholder style={{height:30, margin:5}} xs={10} /> */}
+            <Placeholder style={{height:30, margin:5}} xs={10} /> 
+            <Placeholder style={{height:30, margin:5}} xs={10} />  
+            <Placeholder style={{height:30, margin:5}} xs={10} />
+            <Placeholder style={{height:30, margin:5}} xs={10} />
+            <Placeholder style={{height:30, margin:5}} xs={10} />
+            <Placeholder style={{height:30, margin:5}} xs={10} />
+            <Placeholder style={{height:30, margin:5}} xs={10} /> 
+          </Placeholder>
+    </div>
+}
+
      <LoadingModal show={loading}  />
      <ConfirmModal
         setShow={(val)=>{setShowConfirm(false)}}

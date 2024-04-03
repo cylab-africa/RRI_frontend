@@ -27,77 +27,20 @@ const HomePage = () => {
       console.log(e)
     }
   }
-  const createProject = async () => {
-    swal({
-      text: "What's the name of your project?",
-      content: "input",
-      buttons: ["Close", "Save"],
-    })
-      .then(async (name) => {
-        if (name == null) throw null;
-        if (!name) throw new Error("Project name is required");
-        if (name.length < 3) throw new Error("Project name too small");
-        setProjectName(name);
-        return api.postRequest("/project", { projectName: name }, true);
-        // return fetch(`https://itunes.apple.com/search?term=${name}&entity=movie`);
-      })
-      .then((results) => {
-        if (results.status === 202) {
-          addToken(results.data.data.token);
-          return api.postRequest(
-            "/project",
-            { projectName: projectName },
-            true
-          );
-        }
-        return results;
-      })
-      .then((results) => {
-        return results.data;
-      })
-      .then((json) => {
-        const project = json.data;
-
-        if (!project) {
-          return swal("Project not created");
-        }
-
-        swal({
-          title: "Project created",
-          text: `${project.project}`,
-          button: "Start",
-        }).then((val) => {
-          history.push({
-            pathname: "/evaluation",
-            state: { project: project },
-          });
-        });
-      })
-      .catch((err) => {
-        console.log(err)
-        if (err) {
-          swal("Error!", `${err.response.data.message}`);
-        } else {
-          swal.stopLoading();
-          swal.close();
-        }
-      });
-  };
+  
 
   return (
     <div className="home-body">
       <div style={{ backgroundColor: "#E7ECFF", borderTopLeftRadius:5, borderTopRightRadius:5, padding: "10%" }}>
-        <h1 className="home-title">
+        <h2 className="home-title">
           Towards Responsible Innovation for Digital Public Goods: Responsible
           Innovation by Design
-        </h1>
+        </h2>
         <p className="home-description">
-          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean
-          commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus
-          et magnis dis parturient montes, nascetur ridiculus
+        As we conduct research or innovate, let's do so responsibly, considering the community and anyone who may be impacted by our work.
         </p>
         <a onClick={()=>{setModalOpen(true)}} className="home-start-button btn btn-dark">
-          Take the test
+        Start Evaluation
         </a>
       </div>
 
@@ -113,13 +56,12 @@ const HomePage = () => {
         >
           <h4>ABOUT THE TEST</h4>
           <p style={{ textAlign: "left" }}>
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean
-            commodo ligula eget dolor. Aenean massa. Cum sociis natoque
-            penatibus et magnis dis parturient montes, nascetur ridiculus{" "}
+          The diagram below illustrates the three main layers of Responsible Research and Innovation. The evaluation comprises questions focused on these layers, including inquiries about privacy, governance, sustainability, human agency, and more.{" "}
           </p>
         </div>
 
-        <div className="home-layer-container">
+          <img style={{width:'55%'}}  src={require("../images/rri_layers.jpeg")} alt="" />
+        <div hidden className="home-layer-container">
           <div style={{width:'100%', display:'flex', alignItems:'center', marginBottom:20}}>
             <div style={{width:'20%'}}><p>Layer 1</p></div>
             <div style={{display:'flex', width:'80%'}}>

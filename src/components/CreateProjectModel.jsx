@@ -29,7 +29,7 @@ const CreateProjectModel = (props) => {
         }
         try{
         let respo = await api.postRequest("/project", { projectName: projectName }, true);
-        // console.log(respo)
+        console.log(respo)
 
             if(respo.status === 202){
                 addToken(respo.data.data.token);
@@ -46,11 +46,11 @@ const CreateProjectModel = (props) => {
 
                 swal({
                     title: respo.data.message,
-                    text: `${respo.data.data.project}`,
+                    text: `${respo.data.data.name}`,
                     button: "Start",
                   }).then((val) => {
                     history.push({
-                      pathname: "/evaluation",
+                      pathname: "/consent",
                       state: { project: respo.data.data },
                     });
                   });
@@ -64,7 +64,8 @@ const CreateProjectModel = (props) => {
         }catch(e){
 
           if (e) {
-            swal("Error!", `${e.response.data.message}`);
+            // console.log(e)
+            swal("Error!", `${e.response?e.response.data.message:e.message}`);
           }
         }
         setModalOpen(false)

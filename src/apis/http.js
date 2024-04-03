@@ -33,7 +33,7 @@ export class API {
 
   async getRequest(endpoint, protectedRoute = false) {
     const headers = await this.getHeaders(protectedRoute);
-    console.log(this.BASE_URL)
+    // console.log(this.BASE_URL)
    
     try {
       const response = await axios({
@@ -49,6 +49,7 @@ export class API {
   }
 
   async postRequest(endpoint, body, protectedRoute = false) {
+    try {
       // console.table("Here we are")
       const headers = await this.getHeaders(protectedRoute);
       // console.log(headers)
@@ -64,7 +65,9 @@ export class API {
       // });
      
       return response;
-    
+    } catch (e) {
+      throw e
+  }
   }
 
   async putRequest(endpoint, body, protectedRoute = false) {
@@ -79,7 +82,7 @@ export class API {
 
       return response;
     } catch (e) {
-      return { error: e };
+      return  e ;
     }
   }
 

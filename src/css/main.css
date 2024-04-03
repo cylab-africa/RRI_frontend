@@ -22,6 +22,7 @@ input[type='radio'] {
     display: flex;
     flex-direction: column;
     /* align-items: center; */
+    text-align: left;
     justify-content: center;
 }
 .score{
@@ -29,6 +30,7 @@ input[type='radio'] {
     align-items: center;
     /* justify-content: center; */
     flex-direction: column;
+    flex: 1;
 
 }
 
@@ -38,13 +40,18 @@ p{
 .scores{
     /* background-color: red; */
     display: flex;
+    align-items: flex-start;
     align-items: center;
     justify-content: space-around;
+    /* text-align: center; */
+    /* flex-wrap: wrap; */
     width: 100%;
     padding-left: 15%;
     padding-right: 15%;
-
+    /* flex-direction: row; */
 }
+
+
 
 /* Score page */
 
@@ -320,9 +327,9 @@ p{
     background: red;
     background-image: radial-gradient(brown, transparent);
     background-size: 5px 5px; 
-    width: 15%;
-    height: 85%;
-    border-radius: 50%;
+    /* width: 15%; */
+    /* height: 85%; */
+    /* border-radius: 50%; */
     /* position: absolute; */
     top: 20px;
     left: 35px;
@@ -331,6 +338,14 @@ p{
     box-shadow: 
       0 0 20px #111 inset,
       0 0 10px red;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100px;
+      height: 100px;
+      margin: 3px;
+      border-radius: 50%;
   }
   
   .yellow{
@@ -341,9 +356,9 @@ p{
     background-image: radial-gradient(yellow, transparent);
 
     background-size: 5px 5px;
-    width: 15%;
+    /* width: 15%;
     height: 85%;
-    border-radius: 50%;
+    border-radius: 50%; */
     /* border: dotted 2px yellow; */
     border: dotted 2px orange;
     top: 145px;
@@ -353,6 +368,14 @@ p{
     box-shadow: 
       0 0 20px #111 inset,
       0 0 10px yellow;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100px;
+      height: 100px;
+      margin: 3px;
+      border-radius: 50%;
   }
   
   .green{
@@ -360,9 +383,9 @@ p{
     background: green;
     background-image: radial-gradient(lime, transparent);
     background-size: 5px 5px;
-    width: 15%;
+    /* width: 15%;
     height: 85%;
-    border-radius: 50%;
+    border-radius: 50%; */
     border: dotted 2px lime;
     /* position: absolute; */
     top: 270px;
@@ -372,6 +395,14 @@ p{
       0 0 10px lime;
     animation: 4s green;
     animation-delay: 0.3s;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    margin: 3px;
+    border-radius: 50%;
   }
 
   
@@ -484,3 +515,71 @@ p{
     padding: 2% !important;
     /* position: relative; */
   }
+
+  .navigation-buttons{
+    display: flex;
+    justify-content: space-between;
+    /* background-color: red; */
+  }
+
+.navigation-buttons > button{
+    min-width: 60px;
+    margin-left: 5%;
+    margin-right: 5%;
+    border-width: 1px;
+    border-radius: 3px;
+}
+
+/* Dashboard */
+
+@media screen and (min-width: 850px) {
+    .scores-desktop{
+        display: block;
+    }
+    
+    .scores-phone{
+       display: none;
+    }
+}
+
+@media screen and (max-width: 850px) {
+    /* Your CSS rules for screens with width up to 400px */
+    .dahboard-board{
+        flex-wrap: wrap-reverse !important;
+    }
+    .description-board{
+        width: 100% !important;
+        height: 75% !important;
+        padding-top: 10px;
+    }
+    .lights{
+        width: 100% !important;
+        flex-direction: row !important;   
+        height: 20% !important;
+    }
+    .red{
+        width: 70px;
+        height: 70px;
+    }
+    .green{
+        width: 70px;
+        height: 70px;
+    }
+    .yellow{
+        width: 70px;
+        height: 70px;
+    }
+    .question{
+        font-size: 12px;
+    }
+
+    .scores-desktop{
+        display: none !important;
+    }
+    
+    .scores-phone{
+       display: block !important;
+    }
+   
+  }
+
