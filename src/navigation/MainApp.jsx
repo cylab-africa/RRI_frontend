@@ -13,6 +13,7 @@ import ContactsPage from "../pages/ContactsPage";
 import AboutusPage from "../pages/AboutusPage";
 import DashboardScreen from "../pages/DashboardScreen";
 import ConsentPage from "../pages/ConsentPage";
+import NotFoundPage from "../pages/NotFoundPage";
 
 export default function MainApp() {
   return (
@@ -24,7 +25,8 @@ export default function MainApp() {
               <img
                 style={{width:'40%'}}
                 // src={require("../images/Upanzi_Network_logo.jpg")}
-                src={require("../images/upanzi_logo.png")}
+                // src={require("../images/upanzi_logo.png")}
+                src={require("../images/Upanzi-Network-logo.png")}
                 class="logo-upanzi-mobile"
               />
               <a
@@ -35,10 +37,10 @@ export default function MainApp() {
               </a>
 
               <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
-                <a class="me-3 py-2 text-dark nav-links" href="/">
+                <a class="me-3 py-2 text-dark nav-links " href="/">
                   Home
                 </a>
-                <a class="me-3 py-2 text-dark nav-links" href="/dashboard">
+                <a  class="me-3 py-2 text-dark nav-links" href="/dashboard">
                   Dashboard
                 </a>
                 <a class="me-3 py-2 text-dark nav-links" href="/about">
@@ -54,20 +56,22 @@ export default function MainApp() {
               <img
                 style={{width:'15%', float:'left'}}
                 // src={require("../images/Upanzi_Network_logo.jpg")}
-                src={require("../images/upanzi_logo.png")}
+                // src={require("../images/upanzi_logo.png")}
+                src={require("../images/Upanzi-Network-logo.png")}
+
                 alt="Upanzi Network"
               />
               </a>
               
             </div>
             <div class="bottom_item">
-              <a class="me-3 py-2 text-dark nav-links" href="/">
+              <a class="me-3 py-2  nav-links green-link" href="/">
                 Home
               </a>
-              <a class="me-3 py-2 text-dark nav-links" href="/dashboard">
+              <a  class="me-3 py-2 green-link nav-links" href="/dashboard">
                 Dashboard
               </a>
-              <a class="me-3 py-2 text-dark nav-links" href="/about">
+              <a class="me-3 py-2 green-link nav-links" href="/about">
                 About us
               </a>
             </div>
@@ -91,6 +95,7 @@ export default function MainApp() {
                 <Route exact path="/contacts" component={ContactsPage} />
                 <Route exact path="/about" component={AboutusPage} />
                 <Route exact path="/dashboard" component={DashboardScreen} />
+                <Route path="*" component={NotFoundPage}/>
               </Switch>
             </div>
           </div>
@@ -99,8 +104,7 @@ export default function MainApp() {
           <div class="row">
             <div class="col-md-12">
               <small class="d-block mb-3 text-muted">
-                &copy;{new Date().getFullYear()} CyLab-Africa &bull; Upanzi Network &bull;{" "}
-                <a href="/about">RRI</a>
+                &copy;{new Date().getFullYear()} <a target="_blank" className="rri-footer-link" href="https://www.africa.engineering.cmu.edu/research/upanzi/index.html">Upanzi Network</a>
               </small>
             </div>
           </div>

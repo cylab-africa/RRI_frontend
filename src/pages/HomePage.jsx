@@ -39,7 +39,10 @@ const HomePage = () => {
         <p className="home-description">
         As we conduct research or innovate, let's do so responsibly, considering the community and anyone who may be impacted by our work.
         </p>
-        <a onClick={()=>{setModalOpen(true)}} className="home-start-button btn btn-dark">
+        {/* onClick={()=>{setModalOpen(true)}} */}
+        <a onClick={()=>{setModalOpen(true)}}  className="home-start-button btn btn-dark">
+
+        {/* <a onClick={()=>{swal("We are currently working on the evaluation algorithm which must be used to evaluate projects.")}} title="We are currently working on the evaluation algorithm which must be used to evaluate projects."  className="home-start-button btn btn-dark"> */}
         Start Evaluation
         </a>
       </div>
@@ -54,7 +57,7 @@ const HomePage = () => {
             padding: "5px",
           }}
         >
-          <h4>ABOUT THE TEST</h4>
+          <h4 className="about-evaluation">ABOUT THE EVALUATION</h4>
           <p style={{ textAlign: "left" }}>
           The diagram below illustrates the three main layers of Responsible Research and Innovation. The evaluation comprises questions focused on these layers, including inquiries about privacy, governance, sustainability, human agency, and more.{" "}
           </p>
