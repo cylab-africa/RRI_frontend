@@ -5,6 +5,8 @@ import { useHistory, useLocation } from "react-router-dom";
 import { Button, Badge, Container, Row, Col, Accordion } from "react-bootstrap";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import { FaFilePdf } from "react-icons/fa6";
+import { generatePDF, getHtmlContent } from "../utils/htmlToPdf";
+import { FaThermometerEmpty } from "react-icons/fa";
 
 const ChipList = ({ items, setEvaluation, active }) => {
   const [startIndex, setStartIndex] = useState(0);
@@ -79,6 +81,7 @@ const ChipList = ({ items, setEvaluation, active }) => {
 const DashboardScreen = () => {
   const api = new API();
   let history = useHistory();
+  // const location = useLocation()
   const [evaluation, setEvaluation] = useState({});
   const [evaluations, setEvaluations] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -89,6 +92,18 @@ const DashboardScreen = () => {
   const [buttonText, setButtonText] = useState("Home Page");
   const [projects, setProjects] = useState([]);
   const [currentProject, setCurrentProject] = useState(projects[0]);
+
+
+
+  function policeFunction(score, min, max) {
+    // console.log(score, min, max)
+    return (min <= score && score < max)?  '' : 'desactivated';
+  }
+
+  function hideText(score, min, max) {
+    return (min <= score && score < max)?  false : true;
+  }
+
   const switchLights = () => {
     // alert(evaluation.score)
     if (evaluation === undefined || evaluations.length === 0) {
@@ -127,9 +142,9 @@ const DashboardScreen = () => {
     }
   };
 
-  const getEvaluations = async () => {
+  const getEvaluations = async (pId) => {
     try {
-      const response = await api.getRequest("/evaluation", true);
+      const response = await api.getRequest("/evaluation?projectId="+pId, true);
 
       if (response.data.data.length > 0) {
         setEvaluations(response.data.data);
@@ -152,15 +167,24 @@ const DashboardScreen = () => {
     }
   };
 
-  const getProjects = async () => {
+  const getProjects = async (pid=null) => {
 
     setLoading(true);
     try{
-    const response = await api.getRequest("/projects", true);
-    // console.log(response)
+     let response;
+     response = await api.getRequest("/projects", true);
+    console.log(response)
     if (response.status === 200) {
       setProjects(response.data.data);
+     if(pid){
+      setCurrentProject(response.data.data.find(obj => obj.id === pid));
+
+     }else{
+      
       setCurrentProject(response.data.data[0]);
+     }
+      // console.log(response.data.data)
+      // getEvaluations()
     }
   }catch(e){
     setNoAccount(true)
@@ -169,6 +193,12 @@ const DashboardScreen = () => {
 
     setLoading(false);
   };
+
+
+  const downloadReport =()=>{
+    let content = getHtmlContent(currentProject.name, currentProject.evaluations[0].score[3])
+    generatePDF(content)
+  }
 
   const bottomButtonHandler = () => {
     if (evaluation.layersDone <= 0 || evaluation.layersDone <= 2) {
@@ -189,7 +219,10 @@ const DashboardScreen = () => {
 
   useEffect(() => {
     // getEvaluations();
-    getProjects();
+
+    let pid = location.state?.projectId
+
+    getProjects(pid);
   }, []);
 
   useEffect(() => {
@@ -197,8 +230,28 @@ const DashboardScreen = () => {
     setPage(page);
   }, [evaluation]);
 
+
+
   if(noAccount){
     return <div><p>Hi there guys!!</p></div>
+  }
+
+  // Loading
+
+  if(loading){
+    return (<div>Loading</div>)
+  }
+// No project
+  if(projects.length === 0){
+    return (
+      <div className="jumbotron scores-body">
+      <div style={{ width: "100%" , display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center'}} className="row">
+          {/* <FaThermometerEmpty size={90} color="black" /> */}
+          <h1>No Project found for you</h1>
+          <a className="green-link" href="/">Start an evaluation</a>
+      </div>
+      </div>
+    )
   }
 
   return (
@@ -234,7 +287,7 @@ const DashboardScreen = () => {
               border: "solid",
               borderRadius: 5,
               borderWidth: 0.5,
-              borderColor: "grey",
+              borderColor: "#009347",
               margin: 10,
             }}
           >
@@ -248,21 +301,22 @@ const DashboardScreen = () => {
                 alignItems: "center",
               }}
             >
+
               <Accordion style={{ width: "95%" }} defaultActiveKey="0">
                 <Accordion.Item  style={{ margin: 10 }} eventKey="0" >
-                  <Accordion.Header >LAYER I  <Badge style={{marginLeft:10}}>70%</Badge> </Accordion.Header>
+                  <Accordion.Header >LAYER I  <Badge style={{marginLeft:10}}>{currentProject.evaluations[0].score[0]}/50</Badge> </Accordion.Header>
                   <Accordion.Body style={{textAlign:'left'}}>
                       This score represents an average of your performance on questions related to Layer 1 of the RRI Framework. These questions cover topics such as privacy, security, and various other aspects.  
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item style={{ margin: 10 }} eventKey="1">
-                  <Accordion.Header>LAYER II  <Badge style={{marginLeft:10}}>70%</Badge></Accordion.Header>
+                  <Accordion.Header>LAYER II  <Badge style={{marginLeft:10}}>{currentProject.evaluations[0].score[1]}/30</Badge></Accordion.Header>
                   <Accordion.Body style={{textAlign:'left'}} >
                       This score represents an average of your performance on questions related to Layer 2 of the RRI Framework. These questions cover topics such as Transparency and accountabiity, Gender equity and inclusion, Fairness and various other aspects.  
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item style={{ margin: 10 }} eventKey="2">
-                  <Accordion.Header>LAYER III   <Badge style={{marginLeft:10}}>70%</Badge></Accordion.Header>
+                  <Accordion.Header>LAYER III   <Badge style={{marginLeft:10}}>{currentProject.evaluations[0].score[2]}/20</Badge></Accordion.Header>
                   <Accordion.Body style={{textAlign:'left'}}>
                       This score represents an average of your performance on questions related to Layer 3 of the RRI Framework. These questions are related to Human Agency and Oversight.  
                   </Accordion.Body>
@@ -282,7 +336,7 @@ const DashboardScreen = () => {
                 alignItems: "center",
               }}
             >
-              <Button title="Download your report" variant="dark">
+              <Button title="Download your report" style={{backgroundColor:'#009347', borderColor:'#009347'}} onClick={downloadReport}>
                 Download <FaFilePdf />
               </Button>
             </div>
@@ -292,7 +346,7 @@ const DashboardScreen = () => {
             style={{
               width: "20%",
               border: "solid",
-              borderColor: "grey",
+              borderColor: "#009347",
               borderWidth: 0.5,
               borderRadius: 5,
               height:'100%',
@@ -303,24 +357,33 @@ const DashboardScreen = () => {
               flexDirection: "column",
             }}
           >
-            <div
-              className="red"
-              
+           <div
+              className={`green ${policeFunction(currentProject.evaluations[0].score[3], 70, 100)}`}
+             
             >
-              <span style={{ fontSize: 22, fontWeight: "bold", color: "#fff" }}>
-                70%
+              <span hidden={hideText(currentProject.evaluations[0].score[3], 70, 100)} style={{ fontSize: 20, fontWeight: "bold", color: "#fff" }}>
+              {currentProject.evaluations[0].score[3]}%
               </span>
             </div>
 
             <div
-              className="yellow disactivated"
+              className={`yellow ${policeFunction(currentProject.evaluations[0].score[3], 50, 70)}`}
              
-            ></div>
+            >
+              <span hidden={hideText(currentProject.evaluations[0].score[3], 50, 70)} style={{ fontSize: 22, fontWeight: "bold", color: "#fff" }}>
+              {currentProject.evaluations[0].score[3]}%
+              </span>
+            </div>
 
             <div
-              className="green disactivated"
-             
-            ></div>
+              className={`red ${policeFunction(currentProject.evaluations[0].score[3], 0, 50)}`}
+              
+            >
+              <span hidden={hideText(currentProject.evaluations[0].score[3], 0, 50)} style={{ fontSize: 22, fontWeight: "bold", color: "#fff" }}>
+              {currentProject.evaluations[0].score[3]}%
+              </span>
+            </div>
+            
           </div>
         </div>
 

@@ -1,8 +1,18 @@
+
+/* 
+:root{
+    --primary:#009347
+} */
+
+
 body{
     /* padding-top: 8%; */
     background-color: #fcfeff !important;
 }
 
+.green-link{
+    color: var(--primary) !important;
+}
 .conatiner{
     padding-left: 3%;
     padding-right: 3%;
@@ -12,7 +22,8 @@ body{
 /* background-color: red; */
 }
 input[type='radio'] {
-    accent-color: #29a703;
+    /* accent-color: #29a703; */
+    accent-color: var(--primary);
 }
 .question{
     /* background-color: green; */
@@ -188,13 +199,17 @@ p{
 }
 
 .home-title {
-    color: #333;
+    /* color: #333; */
+    color: var(--primary);
 }
 
 .home-description {
     color: #555;
     font-size: 18px;
     margin-bottom: 20px;
+    margin-left: 15%;
+    margin-right: 15%;
+    text-align: center;
 }
 
 .home-start-button {
@@ -209,6 +224,7 @@ p{
     transition: background-color 0.3s ease;
 }
 
+
 .home-layer-container{
     display: 'flex';
 
@@ -217,6 +233,9 @@ p{
     background-color: #2980b9;
 }
 
+.about-evaluation{
+    color: var(--primary);
+}
 /* Contacts page */
 
 .contact-body {
@@ -281,22 +300,70 @@ p{
     border: 1px solid #ddd;
     border-radius: 5px;
     margin-bottom: 20px;
-    padding: 15px;
+    padding: 10px;
     background-color: #fff;
+
+}
+
+.team-member a{
+    color: var(--primary);
+
 }
 
 .member-name {
     margin-top: 0;
-    color: #3498db;
 }
+
 
 .member-role {
     margin: 0;
     color: #777;
 }
 
+/* footer */
+
+.rri-footer-link{
+    color: var(--primary);
+}
 
 
+/* Progress bar */
+
+.progress {
+    width: 50%;
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    border-radius: 10px;
+    height: 10px;
+  }
+
+  .progress::-webkit-progress-bar {
+    background-color: #f0f0f0;
+  }
+
+  .progress::-webkit-progress-bar,
+  .progress::-webkit-progress-value {
+    border-radius: 10px;
+  }
+
+  .progress::-moz-progress-bar {
+    border-radius: 10px;
+  }
+
+  .progress1::-webkit-progress-value {
+    background: var(--primary);
+  }
+
+  .progress2::-webkit-progress-value {
+    background: #ffb453;
+  }
+
+  .progress3::-webkit-progress-value {
+    background: #3fff76;
+  }
+
+  
 
 /* Traffic lights */
 
@@ -318,7 +385,7 @@ p{
   .active{
     opacity: 1;
   }
-  .disactivated{
+  .desactivated{
     opacity: .1;
   }
   

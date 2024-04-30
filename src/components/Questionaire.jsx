@@ -121,15 +121,16 @@ const EvaluationForm = (props) => {
 
       if (response.status === 200) {
         // Some stuffs will be recorded here
+        setTimeout(() => {
+          setLoadingSubmit(false);
+          
+            history.push({
+              pathname: "/dashboard",
+              state: { projectId: props.projectId },
+            });
+        }, 1000);
       }
-      setTimeout(() => {
-        setLoadingSubmit(false);
-        
-          history.push({
-            pathname: "/dashboard",
-            state: { projectId: props.projectId },
-          });
-      }, 1000);
+      
     } catch (e) {
       // console.log(e)
       setLoadingSubmit(false);
@@ -166,19 +167,24 @@ const EvaluationForm = (props) => {
         className="progress-bar"
       >
         {/* <p style={{marginBottom:20}}>Progress</p> */}
-        <ProgressBar
+        {/* <ProgressBar
           style={{
             width: "40%",
             marginBottom: 20,
-            borderWidth: 1,
+            borderWidth: 0.1,
             border: "solid",
             borderColor: "#000",
+            color:"#E7ECFF"
           }}
-          variant="secondary"
+          color="#E7ECFF"
+          // variant="secondary"
+          className="bar-cass"
           label={`${currentQuestion}/${questions.length}`}
           now={(currentQuestion * 100) / 14}
-        />
-
+        /> */}
+<progress class="progress progress1" max={`${questions.length}`} value={`${currentQuestion}`} >
+  <span>${currentQuestion}/${questions.length}</span>
+</progress>
         {/* Progress: {currentQuestion} / {staticQuestions.length} */}
 
         <div

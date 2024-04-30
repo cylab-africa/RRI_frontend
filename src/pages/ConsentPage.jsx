@@ -41,7 +41,7 @@ const ConsentPage = (props) => {
   },[])
 
   return (
-    <div class="jumbotron conatiner">
+    <div class="jumbotron conatiner" style={{backgroundColor: "#E7ECFF"}}>
       {/* <h3>Layer {layerId}</h3> */}
       
       <u><b><h3>Responsible Resaerch and Innovation</h3></b></u>

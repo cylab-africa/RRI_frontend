@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: rri-frontend
+  name: rri-frontend-service-prod
+  namespace: dhis-mosip
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3000
+    name: http
+    targetPort: 3000
+    protocol: TCP
+  selector:
+    revision: prod_v1.0
+    app: rri-frontend
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rri-frontend-account 
+  namespace: dhis-mosip
+  labels:
+    app: rri-frontend
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  labels:
+    app: rri-frontend 
+  name: rri-frontend-deployment-prod 
+  namespace: dhis-mosip
+spec:
+  replicas: 1  
+  selector:
+    matchLabels:
+      revision: prod_v1.0  
+      app: rri-frontend 
+  template:
+    metadata:
+      labels:
+        revision: prod_v1.0  
+        app: rri-frontend 
+    spec:
+      serviceAccountName: rri-frontend-account  
+      containers:  
+      - image: 0789421906/rri-frontend:latest
+        name: rri-frontend-container 
+        ports:
+        - containerPort: 3000 
+        resources:
+          requests:
+            cpu: "100m"
+            memory: 300Mi
+          limits:
+            memory: 500Mi
+            cpu: "100m"
+        envFrom:
+        - secretRef:
+            name: rri-frontend-secret-prod
+        imagePullPolicy: Always
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rri-frontend-ingress
+  namespace: dhis-mosip
+  labels:
+    app: rri-frontend 
+spec:
+  ingressClassName: nginx
+  tls: 
+    - hosts:
+        - rri-front.mosipcmuafrica.me
+      secretName: mosip-tls-cert
+  rules:
+  - host: rri-frontend.mosipcmuafrica.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rri-frontend-service-prod
+            port:
+              number: 3000
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: rri-frontend-secret-prod
+  namespace: rri
+  labels:
+    app: rri-frontend 
+stringData:
+  PORT: "3000"
+  API_URL: "http://rri-api-service-prod:3000"
+type: Opaque
