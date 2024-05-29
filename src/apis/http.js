@@ -1,9 +1,8 @@
 import axios from "axios";
 import { getToke } from "../utils/localStorageUtils";
 
-// export const ip = process.env.API_URL;
+export const ip = process.env.REACT_APP_API_URL;
 
-export let ip = "http://127.0.0.1:8081"
 
 console.log(ip)
 export class API {
