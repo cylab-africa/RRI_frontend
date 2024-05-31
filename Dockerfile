@@ -21,4 +21,4 @@ RUN npm run build
 
 
 
-CMD ["serve", "-s", "bild"]
+CMD ["serve", "-s", "build"]
