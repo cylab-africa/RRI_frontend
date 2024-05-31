@@ -17,7 +17,7 @@ EXPOSE 3000
 RUN npm install -g serve
 
 
-RUN npm build
+RUN npm run build
 
 
 
