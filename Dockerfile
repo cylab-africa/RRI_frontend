@@ -14,4 +14,11 @@ COPY . .
 # Expose 3000
 EXPOSE 3000
 
-CMD ["npm", "start"]
+RUN npm install -g serve
+
+
+RUN npm build
+
+
+
+CMD ["serve", "-s", "bild"]
