@@ -6,7 +6,7 @@ export const ip = process.env.REACT_APP_API_URL;
 
 console.log(ip)
 export class API {
-  BASE_URL = ip
+  BASE_URL = process.env.REACT_APP_API_URL
   baseJsonHeaders = {
     "Content-Type": "application/json",
   };
