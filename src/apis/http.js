@@ -1,13 +1,13 @@
 import axios from "axios";
 import { getToke } from "../utils/localStorageUtils";
 
-export const ip = process.env.REACT_APP_API_URL;
+export const ip = process.env.REACT_APP_BASE_URL_LOCAL;
 
 
 console.log(ip)
 export class API {
-  // BASE_URL = process.env.REACT_APP_API_URL
-  BASE_URL = "https://rri-backend.mosipcmuafrica.me/api"
+  BASE_URL = process.env.REACT_APP_BASE_URL_LOCAL
+  // BASE_URL = "https://rri-backend.mosipcmuafrica.me/api"
   baseJsonHeaders = {
     "Content-Type": "application/json",
   };
