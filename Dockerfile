@@ -15,7 +15,7 @@ COPY . .
 EXPOSE 3000
 
 # Create the .env file with the environment variable
-RUN echo "REACT_APP_BASE_URL_LOCAL=https://rri-backend.mosipcmuafrica.me/api" > .env
+ENV REACT_APP_BASE_URL_LOCAL=https://rri-backend.mosipcmuafrica.me/api
 
 RUN npm install -g serve
 
