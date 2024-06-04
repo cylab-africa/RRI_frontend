@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getToke } from "../utils/localStorageUtils";
 
-export const ip = process.env.REACT_APP_BASE_URL_LOCAL;
+export const ip = process.env.BASE_URL_LOCAL;
 
 
 console.log(ip)
