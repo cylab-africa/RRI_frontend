@@ -3,7 +3,7 @@ on:
   push:
     branches: [ main ]
 env:
-    REACT_APP_BASE_URL_LOCAL: $
+    REACT_APP_BASE_URL_LOCAL: https://rri-backend.mosipcmuafrica.me/api
 jobs:
   docker-build-image:
     runs-on: ubuntu-latest
