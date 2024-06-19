@@ -8,8 +8,6 @@ import { API } from "../apis/http";
 import { useHistory, useLocation } from "react-router-dom";
 import { addToken } from "../utils/localStorageUtils";
 
-
-
 const EvaluationForm = (props) => {
   const { scrollUp, questions } = props;
 
@@ -85,32 +83,22 @@ const EvaluationForm = (props) => {
     scrollUp();
   };
 
+  const validateForm = () => {
+    console.log(questions.length);
+    console.log(answers.length);
 
-
-  const validateForm = ()=>{
-    console.log(questions.length)
-    console.log(answers.length)
-
-    if(questions.length != answers.length){
+    if (questions.length != answers.length) {
       swal("Please assign a score to each question.");
-      return false
+      return false;
     }
-    return true
-  }
-
-
+    return true;
+  };
 
   // Function to handle form submission
   const handleSubmit = async () => {
     setLoadingSubmit(true);
 
     try {
-      // const isFormValid = validateForm();
-      // if (!isFormValid) {
-      //   return;
-      // }
-      // Clear the selections first
-      // document.getElementById("form").reset();
       setLoadingSubmit(true);
       const body = { layerId: 1, projectId: props.projectId, answers: answers };
       let response = await api.postRequest("/answers", body, true);
@@ -123,14 +111,13 @@ const EvaluationForm = (props) => {
         // Some stuffs will be recorded here
         setTimeout(() => {
           setLoadingSubmit(false);
-          
-            history.push({
-              pathname: "/dashboard",
-              state: { projectId: props.projectId },
-            });
+
+          history.push({
+            pathname: "/dashboard",
+            state: { projectId: props.projectId },
+          });
         }, 1000);
       }
-      
     } catch (e) {
       // console.log(e)
       setLoadingSubmit(false);
@@ -166,25 +153,16 @@ const EvaluationForm = (props) => {
         }}
         className="progress-bar"
       >
-        {/* <p style={{marginBottom:20}}>Progress</p> */}
-        {/* <ProgressBar
-          style={{
-            width: "40%",
-            marginBottom: 20,
-            borderWidth: 0.1,
-            border: "solid",
-            borderColor: "#000",
-            color:"#E7ECFF"
-          }}
-          color="#E7ECFF"
-          // variant="secondary"
-          className="bar-cass"
-          label={`${currentQuestion}/${questions.length}`}
-          now={(currentQuestion * 100) / 14}
-        /> */}
-<progress class="progress progress1" max={`${questions.length}`} value={`${currentQuestion}`} >
-  <span>${currentQuestion}/${questions.length}</span>
-</progress>
+       
+        <progress
+          class="progress progress1"
+          max={`${questions.length}`}
+          value={`${currentQuestion}`}
+        >
+          <span>
+            ${currentQuestion}/${questions.length}
+          </span>
+        </progress>
         {/* Progress: {currentQuestion} / {staticQuestions.length} */}
 
         <div

@@ -197,10 +197,19 @@ p{
     /* justify-content: center; */
     min-height: 100vh;
 }
-
+.home-sub-title{
+    font-size: 20px;
+    text-align: left;
+    margin-left: 0px;
+    color: #000;
+    padding-top: 15%;
+}
 .home-title {
     /* color: #333; */
-    color: var(--primary);
+    /* color: var(--primary); */
+    color: #000;
+    text-align: left;
+    font-size: 55px;
 }
 
 .home-description {

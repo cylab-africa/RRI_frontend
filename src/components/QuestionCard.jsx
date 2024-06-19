@@ -1,9 +1,6 @@
 import React from 'react'
 
 
-
-
-
 const TextQuestion =(props)=>{
     const {question, number, select, answers, selectScore} = props;
 

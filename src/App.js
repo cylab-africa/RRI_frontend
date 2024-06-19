@@ -1,9 +1,8 @@
-import logo from './logo.svg';
-import './App.css';
-import EvaluationPage from './pages/EvaluationPage';
-import "./css/main.css"
-import CustomNavbar from './components/CustomNavbar';
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+
+import "./css/bootstrap.css"
+import "./css/style.css"
+import "./css/responsive.css"
 import MainApp from './navigation/MainApp';
 
 function App() {

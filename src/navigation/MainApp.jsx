@@ -14,80 +14,52 @@ import AboutusPage from "../pages/AboutusPage";
 import DashboardScreen from "../pages/DashboardScreen";
 import ConsentPage from "../pages/ConsentPage";
 import NotFoundPage from "../pages/NotFoundPage";
+import NewHomePage from "../pages/NewHope";
 
 export default function MainApp() {
+
+  function openNav() {
+    document.getElementById("myNav").classList.toggle("menu_width")
+    document.querySelector(".custom_menu-btn").classList.toggle("menu_btn-style")
+  }
+
   return (
     <Router>
-      <div class="container py-3">
-        <header>
-          <div class="mobile-top">
-            <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
-              <img
-                style={{width:'40%'}}
-                // src={require("../images/Upanzi_Network_logo.jpg")}
-                // src={require("../images/upanzi_logo.png")}
-                src={require("../images/Upanzi-Network-logo.png")}
-                class="logo-upanzi-mobile"
-              />
-              <a
-                href="/"
-                class="d-flex align-items-center text-dark text-decoration-none"
-              >
-                <span class="fs-5 system-name">CyLab Africa &bull; Upanzi Network &bull; RRI</span>
-              </a>
+      <div class="hero_area ">
+    <header class="header_section">
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container">
+          <a class="navbar-brand" href="/">
+            <img style={{width:200}} src={require('../images/Upanzi-Network-logo.png')} alt=""/>
+          </a>
+          <div class="" id="">
 
-              <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
-                <a class="me-3 py-2 text-dark nav-links " href="/">
-                  Home
-                </a>
-                <a  class="me-3 py-2 text-dark nav-links" href="/dashboard">
-                  Dashboard
-                </a>
-                <a class="me-3 py-2 text-dark nav-links" href="/about">
-                  About us
-                </a>
-              </nav>
+            <div class="custom_menu-btn">
+              <button  onClick={openNav}>
+                <span class="s-1">
+
+                </span>
+                <span class="s-2">
+
+                </span>
+                <span class="s-3">
+
+                </span>
+              </button>
+            </div>
+            <div id="myNav" class="overlay">
+              <div class="overlay-content">
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="old">Login</a>
+              </div>
             </div>
           </div>
-
-          <div class="desktop-top">
-            <div class="upanzi-logo-desktop">
-              <a href="/">
-              <img
-                style={{width:'15%', float:'left'}}
-                // src={require("../images/Upanzi_Network_logo.jpg")}
-                // src={require("../images/upanzi_logo.png")}
-                src={require("../images/Upanzi-Network-logo.png")}
-
-                alt="Upanzi Network"
-              />
-              </a>
-              
-            </div>
-            <div class="bottom_item">
-              <a class="me-3 py-2  nav-links green-link" href="/">
-                Home
-              </a>
-              <a  class="me-3 py-2 green-link nav-links" href="/dashboard">
-                Dashboard
-              </a>
-              <a class="me-3 py-2 green-link nav-links" href="/about">
-                About us
-              </a>
-            </div>
-          </div>
-        </header>
-
-        <main style={{height:'100%'}}>
-          <div
-            class="removeTopSpace"
-            style={{ position: "relative", padding:0 }}
-          >
-            <div style={{padding:0, margin:0}} class="pricing-header p-3 pb-md-4 mx-auto text-center">
-              {/* <h3 class="system-sub-title not-mobile">
-                RRI Project Evaluation{" "}
-              </h3> */}
+        </nav>
+      </div>
+    </header>
               <Switch>
+                <Route exact path="/old" component={NewHomePage} />
                 <Route exact path="/" component={HomePage} />
                 <Route exact path="/consent" component={ConsentPage} />
                 <Route exact path="/evaluation" component={EvaluationPage} />
@@ -97,19 +69,96 @@ export default function MainApp() {
                 <Route exact path="/dashboard" component={DashboardScreen} />
                 <Route path="*" component={NotFoundPage}/>
               </Switch>
+
+  <section class="info_section ">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 col-lg-4">
+          <div class="info_contact">
+            <h5>
+              CONTACT INFO
+            </h5>
+            
+            <div>
+              <img src="images/mail.png" alt="" />
+              <p>
+                cylab.info@gmail.com
+              </p>
             </div>
           </div>
-        </main>
-        <footer style={{textAlign:'center'}} class="pt-4 my-md-2 pt-md-2 border-top">
-          <div class="row">
-            <div class="col-md-12">
-              <small class="d-block mb-3 text-muted">
-                &copy;{new Date().getFullYear()} <a target="_blank" className="rri-footer-link" href="https://www.africa.engineering.cmu.edu/research/upanzi/index.html">Upanzi Network</a>
-              </small>
+        </div>
+        <div class="col-md-4 col-lg-4">
+          <div class="info_time">
+            <h5>
+            Affiliations
+            </h5>
+
+            <div style={{marginBottom:5}}>
+              <a  href="/about">
+                About us
+              </a>
+            </div>
+
+            <div style={{marginBottom:5}}>
+              <a target="_blank"  href="https://www.africa.engineering.cmu.edu/research/upanzi/index.html">
+                Upanzi network
+              </a>
+            </div>
+            
+            <div style={{marginBottom:5}}>
+              <a target="_blank"  href="https://www.africa.engineering.cmu.edu/research/cybersecurity/cylab/index.html">
+                CyaLab Africa
+              </a>
+            </div>
+            <div style={{marginBottom:5}}>
+              <a target="_blank"  href="https://africa.engineering.cmu.edu/">
+                CMU Africa
+              </a>
+            </div>
+           
+          </div>
+        </div>
+
+        <div class="col-md-4 col-lg-4">
+          <div class="info_social">
+            <h5>
+              social media
+            </h5>
+            <div class="social_container">
+             
+              <div>
+                <a target="_blank" href="https://x.com/cylabafrica?lang=en">
+                  <img src={require('../images/twitter.png')} alt="" />
+                </a>
+              </div>
+              <div>
+                <a target="_blank" href="https://www.linkedin.com/company/cylabafrica/">
+                  <img src={require('../images/linkedin.png')} alt="" />
+                </a>
+              </div>
+              
             </div>
           </div>
-        </footer>
+        </div>
+
+          
       </div>
+    </div>
+  </section>
+
+
+
+  <section class="container-fluid footer_section ">
+    <p>
+
+      <a href=""> &copy; 2024 Upanzi network.</a>
+    </p>
+  </section>
+
+
+
+            </div>
+         
     </Router>
   );
 }

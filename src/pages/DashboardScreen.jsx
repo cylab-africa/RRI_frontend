@@ -173,10 +173,15 @@ const DashboardScreen = () => {
     try{
      let response;
      response = await api.getRequest("/projects", true);
-    console.log(response)
+    // console.log(response)
     if (response.status === 200) {
+      // response.data.data.AccordionforEach(project => {
+      //   project.evaluations.sort((a, b) => new Date(a.timeStarted) - new Date(b.timeStarted));
+      // });
       setProjects(response.data.data);
      if(pid){
+      
+      response.data.data.forEach(obj => console.log(`${obj.id} and  ${pid}`))
       setCurrentProject(response.data.data.find(obj => obj.id === pid));
 
      }else{

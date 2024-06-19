@@ -14,7 +14,7 @@ COPY . .
 # Expose 3000
 EXPOSE 3000
 
-# Create the .env file with the environment variable
+# Define production env (Will be changed in the future)
 ENV REACT_APP_BASE_URL_LOCAL=https://rri-backend.mosipcmuafrica.me/api
 
 RUN npm install -g serve

@@ -4,47 +4,40 @@ import { API } from "../apis/http";
 import { useHistory, useLocation } from "react-router-dom";
 import { addToken } from "../utils/localStorageUtils";
 import CreateProjectModel from "../components/CreateProjectModel";
-import TestCompo from "../components/TestCompo";
 
-const HomePage = () => {
+const NewHomePage = () => {
   const api = new API();
   const history = useHistory();
   const [projectName, setProjectName] = useState();
   const [isModalOpen, setModalOpen] = useState(false);
 
-
-  const [projects, setProjects] = useState([
-    { id: '1', name: 'Project One' },
-    { id: '2', name: 'Project Two' },
-  ]);
-
-
-  const registerProject= async()=>{
-
+  const registerProject = async () => {
     // Validate name
-    if(!projectName || projectName.length < 2)
-    {
-      setModalOpen(false)
-      return
+    if (!projectName || projectName.length < 2) {
+      setModalOpen(false);
+      return;
     }
-    try{
-    const respo = await api.postRequest("/project", { projectName: projectName }, true);
-    console.log(respo)
-    }catch(e){
-      console.log(e)
+    try {
+      const respo = await api.postRequest(
+        "/project",
+        { projectName: projectName },
+        true
+      );
+      console.log(respo);
+    } catch (e) {
+      console.log(e);
     }
-  }
-  
+  };
 
   return (
-      <div>
+    <div>
       <section class="slider_section">
         <div
           id="carouselExampleIndicators"
           class="carousel slide"
           data-ride="carousel"
         >
-          <ol style={{zIndex:1}}  class="carousel-indicators">
+          <ol class="carousel-indicators">
             <li
               data-target="#carouselExampleIndicators"
               data-slide-to="0"
@@ -62,7 +55,7 @@ const HomePage = () => {
                 </h1>
                 <p>Towards Responsible Innovation for Digital Public Goods</p>
                 <div class="btn-box">
-                  <a onClick={()=>{setModalOpen(true)}} class="btn-1">
+                  <a href="" class="btn-1">
                     Start evaluation
                   </a>
                 </div>
@@ -275,16 +268,8 @@ const HomePage = () => {
     </div>
   </section>
 
-  {isModalOpen  && (
-        <TestCompo
-          projects={projects}
-          onClose={() => setModalOpen(false)}
-          onSubmit={()=>{}}
-        />
-      )}
-      {/* <CreateProjectModel isModalOpen={isModalOpen}  setModalOpen={setModalOpen} setProjectName={setProjectName} /> */}
     </div>
   );
 };
 
-export default HomePage;
+export default NewHomePage;

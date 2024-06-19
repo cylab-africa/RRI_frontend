@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cylab-Africa Upanzi-Network</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #fff;
+            padding: 20px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #009647;
+            text-transform: uppercase;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav a {
+            color: #333;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #009647;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-color: #009647;
+            color: #fff;
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }
+
+        .hero .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .hero .buttons a {
+            background-color: #fff;
+            color: #009647;
+            padding: 15px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .hero .buttons a:hover {
+            background-color: #007d3a;
+            color: #fff;
+        }
+
+        /* Features Section */
+        .features {
+            background-color: #fff;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .features h2 {
+            font-size: 2.5em;
+            color: #009647;
+            margin-bottom: 40px;
+        }
+
+        .features .cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .features .card {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 250px;
+            max-width: 100%;
+            text-align: left;
+        }
+
+        .features .card h3 {
+            color: #009647;
+            font-size: 1.5em;
+            margin-top: 0;
+        }
+
+        .features .card p {
+            color: #666;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+
+        .features .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+
+        footer .social-media a {
+            color: #fff;
+            margin: 0 10px;
+            text-decoration: none;
+            font-size: 1.5em;
+            transition: color 0.3s ease;
+        }
+
+        footer .social-media a:hover {
+            color: #ddd;
+        }
+
+        footer p {
+            margin: 10px 0 0;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5em;
+            }
+            .hero p {
+                font-size: 1em;
+            }
+            .hero .buttons a {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+            .features .card {
+                width: calc(50% - 20px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2em;
+            }
+            .hero p {
+                font-size: 0.9em;
+            }
+            .hero .buttons a {
+                padding: 8px 15px;
+                font-size: 0.8em;
+            }
+            .features .cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            .features .card {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            footer .social-media a {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">Cylab-Africa Upanzi-Network</div>
+                <div>
+                    <a href="#">Home</a>
+                    <a href="#">About Us</a>
+                    <a href="#">Initiatives</a>
+                    <a href="#">Contact Us</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <div class="hero">
+        <div class="container">
+            <h1>Promoting Inclusive and Sustainable Research and Innovation</h1>
+            <p>Empowering Communities through Ethical Digital Solutions</p>
+            <div class="buttons">
+                <a href="#">Learn More</a>
+                <a href="#">Join Us</a>
+            </div>
+        </div>
+    </div>
+    <div class="features">
+        <div class="container">
+            <h2>Our Initiatives</h2>
+            <div class="cards">
+                <div class="card">
+                    <h3>Agriculture</h3>
+                    <p>Enhancing digital tools for sustainable farming practices.</p>
+                </div>
+                <div class="card">
+                    <h3>Health</h3>
+                    <p>Improving health outcomes through innovative digital health solutions.</p>
+                </div>
+                <div class="card">
+                    <h3>Financial Inclusion</h3>
+                    <p>Promoting financial access and literacy with secure digital platforms.</p>
+                </div>
+                <div class="card">
+                    <h3>Ethical Principles</h3>
+                    <p>Prioritizing security, privacy, and open access in all our projects.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="container">
+            <div class="social-media">
+                <a href="#">Facebook</a>
+                <a href="#">Twitter</a>
+                <a href="#">LinkedIn</a>
+            </div>
+            <p>Contact Information: Address: XYZ, Email: info@example.com, Phone: +123-456-7890</p>
+            <p>&copy; 2024 Cylab-Africa Upanzi-Network. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
