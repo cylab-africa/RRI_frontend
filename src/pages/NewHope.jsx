@@ -1,50 +1,43 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import swal from "sweetalert";
 import { API } from "../apis/http";
 import { useHistory, useLocation } from "react-router-dom";
 import { addToken } from "../utils/localStorageUtils";
 import CreateProjectModel from "../components/CreateProjectModel";
-import TestCompo from "../components/TestCompo";
 
-const HomePage = () => {
+const NewHomePage = () => {
   const api = new API();
   const history = useHistory();
   const [projectName, setProjectName] = useState();
   const [isModalOpen, setModalOpen] = useState(false);
 
-
-  const [projects, setProjects] = useState([
-    { id: '1', name: 'Project One' },
-    { id: '2', name: 'Project Two' },
-  ]);
-
-  const getProject = async ()=>{
-    try {
-      let response;
-      response = await api.getRequest("/projects", true);
-      if (response.status === 200) {
-        setProjects(response.data.data);
-        
-      }
-    } catch (e) {
-      console.log(e)
+  const registerProject = async () => {
+    // Validate name
+    if (!projectName || projectName.length < 2) {
+      setModalOpen(false);
+      return;
     }
-  }
-  useEffect(()=>{
-    getProject()
-  },[])
- 
-  
+    try {
+      const respo = await api.postRequest(
+        "/project",
+        { projectName: projectName },
+        true
+      );
+      console.log(respo);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
-      <div>
+    <div>
       <section class="slider_section">
         <div
           id="carouselExampleIndicators"
           class="carousel slide"
           data-ride="carousel"
         >
-          <ol style={{zIndex:1}}  class="carousel-indicators">
+          <ol class="carousel-indicators">
             <li
               data-target="#carouselExampleIndicators"
               data-slide-to="0"
@@ -62,7 +55,7 @@ const HomePage = () => {
                 </h1>
                 <p>Towards Responsible Innovation for Digital Public Goods</p>
                 <div class="btn-box">
-                  <a onClick={()=>{setModalOpen(true)}} class="btn-1">
+                  <a href="" class="btn-1">
                     Start evaluation
                   </a>
                 </div>
@@ -94,7 +87,7 @@ const HomePage = () => {
       <section class="about_section layout_padding2">
         <div class="container">
           <div class="heading_container">
-            <img style={{width: 30, marginBottom:2}} src={require('../images/about.png')} alt="" />
+            <img style={{width:40}} src={require('../images/info.png')} alt="" />
             <h2>About Responsible Research and Innovation (RRI)</h2>
           </div>
           <hr />
@@ -158,7 +151,7 @@ const HomePage = () => {
   <section class="us_section layout_padding2">
     <div class="container">
       <div class="heading_container">
-        <img style={{width:30}} src={require('../images/process.png')} alt=""/>
+        <img style={{width:40}} src={require('../images/process.png')} alt=""/>
         <h2>
           Project evaluation process
         </h2>
@@ -229,9 +222,9 @@ const HomePage = () => {
             <h6>
               Lower score
             </h6>
-            <h6>
+            <h5>
               0<span>%</span> - 49<span>%</span>
-            </h6>
+            </h5>
            
           </div>
         </div>
@@ -243,9 +236,9 @@ const HomePage = () => {
             <h6>
               Average score
             </h6>
-            <h6>
+            <h5>
               50<span>%</span> - 69<span>%</span>
-            </h6>
+            </h5>
            
           </div>
         </div>
@@ -257,9 +250,9 @@ const HomePage = () => {
             <h6>
               Higher score
             </h6>
-            <h6>
+            <h5>
               70<span>%</span> - 100<span>%</span>
-            </h6>
+            </h5>
            
           </div>
         </div>
@@ -275,15 +268,8 @@ const HomePage = () => {
     </div>
   </section>
 
-  {isModalOpen  && (
-        <TestCompo
-          projects={projects}
-          onClose={() => setModalOpen(false)}
-          
-        />
-      )}
     </div>
   );
 };
 
-export default HomePage;
+export default NewHomePage;

@@ -41,10 +41,13 @@ const ConsentPage = (props) => {
   },[])
 
   return (
-    <div class="jumbotron conatiner" style={{backgroundColor: "#E7ECFF"}}>
+    <div class="layout_padding2 container">
       {/* <h3>Layer {layerId}</h3> */}
+      <div class="heading_container">
+            {/* <img style={{width:40}} src={require('../images/info.png')} alt="" /> */}
+            <h2>Responsible Research and Innovation (RRI)</h2>
+          </div>
       
-      <u><b><h3>Responsible Resaerch and Innovation</h3></b></u>
       <br />
       <div style={{textAlign:'left'}}>
       <p>The evaluation consists of <b>14</b> questions, and you will not spend more than <b>15 minutes</b>  responding to all of the questions.</p> 
@@ -59,14 +62,15 @@ const ConsentPage = (props) => {
       </div>
       <br />
       <hr />
-      <p style={{textAlign:'left'}}>CyLab Africa - Upanzi network cares about your privacy. Therefore, we recommend that you read our <a href="">privacy policy and terms and conditions</a> before you proceed.</p>
+      <p style={{textAlign:'left'}}>CyLab Africa - Upanzi network cares about your privacy. Therefore, we recommend that you read our <a className="green_link" href="">privacy policy and terms and conditions </a>  before you proceed.</p>
 
-      
+      <form action="">
       <div style={{display:'flex'}}>
-          <p style={{marginRight:15}}>By checking the box,  you agree to our  <a href="">Privacy policy and terms and conditions.</a></p>
+          <p style={{marginRight:15}}>By checking the box,  you agree to our  <a className="green_link" href="">Privacy policy and terms and conditions.</a> <img  src={require('../images/link-arrow.png')} alt="" /></p>
           <input onChange={()=>{setAccepted(!accepted)}} style={{marginTop:-15}} type="checkbox" name="" id="" />
 
       </div>
+      </form>
    
       <Row>
         <Col></Col>

@@ -1,9 +1,6 @@
 import React from 'react'
 
 
-
-
-
 const TextQuestion =(props)=>{
     const {question, number, select, answers, selectScore} = props;
 
@@ -112,47 +109,47 @@ const ChoiceQuestion = (props) => {
                     <div class="scores">
                     <div class="score">
                                 <p style={{padding: 0, margin: 0}}>N/A</p>
-                                <input checked={answer && 0==answer.score} onClick={()=>{select(question.id, 0)}}  type="radio" name={question.id} id=""/>
+                                <input name={`${question.id}-${0}`} checked={(answer && 0==answer.score)?true:false} onChange={(e)=>{select(question.id, 0)}}  type="radio"  id=""/>
                             </div>
                             <div class="score">
                                 <p style={{padding: 0, margin: 0}}>1</p>
-                                <input checked={answer && 1==answer.score} onClick={()=>{select(question.id, 1)}}  type="radio" name={question.id} id=""/>
+                                <input name={`${question.id}-${1}`} checked={(answer && 1==answer.score)?true:false} onChange={(e)=>{select(question.id, 1)}}  type="radio"  id=""/>
                             </div>
                             <div class="score">
                                 <p style={{padding: 0, margin: 0}}>2</p>
-                                <input checked={answer && 2==answer.score} onClick={()=>{select(question.id, 2)}} type="radio" name={question.id} id=""/>
+                                <input name={`${question.id}-${2}`} checked={(answer && 2==answer.score)?true:false} onChange={(e)=>{select(question.id, 2)}} type="radio"  id=""/>
                             </div>
                             <div class="score">
                                 <p style={{padding: 0, margin: 0}}>3</p>
-                                <input checked={answer && 3==answer.score} onClick={()=>{select(question.id, 3)}} value="3" type="radio" name={question.id} id=""/>
+                                <input name={`${question.id}-${3}`} checked={(answer && 3==answer.score)?true:false} onChange={(e)=>{select(question.id, 3)}} value="3" type="radio"  id=""/>
                             </div>
                             <div class="score">
                                 <p style={{padding: 0, margin: 0}}>4</p>
-                                <input checked={answer && 4==answer.score} onClick={()=>{select(question.id, 4)}}  type="radio" name={question.id} id=""/>
+                                <input name={`${question.id}-${4}`} checked={(answer && 4==answer.score)?true:false} onChange={(e)=>{select(question.id, 4)}}  type="radio"  id=""/>
                             </div>
                             <div class="score">
                                 <p style={{padding: 0, margin: 0}}>5</p>
-                                <input checked={answer && 5==answer.score} onClick={()=>{select(question.id, 5)}}  type="radio" name={question.id} id=""/>
+                                <input name={`${question.id}-${5}`} checked={(answer && 5==answer.score)?true:false} onChange={(e)=>{select(question.id, 5)}}  type="radio"  id=""/>
                             </div>
                             <div class="score">
                                 <p style={{padding: 0, margin: 0}}>6</p>
-                                <input checked={answer && 6==answer.score} onClick={()=>{select(question.id, 6)}}  type="radio" name={question.id} id=""/>
+                                <input name={`${question.id}-${6}`} checked={(answer && 6==answer.score)?true:false} onChange={(e)=>{select(question.id, 6)}}  type="radio"  id=""/>
                             </div>
                             <div class="score">
                                 <p style={{padding: 0, margin: 0}}>7</p>
-                                <input checked={answer && 7==answer.score} onClick={()=>{select(question.id, 7)}}  type="radio" name={question.id} id=""/>
+                                <input name={`${question.id}-${7}`} checked={(answer && 7==answer.score)?true:false} onChange={(e)=>{select(question.id, 7)}}  type="radio"  id=""/>
                             </div>
                             <div class="score">
                                 <p style={{padding: 0, margin: 0}}>8</p>
-                                <input checked={answer && 8==answer.score} onClick={()=>{select(question.id, 8)}} type="radio" name={question.id} id=""/>
+                                <input name={`${question.id}-${8}`} checked={(answer && 8==answer.score)?true:false} onChange={(e)=>{select(question.id, 8)}} type="radio"  id=""/>
                             </div>
                             <div class="score">
                                 <p style={{padding: 0, margin: 0}}>9</p>
-                                <input checked={answer && 9==answer.score} onClick={()=>{select(question.id, 9)}} type="radio" name={question.id} id=""/>
+                                <input name={`${question.id}-${9}`} checked={(answer && 9==answer.score)?true:false} onChange={(e)=>{select(question.id, 9)}} type="radio"  id=""/>
                             </div>
                             <div class="score">
                                 <p style={{padding: 0, margin: 0}}>10</p>
-                                <input checked={answer && 10==answer.score} onClick={()=>{select(question.id, 10)}} type="radio" name={question.id} id=""/>
+                                <input name={`${question.id}-${10}`} checked={(answer && 10==answer.score)?true:false} onChange={(e)=>{select(question.id, 10)}} type="radio"  id=""/>
                             </div>
                             
     

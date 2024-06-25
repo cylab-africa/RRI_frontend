@@ -2,13 +2,13 @@ import React from 'react'
 
 const NotFoundPage = () => {
     return (
-        <div className="jumbotron scores-body">
-        <div style={{ width: "100%" , display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center'}} className="row">
-            {/* <FaThermometerEmpty size={90} color="black" /> */}
-            <h1>404 Page Not Found</h1>
-            <a className="green-link" href="/">Home page</a>
-        </div>
-        </div>
+      <div className='section-notfound'>  
+  <h1 className="error">404</h1>
+  <div className="page">Ooops!!! The page you are looking for is not found</div>
+  <a className="back-home" href="/">Back to home</a>
+</div>
+        
+
       )
 }
 

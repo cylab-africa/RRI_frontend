@@ -1,30 +1,12 @@
 
-/* 
-:root{
-    --primary:#009347
-} */
-
-
-body{
-    /* padding-top: 8%; */
-    background-color: #fcfeff !important;
-}
 
 .green-link{
     color: var(--primary) !important;
 }
-.conatiner{
-    padding-left: 3%;
-    padding-right: 3%;
-    /* padding-bottom: 5%; */
-    /* background-color: rgb(224, 226, 228); */
-    /* padding-top: 8%; */
-/* background-color: red; */
-}
-input[type='radio'] {
-    /* accent-color: #29a703; */
+
+/* input[type='radio'] {
     accent-color: var(--primary);
-}
+} */
 .question{
     /* background-color: green; */
     width: 100%;
@@ -197,10 +179,19 @@ p{
     /* justify-content: center; */
     min-height: 100vh;
 }
-
+.home-sub-title{
+    font-size: 20px;
+    text-align: left;
+    margin-left: 0px;
+    color: #000;
+    padding-top: 15%;
+}
 .home-title {
     /* color: #333; */
-    color: var(--primary);
+    /* color: var(--primary); */
+    color: #000;
+    text-align: left;
+    font-size: 55px;
 }
 
 .home-description {
@@ -215,7 +206,7 @@ p{
 .home-start-button {
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #3498db;
+    /* background-color: #3498db; */
     color: #fff;
     text-decoration: none;
     border: none;

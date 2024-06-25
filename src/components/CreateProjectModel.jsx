@@ -82,47 +82,61 @@ const CreateProjectModel = (props) => {
     setModalOpen(false);
   };
 
-  return (
-    <div>
-      {/* <button onClick={openModal}>Open Modal</button> */}
 
-      {isModalOpen && (
-        <div onClick={(e)=>{
-          if (e.target.className === 'modal-overlay') {
-            closeModal();
-          }
-        }} className="modal-overlay">
-          <div className="modal-body">
-            {/* <button onClick={closeModal} className="close-button">
-              Close Modal
-            </button> */}
+ const [inputValue, setInutValue] = useState()
+  const showForm = async ()=>{
+    swal({
+      title: "Enter your IP address",
+      input: "text",
+      inputLabel: "Your IP address",
+      inputValue,
+      showCancelButton: true,
+      inputValidator: (value) => {
+        if (!value) {
+          return "You need to write something!";
+        }
+      }
+    });
+  }
+  
+  
+  // return (
+  //   <div hidden>
 
-            <div style={{height:'100%'}} className="modal-content">
-              {/* Your modal content goes here */}
-              <h3>Please specify the project name to initiate the evaluation process.</h3>
-                <form style={{width:'100%', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100%'}} action="">
-                    <div style={{width:'70%', display:'flex', flexDirection:'column', alignItems:'flex-start'}} class="mb-3">
-                        <label for="project-name" class="form-label">Project name</label>
-                        <input type="text" class="form-control" onChange={(text)=>{
-                            setProjectName(text.target.value)
-                        }} id="project-name" placeholder="Ex: Irembo"/>
-                    </div>
-                    {!loading ? <Button style={{borderRadius:0, marginTop:'2%'}} variant="dark" onClick={registerProject}>
-                        CONTINUE
-                    </Button>:
-                        <Spinner animation="grow" />
+  //     {isModalOpen && (
+  //       <div onClick={(e)=>{
+  //         if (e.target.className === 'modal-overlay') {
+  //           closeModal();
+  //         }
+  //       }} className="modal-overlay">
+  //         <div className="modal-body">
+           
+
+  //           <div style={{height:'100%'}} className="modal-content">
+  //             <h3>Please specify the project name to initiate the evaluation process.</h3>
+  //               <form style={{width:'100%', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100%'}} action="">
+  //                   <div style={{width:'70%', display:'flex', flexDirection:'column', alignItems:'flex-start'}} class="mb-3">
+  //                       <label for="project-name" class="form-label">Project name</label>
+  //                       <input type="text" class="form-control" onChange={(text)=>{
+  //                           setProjectName(text.target.value)
+  //                       }} id="project-name" placeholder="Ex: Irembo"/>
+  //                   </div>
+  //                   {!loading ? <Button style={{borderRadius:0, marginTop:'2%'}} variant="dark" onClick={registerProject}>
+  //                       CONTINUE
+  //                   </Button>:
+  //                       <Spinner animation="grow" />
                     
-                    }
+  //                   }
                     
-                </form>
+  //               </form>
                 
 
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  //           </div>
+  //         </div>
+  //       </div>
+  //     )}
+  //   </div>
+  // );
 }
 
 export default CreateProjectModel

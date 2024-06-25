@@ -3,10 +3,23 @@ import { API } from "../apis/http";
 import swal from "sweetalert";
 import { useHistory, useLocation } from "react-router-dom";
 import { Button, Badge, Container, Row, Col, Accordion } from "react-bootstrap";
-import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
+import {
+  FaAngleLeft,
+  FaAngleRight,
+  FaCircleExclamation,
+} from "react-icons/fa6";
 import { FaFilePdf } from "react-icons/fa6";
 import { generatePDF, getHtmlContent } from "../utils/htmlToPdf";
 import { FaThermometerEmpty } from "react-icons/fa";
+import { formatDate, getColorBasedOnNumber } from "../utils/utils";
+import red_dotted_image from "../images/red-dotted.png";
+import red_image from "../images/red.png";
+import green_dotted_image from "../images/green-dotted.png";
+import green_image from "../images/green.png";
+import amber_dotted_image from "../images/amber-dotted.png";
+import amber_image from "../images/amber.png";
+import ProjectPagination from "../components/ProjectPaginator";
+import LoadingModal from "../components/LoadingModal";
 
 const ChipList = ({ items, setEvaluation, active }) => {
   const [startIndex, setStartIndex] = useState(0);
@@ -92,16 +105,15 @@ const DashboardScreen = () => {
   const [buttonText, setButtonText] = useState("Home Page");
   const [projects, setProjects] = useState([]);
   const [currentProject, setCurrentProject] = useState(projects[0]);
-
-
+  const [currentEvaluation, setCurrentEvaluation] = useState();
 
   function policeFunction(score, min, max) {
     // console.log(score, min, max)
-    return (min <= score && score < max)?  '' : 'desactivated';
+    return min <= score && score < max ? "" : "desactivated";
   }
 
   function hideText(score, min, max) {
-    return (min <= score && score < max)?  false : true;
+    return min <= score && score < max ? false : true;
   }
 
   const switchLights = () => {
@@ -144,7 +156,10 @@ const DashboardScreen = () => {
 
   const getEvaluations = async (pId) => {
     try {
-      const response = await api.getRequest("/evaluation?projectId="+pId, true);
+      const response = await api.getRequest(
+        "/evaluation?projectId=" + pId,
+        true
+      );
 
       if (response.data.data.length > 0) {
         setEvaluations(response.data.data);
@@ -162,65 +177,131 @@ const DashboardScreen = () => {
         setEvaluation(undefined);
       }
     } catch (e) {
-      console.log(evaluations);
-      // swal(e.response.data.message);
+      // console.log(evaluations);
+      swal(e.response.data.message);
     }
   };
 
-  const getProjects = async (pid=null) => {
-
+  const getProjects = async (pid = null) => {
     setLoading(true);
-    try{
-     let response;
-     response = await api.getRequest("/projects", true);
-    console.log(response)
-    if (response.status === 200) {
-      setProjects(response.data.data);
-     if(pid){
-      setCurrentProject(response.data.data.find(obj => obj.id === pid));
+    try {
+      let response;
+      response = await api.getRequest("/projects", true);
+      // console.log(response)
+      if (response.status === 200) {
+       
+        let allProjects = response.data.data;
+        allProjects.sort((a, b) => {
+          return new Date(b.dateCreated) - new Date(a.dateCreated);
+        });
+        setProjects(allProjects);
+        let seectedProject;
+        if (pid) {
+                    
+          seectedProject = response.data.data.find((obj) => obj.id === pid);
+          // console.log(seectedProject)
 
-     }else{
-      
-      setCurrentProject(response.data.data[0]);
-     }
-      // console.log(response.data.data)
-      // getEvaluations()
+          setCurrentProject(seectedProject);
+        } else {
+          seectedProject = response.data.data[0];
+          setCurrentProject(seectedProject);
+        }
+        setCurrentEvaluation(seectedProject.evaluations[0]);
+        setLoading(false);
+
+        // console.log(response.data.data[0])
+        // getEvaluations()
+      }
+    } catch (e) {
+      setNoAccount(true);
+      setLoading(false);
     }
-  }catch(e){
-    setNoAccount(true)
-  }
-  setNoAccount(false)
-
-    setLoading(false);
+    setNoAccount(false);
   };
 
-
-  const downloadReport =()=>{
-    let content = getHtmlContent(currentProject.name, currentProject.evaluations[0].score[3])
-    generatePDF(content)
-  }
-
-  const bottomButtonHandler = () => {
-    if (evaluation.layersDone <= 0 || evaluation.layersDone <= 2) {
-      setTimeout(() => {
-        history.push({
-          pathname: "/evaluation",
-          state: { project: evaluation },
-        });
-      }, 1000);
-    } else {
-      setTimeout(() => {
-        history.push({
-          pathname: "/",
-        });
-      }, 1000);
-    }
+  const downloadReport = () => {
+    let content = getHtmlContent(
+      currentProject.name,
+      currentProject.evaluations[0].score[3]
+    );
+    generatePDF(content);
   };
 
+  
+  const trafficLights = (color, score, type) => {
+    if (color === "red") {
+      if (getColorBasedOnNumber(score) === "red") {
+        if (type === "light") {
+          return red_image;
+        }
+        return "image-container";
+      } else {
+        if (type === "light") {
+          return red_dotted_image;
+        }
+        return "image-container-dotted";
+      }
+    } else if (color === "green") {
+      if (getColorBasedOnNumber(score) === "green") {
+        if (type === "light") {
+          return green_image;
+        }
+        return "image-container";
+      } else {
+        if (type === "light") {
+          return green_dotted_image;
+        }
+        return "image-container-dotted";
+      }
+    } else if (color === "orange") {
+      if (getColorBasedOnNumber(score) === "orange") {
+        if (type === "light") {
+          return amber_image;
+        }
+        return "image-container";
+      } else {
+        if (type === "light") {
+          return amber_dotted_image;
+        }
+        return "image-container-dotted";
+      }
+    }
+    // src={require("../images/red-dotted.png")}
+  };
+
+  const selectProject = (pid) => {
+    const selectedProject = projects.find((obj) => obj.id === pid);
+    setCurrentProject(selectedProject);
+    setCurrentEvaluation(selectedProject.evaluations[0]);
+  };
+  const changeTab = (pid, e) => {
+    selectProject(pid);
+    const tabs = document.querySelectorAll(".nav-link");
+    tabs.forEach((el) => {
+      el.classList.remove("active");
+    });
+    tabs[0].classList.add("active");
+    const tabPane = document.querySelectorAll(".tab-pane");
+    tabPane.forEach((el) => {
+      el.classList.remove("active");
+      el.classList.remove("show");
+      el.classList.remove("fade");
+    });
+    tabPane[0].classList.add("fade");
+    tabPane[0].classList.add("active");
+    tabPane[0].classList.add("show");
+  };
+
+  const moveToProject = () => {
+    history.push({
+      pathname: "/consent",
+      state: { project: currentProject },
+    });
+  };
   useEffect(() => {
     // getEvaluations();
 
-    let pid = location.state?.projectId
+    let pid = location.state?.projectId;
 
     getProjects(pid);
   }, []);
@@ -230,165 +311,447 @@ const DashboardScreen = () => {
     setPage(page);
   }, [evaluation]);
 
-
-
-  if(noAccount){
-    return <div><p>Hi there guys!!</p></div>
+  if (noAccount) {
+    return (
+      <div>
+        <p>Hi there guys!!</p>
+      </div>
+    );
   }
 
   // Loading
 
-  if(loading){
-    return (<div>Loading</div>)
-  }
-// No project
-  if(projects.length === 0){
+  if (loading) {
     return (
-      <div className="jumbotron scores-body">
-      <div style={{ width: "100%" , display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center'}} className="row">
-          {/* <FaThermometerEmpty size={90} color="black" /> */}
-          <h1>No Project found for you</h1>
-          <a className="green-link" href="/">Start an evaluation</a>
+      <div className="container">
+        <LoadingModal show={true}  />
       </div>
+    );
+  }
+  // No project
+  if (projects.length === 0) {
+    return (
+      <div>
+        <section className="about_section layout_padding2">
+          <div class="container">
+            <div class="detail-box">
+              <div className="row">
+                <div className="col"></div>
+                <div className="col">
+                  <div class="heading_container">
+                    
+                    <h2>Your dahboard is empty</h2>
+                  </div>
+
+                  <a className="green-link" href="/">
+                    Start an evaluation
+                  </a>
+                </div>
+                <div className="col"></div>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="jumbotron scores-body">
-      <div style={{ width: "100%" }} className="row">
-        <div
-          style={{ width: "100%", display: "flex", alignItems: "flex-start" }}
-        >
-          <ChipList
-            active={currentProject}
-            setEvaluation={setCurrentProject}
-            items={projects}
-          />
-          {/* <div style={{width:'200%'}}></div> */}
-        </div>
-
-        <div
-        className="dahboard-board"
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "row",
-          
-            marginTop: 20,
-          }}
-        >
-         
-          <div
-            className="description-board"
-            style={{
-              height:'100%',
-              width: "80%",
-              border: "solid",
-              borderRadius: 5,
-              borderWidth: 0.5,
-              borderColor: "#009347",
-              margin: 10,
-            }}
-          >
-            <div
-              style={{
-                height: "85%",
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-
-              <Accordion style={{ width: "95%" }} defaultActiveKey="0">
-                <Accordion.Item  style={{ margin: 10 }} eventKey="0" >
-                  <Accordion.Header >LAYER I  <Badge style={{marginLeft:10}}>{currentProject.evaluations[0].score[0]}/50</Badge> </Accordion.Header>
-                  <Accordion.Body style={{textAlign:'left'}}>
-                      This score represents an average of your performance on questions related to Layer 1 of the RRI Framework. These questions cover topics such as privacy, security, and various other aspects.  
-                  </Accordion.Body>
-                </Accordion.Item>
-                <Accordion.Item style={{ margin: 10 }} eventKey="1">
-                  <Accordion.Header>LAYER II  <Badge style={{marginLeft:10}}>{currentProject.evaluations[0].score[1]}/30</Badge></Accordion.Header>
-                  <Accordion.Body style={{textAlign:'left'}} >
-                      This score represents an average of your performance on questions related to Layer 2 of the RRI Framework. These questions cover topics such as Transparency and accountabiity, Gender equity and inclusion, Fairness and various other aspects.  
-                  </Accordion.Body>
-                </Accordion.Item>
-                <Accordion.Item style={{ margin: 10 }} eventKey="2">
-                  <Accordion.Header>LAYER III   <Badge style={{marginLeft:10}}>{currentProject.evaluations[0].score[2]}/20</Badge></Accordion.Header>
-                  <Accordion.Body style={{textAlign:'left'}}>
-                      This score represents an average of your performance on questions related to Layer 3 of the RRI Framework. These questions are related to Human Agency and Oversight.  
-                  </Accordion.Body>
-                </Accordion.Item>
-              </Accordion>
-              <p style={{ textAlign: "left", fontSize: 12, width: "94%" }}>
-               If you are interested in understanding how we calculated the score for each layer and the <a style={{textDecoration:'none'}} href="">underlying methodology.</a> 
-              </p>
+    <div>
+      <section className="about_section layout_padding2">
+        <div class="container">
+          <div class="detail-box">
+            <div class="heading_container">
+              <img
+                style={{ width: 30 }}
+                src={require("../images/checklist.png")}
+                alt=""
+              />
+              <h2>Evaluation results [{currentProject.name}]</h2>
             </div>
 
-            <div
-              style={{
-                height: "15%",
-                paddingRight: 10,
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-              }}
-            >
-              <Button title="Download your report" style={{backgroundColor:'#009347', borderColor:'#009347'}} onClick={downloadReport}>
-                Download <FaFilePdf />
-              </Button>
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a
+                  class="nav-link active"
+                  id="home-tab"
+                  data-toggle="tab"
+                  href="#home"
+                  role="tab"
+                  aria-controls="home"
+                  aria-selected="true"
+                >
+                  Current project name
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  id="contact-tab"
+                  data-toggle="tab"
+                  href="#contact"
+                  role="tab"
+                  aria-controls="contact"
+                  aria-selected="false"
+                >
+                  All projects <span class="badge">{projects.length}</span>
+                </a>
+              </li>
+
+              <li hidden class="nav-item">
+                <a
+                  // aria-disabled="true"
+                  class="nav-link"
+                  id="profile-tab"
+                  data-toggle="tab"
+                  href="#profile"
+                  role="tab"
+                  aria-controls="profile"
+                  aria-selected="false"
+                >
+                  Profile
+                </a>
+              </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+              <div
+                class="tab-pane fade show active"
+                id="home"
+                role="tabpanel"
+                aria-labelledby="home-tab"
+              >
+                <br />
+
+                <div class="card">
+                  <div class="card-body">
+                    <div className="row">
+                      <div className="col-md-8">
+                        <h3>{currentProject.name}</h3>
+                        {currentEvaluation.layersDone === 0 && (
+                          <a onClick={moveToProject} className="red_link">
+                            <FaCircleExclamation /> Finish the evaluation for
+                            this project <FaCircleExclamation />
+                          </a>
+                        )}
+                      </div>
+                      <div className="col"></div>
+                      <div className="col-md-2">Completed</div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-8">
+                        <p hidden>Project description</p>
+                      </div>
+                      <div className="col"></div>
+                      <div className="col-md-2">
+                        <small style={{ fontSize: 11 }}>
+                          {formatDate(currentEvaluation.timeStarted)}
+                        </small>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-4 col-sm-12">
+                        {/* <h5>Your RRI Index Score</h5> */}
+
+                        <div className="row">
+                          <div className="col-md-3">
+                            <div class={trafficLights(
+                                  "red",
+                                  currentEvaluation.score[3],
+                                  "class"
+
+                                )}>
+                              <img
+                                src={trafficLights(
+                                  "red",
+                                  currentEvaluation.score[3],
+                                  "light"
+
+                                )}
+                                alt=""
+                                srcset=""
+                              />
+                              <div class="text-overlay">{"Lower"}</div>
+                            </div>
+                          </div>
+                          <div className="col-md-3">
+                            <div class={trafficLights(
+                                  "orange",
+                                  currentEvaluation.score[3],
+                                  "class"
+
+                                )}>
+                              <img
+                                src={trafficLights(
+                                  "orange",
+                                  currentEvaluation.score[3],
+                                  "light"
+
+                                )}
+                                alt=""
+                                srcset=""
+                              />
+                              <div class="text-overlay">{"Average"}</div>
+                            </div>
+                          </div>
+                          <div className="col-md-3">
+                            <div class={trafficLights(
+                                  "green",
+                                  currentEvaluation.score[3],
+                                  "class"
+
+                                )}>
+                              <img
+                                src={trafficLights(
+                                  "green",
+                                  currentEvaluation.score[3],
+                                  "light"
+                                )}
+                                alt=""
+                                srcset=""
+                              />
+                              <div class="text-overlay">{"Higher"}</div>
+                            </div>
+                          </div>
+                        </div>
+                        <br />
+                        <div className="row">
+                          <div className="col">
+                            <h4>
+                              RRI Index score:{" "}
+                              <span
+                                style={{
+                                  color: getColorBasedOnNumber(
+                                    currentEvaluation.score[3]
+                                  ),
+                                }}
+                              >
+                                {currentEvaluation.score[3]}%
+                              </span>{" "}
+                            </h4>
+                            <div
+                              hidden
+                              class="progress"
+                              role="progressbar"
+                              style={{ height: 12 }}
+                              aria-label="Example with label"
+                              aria-valuenow="85"
+                              aria-valuemin="0"
+                              aria-valuemax="100"
+                            >
+                              <div
+                                class="progress-bar"
+                                style={{
+                                  width: "85%",
+                                  backgroundColor: "green",
+                                }}
+                              >
+                                85%
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col"></div>
+                      <div className="col-md-2">
+                        <ol className="evaluation-list">
+                          {currentProject.evaluations.map((element, index) => {
+                            if (element.id === currentEvaluation.id) {
+                              return (
+                                <li
+                                  onClick={() => setCurrentEvaluation(element)}
+                                  style={{ textDecoration: "underline" }}
+                                >
+                                  Evaluation {index + 1} :{" "}
+                                  {formatDate(element.timeStarted)}
+                                </li>
+                              );
+                            }
+                            return (
+                              <li onClick={() => setCurrentEvaluation(element)}>
+                                Evaluation {index + 1} :{" "}
+                                {formatDate(element.timeStarted)}
+                              </li>
+                            );
+                          })}
+                        </ol>
+                      </div>
+                    </div>
+                    <br />
+                    {/*  */}
+
+                    <div className="row">
+                      <div className="col">
+                        <h3>Score by each layer of the framework</h3>
+
+                        <div className="card">
+                          <div class="card-body">
+                            <h5>Layer 1</h5>
+                            <p>
+                              Layer 1 : This score represents an average of your
+                              performance on questions related to Layer 1 of the
+                              RRI Framework. These questions cover topics such
+                              as privacy, security, and various other aspects.
+                            </p>
+                            <p>
+                              Score :{" "}
+                              <span
+                                style={{
+                                  backgroundColor: "#e20404",
+                                  color: "#fff",
+                                }}
+                                className="badge"
+                              >
+                                {currentEvaluation.score[0]}/50
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+                        <br />
+                        <div className="card">
+                          <div class="card-body">
+                            <h5>Layer 2</h5>
+                            <p>
+                              Layer 2 : This score represents an average of your
+                              performance on questions related to Layer 2 of the
+                              RRI Framework. These questions cover topics such
+                              as Transparency and accountabiity, Gender equity
+                              and inclusion, Fairness and various other aspects.
+                            </p>
+                            <p>
+                              Score :{" "}
+                              <span
+                                style={{
+                                  backgroundColor: "green",
+                                  color: "#fff",
+                                }}
+                                className="badge"
+                              >
+                                {currentEvaluation.score[1]}/30
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+                        <br />
+                        <div className="card">
+                          <div class="card-body">
+                            <h5>Layer 3</h5>
+                            <p>
+                              Layer 3 :This score represents an average of your
+                              performance on questions related to Layer 3 of the
+                              RRI Framework. These questions are related to
+                              Human Agency and Oversight.
+                            </p>
+                            <p>
+                              Score :{" "}
+                              <span
+                                style={{
+                                  backgroundColor: "#e20404",
+                                  color: "#fff",
+                                }}
+                                className="badge"
+                              >
+                                {currentEvaluation.score[2]}/20
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <br />
+                    <br />
+
+                    <div className="row">
+                      <div className="col">
+                        <div className="card">
+                          <div className="card-body">
+                            <div className="row">
+                              <div className="col-md-10 col-sm-6">
+                                Total score : {currentEvaluation.score[3]}%
+                              </div>
+                              <div className="col-md-2 col-sm-6">
+                                <button onClick={downloadReport} type="button" class="btn btn-success">
+                                  Your report
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br />
+
+              <div
+                class="tab-pane fade"
+                id="contact"
+                role="tabpanel"
+                aria-labelledby="contact-tab"
+              >
+                <div className="card">
+                  <div className="card-body">
+                    <div className="row">
+                      <div className="col">
+                        <h3>
+                          Previous evaluations projects ({projects.length})
+                        </h3>
+                        <ProjectPagination itemsPerPage={2} items={projects} changeTab={changeTab} />
+                       
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br />
+
+              <div
+                class="tab-pane fade"
+                id="profile"
+                role="tabpanel"
+                aria-labelledby="profile-tab"
+              >
+
+                <div  className="card">
+                <div className="card-body">
+                    <h3>Profile</h3>
+
+                    <p>Full name : Patrick Iradukunda</p>
+
+                    <div className="row">
+                      <div className="col-md-4">
+                        <form action="">
+                          <div class="mb-3">
+                            <label
+                              for="exampleFormControlInput1"
+                              class="form-label"
+                            >
+                              Change Your full name
+                            </label>
+                            <input
+                              type="email"
+                              class="form-control"
+                              id="exampleFormControlInput1"
+                              placeholder="Your full name"
+                            />
+                          </div>
+                          <button type="button" class="btn btn-primary">
+                            Submit
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+
+                </div>
+                </div>
+
+              </div>
             </div>
           </div>
-          <div
-            className="lights"
-            style={{
-              width: "20%",
-              border: "solid",
-              borderColor: "#009347",
-              borderWidth: 0.5,
-              borderRadius: 5,
-              height:'100%',
-              margin: 10,
-              alignItems: "center",
-              justifyContent: "center",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-           <div
-              className={`green ${policeFunction(currentProject.evaluations[0].score[3], 70, 100)}`}
-             
-            >
-              <span hidden={hideText(currentProject.evaluations[0].score[3], 70, 100)} style={{ fontSize: 20, fontWeight: "bold", color: "#fff" }}>
-              {currentProject.evaluations[0].score[3]}%
-              </span>
-            </div>
-
-            <div
-              className={`yellow ${policeFunction(currentProject.evaluations[0].score[3], 50, 70)}`}
-             
-            >
-              <span hidden={hideText(currentProject.evaluations[0].score[3], 50, 70)} style={{ fontSize: 22, fontWeight: "bold", color: "#fff" }}>
-              {currentProject.evaluations[0].score[3]}%
-              </span>
-            </div>
-
-            <div
-              className={`red ${policeFunction(currentProject.evaluations[0].score[3], 0, 50)}`}
-              
-            >
-              <span hidden={hideText(currentProject.evaluations[0].score[3], 0, 50)} style={{ fontSize: 22, fontWeight: "bold", color: "#fff" }}>
-              {currentProject.evaluations[0].score[3]}%
-              </span>
-            </div>
-            
-          </div>
         </div>
-
-       
-      </div>
+      </section>
     </div>
   );
 };
