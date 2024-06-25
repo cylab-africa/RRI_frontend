@@ -147,7 +147,7 @@ const EvaluationPage = (props) => {
   }
 
   return (
-    <div class="jumbotron conatiner" style={{backgroundColor: "#E7ECFF"}}>
+    <div class="container layout_padding2" >
       
    {!loading ? <EvaluationForm projectId={projectId} questions={questions} scrollUp={()=>{window.scrollTo(60,60)}} />:
 

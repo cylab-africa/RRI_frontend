@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import QuestionCard from "./QuestionCard";
-import { ProgressBar } from "react-bootstrap";
+// import { ProgressBar } from "react-bootstrap";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
 import swal from "sweetalert";
@@ -151,7 +151,7 @@ const EvaluationForm = (props) => {
           alignItems: "center",
           flexDirection: "column",
         }}
-        className="progress-bar"
+        // className="progress-bar"
       >
        
         <progress
@@ -165,11 +165,12 @@ const EvaluationForm = (props) => {
         </progress>
         {/* Progress: {currentQuestion} / {staticQuestions.length} */}
 
-        <div
+        {/* <div
           className="progress"
           style={{ width: `${(currentQuestion / 6) * 100}%` }}
-        ></div>
+        ></div> */}
       </div>
+      <br />
       {/* Company name */}
       <h4 style={{ marginBottom: 30 }}>{cQuestion[0].question}</h4>
       <hr />

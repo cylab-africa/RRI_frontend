@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import swal from "sweetalert";
 import { API } from "../apis/http";
 import { useHistory, useLocation } from "react-router-dom";
@@ -18,22 +18,22 @@ const HomePage = () => {
     { id: '2', name: 'Project Two' },
   ]);
 
-
-  const registerProject= async()=>{
-
-    // Validate name
-    if(!projectName || projectName.length < 2)
-    {
-      setModalOpen(false)
-      return
-    }
-    try{
-    const respo = await api.postRequest("/project", { projectName: projectName }, true);
-    console.log(respo)
-    }catch(e){
+  const getProject = async ()=>{
+    try {
+      let response;
+      response = await api.getRequest("/projects", true);
+      if (response.status === 200) {
+        setProjects(response.data.data);
+        
+      }
+    } catch (e) {
       console.log(e)
     }
   }
+  useEffect(()=>{
+    getProject()
+  },[])
+ 
   
 
   return (
@@ -94,7 +94,7 @@ const HomePage = () => {
       <section class="about_section layout_padding2">
         <div class="container">
           <div class="heading_container">
-            <img style={{width:40}} src={require('../images/info.png')} alt="" />
+            <img style={{width: 30, marginBottom:2}} src={require('../images/about.png')} alt="" />
             <h2>About Responsible Research and Innovation (RRI)</h2>
           </div>
           <hr />
@@ -158,7 +158,7 @@ const HomePage = () => {
   <section class="us_section layout_padding2">
     <div class="container">
       <div class="heading_container">
-        <img style={{width:40}} src={require('../images/process.png')} alt=""/>
+        <img style={{width:30}} src={require('../images/process.png')} alt=""/>
         <h2>
           Project evaluation process
         </h2>
@@ -229,9 +229,9 @@ const HomePage = () => {
             <h6>
               Lower score
             </h6>
-            <h5>
+            <h6>
               0<span>%</span> - 49<span>%</span>
-            </h5>
+            </h6>
            
           </div>
         </div>
@@ -243,9 +243,9 @@ const HomePage = () => {
             <h6>
               Average score
             </h6>
-            <h5>
+            <h6>
               50<span>%</span> - 69<span>%</span>
-            </h5>
+            </h6>
            
           </div>
         </div>
@@ -257,9 +257,9 @@ const HomePage = () => {
             <h6>
               Higher score
             </h6>
-            <h5>
+            <h6>
               70<span>%</span> - 100<span>%</span>
-            </h5>
+            </h6>
            
           </div>
         </div>
@@ -279,10 +279,9 @@ const HomePage = () => {
         <TestCompo
           projects={projects}
           onClose={() => setModalOpen(false)}
-          onSubmit={()=>{}}
+          
         />
       )}
-      {/* <CreateProjectModel isModalOpen={isModalOpen}  setModalOpen={setModalOpen} setProjectName={setProjectName} /> */}
     </div>
   );
 };

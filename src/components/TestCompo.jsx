@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import ReactDOM from 'react-dom';
+import swal from "sweetalert";
+import { API } from "../apis/http";
+import { addToken } from '../utils/localStorageUtils';
+import { useHistory, useLocation } from "react-router-dom";
+
 
 const Overlay = styled.div`
   position: fixed;
@@ -40,6 +45,9 @@ const Select = styled.select`
   width: 100%;
   padding: 8px;
   margin-bottom: 10px;
+  // height: 100px; 
+  overflow-y: auto; 
+
 `;
 
 const Input = styled.input`
@@ -79,9 +87,73 @@ const CloseButton = styled.button`
 const TestCompo = ({ projects, onClose, onSubmit }) => {
   const [selectedProject, setSelectedProject] = useState('');
   const [newProjectName, setNewProjectName] = useState('');
+  const [loading, setLoading] = useState(false);
+
+
+  const api = new API()
+  const history = useHistory()
+
+  const registerProject= async(projectName)=>{
+    setLoading(false)
+
+    // Validate name
+    if(!projectName || projectName.length < 2)
+    {
+      swal("Error!", `Provide a valid project name.`);
+
+      // setModalOpen(false)
+      return
+    }
+    try{
+    let respo = await api.postRequest("/project", { projectName: projectName }, true);
+
+        if(respo.status === 202){
+            addToken(respo.data.data.token);
+            respo = await api.postRequest(
+              "/project",
+              { projectName: projectName },
+              true
+            );
+        }
+
+        if(respo.status === 200){
+
+            swal({
+                title: respo.data.message,
+                text: `${respo.data.data.name}`,
+                button: "Start",
+              }).then((val) => {
+                history.push({
+                  pathname: "/consent",
+                  state: { project: respo.data.data },
+                });
+              });
+        }
+
+        if(respo.status > 299){
+            swal("Error!", `${respo.data.message}`);
+        }
+
+
+    }catch(e){
+
+      if (e) {
+        // console.log(e)
+        swal("Error!", `${e.response?e.response.data.message:e.message}`);
+      }
+    }
+    // setModalOpen(false)
+
+    setLoading(false)
+  }
+
 
   const handleSubmit = () => {
-    onSubmit(selectedProject, newProjectName);
+    if(selectedProject != ''){
+       registerProject(selectedProject);
+    }else if( newProjectName != ''){
+      registerProject(newProjectName)
+    }
   };
 
   return (
@@ -96,8 +168,8 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
           onChange={(e) => setSelectedProject(e.target.value)}
         >
           <option value="" disabled>Select a project</option>
-          {projects.map((project) => (
-            <option key={project.id} value={project.id}>
+          {projects.map((project, index) => (
+            <option key={index} value={project.name}>
               {project.name}
             </option>
 
@@ -113,7 +185,7 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
         />}
         <br />
         <br />
-        <Button onClick={handleSubmit}>Submit</Button>
+        {loading ? <Button >Sending...</Button> : <Button onClick={handleSubmit}>Submit</Button>}
       </PopupContainer>
     </Overlay>
   );

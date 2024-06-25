@@ -51,7 +51,7 @@ export default function MainApp() {
               <div class="overlay-content">
                 <a href="/">Home</a>
                 <a href="/about">About</a>
-                <a href="old">Login</a>
+                <a href="/dashboard">Dashboard</a>
               </div>
             </div>
           </div>
@@ -92,28 +92,44 @@ export default function MainApp() {
             <h5>
             Affiliations
             </h5>
-
-            <div style={{marginBottom:5}}>
-              <a  href="/about">
+            
+            <div >
+                  <p>
+                  <a  href="/about">
                 About us
               </a>
+                  </p>
+                
             </div>
 
-            <div style={{marginBottom:5}}>
-              <a target="_blank"  href="https://www.africa.engineering.cmu.edu/research/upanzi/index.html">
+            <div >
+          
+            <p>
+            <a target="_blank"  href="https://www.africa.engineering.cmu.edu/research/upanzi/index.html">
                 Upanzi network
               </a>
+            </p>
+              
             </div>
             
-            <div style={{marginBottom:5}}>
+            <div >
+
+              <p>
               <a target="_blank"  href="https://www.africa.engineering.cmu.edu/research/cybersecurity/cylab/index.html">
                 CyaLab Africa
               </a>
+              </p>
+              
             </div>
-            <div style={{marginBottom:5}}>
+            <div >
+
+              <p>
+
               <a target="_blank"  href="https://africa.engineering.cmu.edu/">
                 CMU Africa
               </a>
+              </p>
+              
             </div>
            
           </div>
@@ -125,6 +141,7 @@ export default function MainApp() {
               social media
             </h5>
             <div class="social_container">
+             
              
               <div>
                 <a target="_blank" href="https://x.com/cylabafrica?lang=en">

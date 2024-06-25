@@ -8,8 +8,8 @@ const AboutusPage = () => {
           <div class="detail-box">
             <div class="heading_container">
               <img
-                style={{ width: 40 }}
-                src={require("../images/info.png")}
+                style={{ width: 30, marginBottom:2 }}
+                src={require("../images/about.png")}
                 alt=""
               />
               <h2>About Upanzi network</h2>
@@ -37,9 +37,9 @@ const AboutusPage = () => {
       <section class="us_section layout_padding2 layout_padding-bottom">
         <div class="container">
           <div class="heading_container">
-            <img src={require("../images/group.png")} alt="" />
+            <img style={{width:30}} src={require("../images/group.png")} alt="" />
             <h2>The research team</h2>
-            <p>
+            <p style={{textAlign:'left'}}>
               The following are the members of the Upanzi Network who contribute
               daily to the project, although there are other members who
               contribute from near or far.
@@ -48,11 +48,7 @@ const AboutusPage = () => {
           </div>
 
           <div
-            style={{
-              display: "flex",
-              justifyContent: "space-evenly",
-              textAlign: "center",
-            }}
+           className="profile_section"
           >
             <div class="box">
               <div class="img1-box">

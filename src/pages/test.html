@@ -266,3 +266,141 @@
     </footer>
 </body>
 </html>
+
+
+
+<!-- Dashoboar -->
+
+<div style={{ width: "100%" }} className="row">
+    <div
+      style={{ width: "100%", display: "flex", alignItems: "flex-start" }}
+    >
+      <ChipList
+        active={currentProject}
+        setEvaluation={setCurrentProject}
+        items={projects}
+      />
+      {/* <div style={{width:'200%'}}></div> */}
+    </div>
+
+    <div
+    className="dahboard-board"
+      style={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "row",
+      
+        marginTop: 20,
+      }}
+    >
+     
+      <div
+        className="description-board"
+        style={{
+          height:'100%',
+          width: "80%",
+          border: "solid",
+          borderRadius: 5,
+          borderWidth: 0.5,
+          borderColor: "#009347",
+          margin: 10,
+        }}
+      >
+        <div
+          style={{
+            height: "85%",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+
+          <Accordion style={{ width: "95%" }} defaultActiveKey="0">
+            <Accordion.Item  style={{ margin: 10 }} eventKey="0" >
+              <Accordion.Header >LAYER I  <Badge style={{marginLeft:10}}>{currentProject.evaluations[0].score[0]}/50</Badge> </Accordion.Header>
+              <Accordion.Body style={{textAlign:'left'}}>
+                  This score represents an average of your performance on questions related to Layer 1 of the RRI Framework. These questions cover topics such as privacy, security, and various other aspects.  
+              </Accordion.Body>
+            </Accordion.Item>
+            <Accordion.Item style={{ margin: 10 }} eventKey="1">
+              <Accordion.Header>LAYER II  <Badge style={{marginLeft:10}}>{currentProject.evaluations[0].score[1]}/30</Badge></Accordion.Header>
+              <Accordion.Body style={{textAlign:'left'}} >
+                  This score represents an average of your performance on questions related to Layer 2 of the RRI Framework. These questions cover topics such as Transparency and accountabiity, Gender equity and inclusion, Fairness and various other aspects.  
+              </Accordion.Body>
+            </Accordion.Item>
+            <Accordion.Item style={{ margin: 10 }} eventKey="2">
+              <Accordion.Header>LAYER III   <Badge style={{marginLeft:10}}>{currentProject.evaluations[0].score[2]}/20</Badge></Accordion.Header>
+              <Accordion.Body style={{textAlign:'left'}}>
+                  This score represents an average of your performance on questions related to Layer 3 of the RRI Framework. These questions are related to Human Agency and Oversight.  
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
+          <p style={{ textAlign: "left", fontSize: 12, width: "94%" }}>
+           If you are interested in understanding how we calculated the score for each layer and the <a style={{textDecoration:'none'}} href="">underlying methodology.</a> 
+          </p>
+        </div>
+
+        <div
+          style={{
+            height: "15%",
+            paddingRight: 10,
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          <Button title="Download your report" style={{backgroundColor:'#009347', borderColor:'#009347'}} onClick={downloadReport}>
+            Download <FaFilePdf />
+          </Button>
+        </div>
+      </div>
+      <div
+        className="lights"
+        style={{
+          width: "20%",
+          border: "solid",
+          borderColor: "#009347",
+          borderWidth: 0.5,
+          borderRadius: 5,
+          height:'100%',
+          margin: 10,
+          alignItems: "center",
+          justifyContent: "center",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+       <div
+          className={`green ${policeFunction(currentProject.evaluations[0].score[3], 70, 100)}`}
+         
+        >
+          <span hidden={hideText(currentProject.evaluations[0].score[3], 70, 100)} style={{ fontSize: 20, fontWeight: "bold", color: "#fff" }}>
+          {currentProject.evaluations[0].score[3]}%
+          </span>
+        </div>
+
+        <div
+          className={`yellow ${policeFunction(currentProject.evaluations[0].score[3], 50, 70)}`}
+         
+        >
+          <span hidden={hideText(currentProject.evaluations[0].score[3], 50, 70)} style={{ fontSize: 22, fontWeight: "bold", color: "#fff" }}>
+          {currentProject.evaluations[0].score[3]}%
+          </span>
+        </div>
+
+        <div
+          className={`red ${policeFunction(currentProject.evaluations[0].score[3], 0, 50)}`}
+          
+        >
+          <span hidden={hideText(currentProject.evaluations[0].score[3], 0, 50)} style={{ fontSize: 22, fontWeight: "bold", color: "#fff" }}>
+          {currentProject.evaluations[0].score[3]}%
+          </span>
+        </div>
+        
+      </div>
+    </div>
+
+   
+  </div>

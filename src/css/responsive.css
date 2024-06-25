@@ -4,6 +4,7 @@
   }
 }
 
+
 @media (max-width: 992px) {
   .hero_area {
     height: auto;
@@ -28,7 +29,11 @@
 
 @media (max-width: 768px) {
 
-
+  .profile_section{
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
   .layout_padding {
     padding-top: 90px;
     padding-bottom: 90px;
