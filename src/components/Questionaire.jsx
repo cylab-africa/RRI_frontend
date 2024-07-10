@@ -30,6 +30,8 @@ const EvaluationForm = (props) => {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const api = new API();
   const history = useHistory();
+  const alphabest = ['a.', 'b.', 'c.', 'd.', 'e.', 'f.', 'g.', 'h.']
+
 
   const updateAnswer = (answer) => {
     let q = findSubquestion(answer);
@@ -45,8 +47,7 @@ const EvaluationForm = (props) => {
       } else {
         setAnswers((prevAnswers) => [...prevAnswers, answer]);
       }
-      // console.log("Answers: ==>")
-      // console.log(answers)
+      
       return 1;
     }
     return 0;
@@ -100,6 +101,7 @@ const EvaluationForm = (props) => {
 
     try {
       setLoadingSubmit(true);
+      console.log(answers)
       const body = { layerId: 1, projectId: props.projectId, answers: answers };
       let response = await api.postRequest("/answers", body, true);
       if (response.status === 202) {
@@ -172,17 +174,24 @@ const EvaluationForm = (props) => {
       </div>
       <br />
       {/* Company name */}
-      <h4 style={{ marginBottom: 30 }}>{cQuestion[0].question}</h4>
+      <h4  style={{ marginBottom: 30 }}>  {currentQuestion}. {cQuestion[0].question}</h4>
       <hr />
+      {/* {console.log(cQuestion[0].id)} */}
       {/* Questions */}
       <div>
         {cQuestion[0].subquestions.map((question, index) => {
+          let q_number = alphabest[index] 
+          if(cQuestion[0].subquestions.length <= 1){
+            q_number = ""
+          }
+            
           return (
             <QuestionCard
-              number={index + 1}
+              number={q_number}
               q_number={cQuestion[0].number}
               question={question}
               answers={answers}
+              question_id={cQuestion[0].id}
               selectScore={selectScore}
             />
           );

@@ -17,6 +17,15 @@ export function formatDate(dateString) {
     return formatter.format(date);
   }
 
+  export function normalizeScoreFun(score, maxScore, mormalTo) {
+    if (maxScore === 0) {
+      throw new Error("maxScore cannot be zero");
+    }
+    
+    const normalizedScore = (score / maxScore) * mormalTo;
+    return Math.round(normalizedScore); // Rounding to the nearest integer
+  }
+
 
   export function getColorBasedOnNumber(number) {
     if (number < 0 || number > 100) {

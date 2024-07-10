@@ -14,8 +14,7 @@ const HomePage = () => {
 
 
   const [projects, setProjects] = useState([
-    { id: '1', name: 'Project One' },
-    { id: '2', name: 'Project Two' },
+  
   ]);
 
   const getProject = async ()=>{
@@ -212,7 +211,7 @@ const HomePage = () => {
       <br/>
       <div class="heading_container">
         <h4>
-          Understanding the Scores 
+          Understanding the scores 
         </h4>
       </div>
       <p>

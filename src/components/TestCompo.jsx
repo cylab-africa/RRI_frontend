@@ -162,7 +162,9 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
         <CloseButton onClick={onClose}>&times;</CloseButton>
         <Title>Start the evaluation</Title>
         <p>Create a project/Select existing one</p>
-        <hr />
+        {projects.length > 0 &&  
+        (<>
+        <label style={{textAlign:'left'}} htmlFor="">Select from prevous projects</label>
         <Select
           value={selectedProject}
           onChange={(e) => setSelectedProject(e.target.value)}
@@ -175,14 +177,18 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
 
           ))}
           <option value="" >Clear</option>
-        </Select>
+        </Select></>)}
         <br />
-        {selectedProject === '' && <Input
+        {selectedProject === '' && projects.length > 0 && <p>Or</p>}
+            {selectedProject === '' && <>   
+        <label style={{textAlign:'left'}} htmlFor="">Start a new project evaluation</label>
+
+         <Input
           type="text"
-          placeholder="Enter new project name"
+          placeholder="Project name"
           value={newProjectName}
           onChange={(e) => setNewProjectName(e.target.value)}
-        />}
+        /> </>}
         <br />
         <br />
         {loading ? <Button >Sending...</Button> : <Button onClick={handleSubmit}>Submit</Button>}
