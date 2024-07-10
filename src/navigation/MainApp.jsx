@@ -62,6 +62,7 @@ export default function MainApp() {
                 <Route exact path="/old" component={NewHomePage} />
                 <Route exact path="/" component={HomePage} />
                 <Route exact path="/consent" component={ConsentPage} />
+
                 <Route exact path="/evaluation" component={EvaluationPage} />
                 {/* <Route exact path="/score" component={ScoresPage}/> */}
                 <Route exact path="/contacts" component={ContactsPage} />

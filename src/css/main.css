@@ -136,17 +136,10 @@ p{
 
 }
 .traffic-description{
-    /* min-width: 40%; */
-    /* min-height: 200px; */
     max-width: 50%;
     border-radius: 5px;
     margin-top: 2%;
-    /* background-color: rgb(175, 8, 8); */
-    /* background-color: #29a703; */
-    /* background-color: yellow; */
     padding: 2%;
-    /* color: #fff; */
-
 }
 
 
@@ -159,7 +152,6 @@ p{
     justify-content: space-around;
     align-items: center;
     margin-top: 2%;
-    /* background-color: red; */
     width: 80%;
 }
 

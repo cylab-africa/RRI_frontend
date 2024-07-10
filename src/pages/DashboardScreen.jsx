@@ -11,7 +11,7 @@ import {
 import { FaFilePdf } from "react-icons/fa6";
 import { generatePDF, getHtmlContent } from "../utils/htmlToPdf";
 import { FaThermometerEmpty } from "react-icons/fa";
-import { formatDate, getColorBasedOnNumber } from "../utils/utils";
+import { formatDate, getColorBasedOnNumber, normalizeScoreFun } from "../utils/utils";
 import red_dotted_image from "../images/red-dotted.png";
 import red_image from "../images/red.png";
 import green_dotted_image from "../images/green-dotted.png";
@@ -20,6 +20,8 @@ import amber_dotted_image from "../images/amber-dotted.png";
 import amber_image from "../images/amber.png";
 import ProjectPagination from "../components/ProjectPaginator";
 import LoadingModal from "../components/LoadingModal";
+import { PDFDocument } from "../components/PDFDocument";
+import ReactPDF from "@react-pdf/renderer";
 
 const ChipList = ({ items, setEvaluation, active }) => {
   const [startIndex, setStartIndex] = useState(0);
@@ -182,6 +184,23 @@ const DashboardScreen = () => {
     }
   };
 
+
+
+  // ----------------------------------- 
+
+  const generatePDF = async () => {
+    const blob = await ReactPDF.pdf(<PDFDocument />).toBlob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'RRI_Report.pdf';
+    link.click();
+};
+
+
+
+  //  -----------------------------
+
   const getProjects = async (pid = null) => {
     setLoading(true);
     try {
@@ -307,6 +326,7 @@ const DashboardScreen = () => {
   }, []);
 
   useEffect(() => {
+    
     let page = switchLights();
     setPage(page);
   }, [evaluation]);
@@ -381,7 +401,7 @@ const DashboardScreen = () => {
                   aria-controls="home"
                   aria-selected="true"
                 >
-                  Current project name
+                  {currentProject.name}
                 </a>
               </li>
 
@@ -562,14 +582,14 @@ const DashboardScreen = () => {
                                   onClick={() => setCurrentEvaluation(element)}
                                   style={{ textDecoration: "underline" }}
                                 >
-                                  Evaluation {index + 1} :{" "}
+                                  Evaluation {currentProject.evaluations.length - index} :{" "}
                                   {formatDate(element.timeStarted)}
                                 </li>
                               );
                             }
                             return (
                               <li onClick={() => setCurrentEvaluation(element)}>
-                                Evaluation {index + 1} :{" "}
+                                Evaluation {currentProject.evaluations.length - index} :{" "}
                                 {formatDate(element.timeStarted)}
                               </li>
                             );
@@ -591,18 +611,18 @@ const DashboardScreen = () => {
                               Layer 1 : This score represents an average of your
                               performance on questions related to Layer 1 of the
                               RRI Framework. These questions cover topics such
-                              as privacy, security, and various other aspects.
+                              as <b>Privacy</b>, <b>Security</b>, and various other aspects.
                             </p>
                             <p>
                               Score :{" "}
                               <span
                                 style={{
-                                  backgroundColor: "#e20404",
+                                  backgroundColor: getColorBasedOnNumber(currentEvaluation.score[0],34.6),
                                   color: "#fff",
                                 }}
                                 className="badge"
                               >
-                                {currentEvaluation.score[0]}/50
+                                {normalizeScoreFun(currentEvaluation.score[0], 100, 34.6)}/34.6
                               </span>
                             </p>
                           </div>
@@ -615,19 +635,19 @@ const DashboardScreen = () => {
                               Layer 2 : This score represents an average of your
                               performance on questions related to Layer 2 of the
                               RRI Framework. These questions cover topics such
-                              as Transparency and accountabiity, Gender equity
-                              and inclusion, Fairness and various other aspects.
+                              as <b>Transparency and accountabiity</b> , <b>Gender equity
+                              and inclusion</b> , <b>Fairness</b> and various other aspects.
                             </p>
                             <p>
                               Score :{" "}
                               <span
                                 style={{
-                                  backgroundColor: "green",
+                                  backgroundColor: getColorBasedOnNumber(currentEvaluation.score[1],30),
                                   color: "#fff",
                                 }}
                                 className="badge"
                               >
-                                {currentEvaluation.score[1]}/30
+                                {normalizeScoreFun(currentEvaluation.score[1],100,33.1)}/33.1
                               </span>
                             </p>
                           </div>
@@ -640,18 +660,18 @@ const DashboardScreen = () => {
                               Layer 3 :This score represents an average of your
                               performance on questions related to Layer 3 of the
                               RRI Framework. These questions are related to
-                              Human Agency and Oversight.
+                              <b> Human Agency and Oversight</b>.
                             </p>
                             <p>
                               Score :{" "}
                               <span
                                 style={{
-                                  backgroundColor: "#e20404",
-                                  color: "#fff",
+                                  backgroundColor: getColorBasedOnNumber(currentEvaluation.score[2],20),
+                                  color: "#fff"
                                 }}
                                 className="badge"
                               >
-                                {currentEvaluation.score[2]}/20
+                                {normalizeScoreFun(currentEvaluation.score[2],100,32.3)}/32.3
                               </span>
                             </p>
                           </div>
@@ -671,7 +691,7 @@ const DashboardScreen = () => {
                                 Total score : {currentEvaluation.score[3]}%
                               </div>
                               <div className="col-md-2 col-sm-6">
-                                <button onClick={downloadReport} type="button" class="btn btn-success">
+                                <button onClick={generatePDF} type="button" class="btn btn-success">
                                   Your report
                                 </button>
                               </div>
@@ -696,7 +716,7 @@ const DashboardScreen = () => {
                     <div className="row">
                       <div className="col">
                         <h3>
-                          Previous evaluations projects ({projects.length})
+                          Previous evaluation projects ({projects.length})
                         </h3>
                         <ProjectPagination itemsPerPage={2} items={projects} changeTab={changeTab} />
                        
