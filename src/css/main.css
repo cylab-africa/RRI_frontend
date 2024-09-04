@@ -633,3 +633,142 @@ p{
    
   }
 
+
+  /* Trafic lights */
+/* 
+  :root {
+    --whole: #333333;
+    --color1: #B4291A; 
+    --color2: #C4A62E; 
+    --color3: #0D8668; 
+  } */
+ 
+  /* :root { */
+    /* --whole: #333333; */
+    /* --color1: #FF0000; red */
+    /* --color2: #FFFF00; yellow */
+    /* --color3: #00FF00; green */
+    /* --color1-darken: #cc0000; darkened red */
+    /* --color2-darken: #cccc00; darkened yellow */
+    /* --color3-darken: #00cc00; darkened green */
+    /* --color1-lighten: #ff3333; lightened red */
+    /* --color2-lighten: #ffff33; lightened yellow */
+    /* --color3-lighten: #33ff33; lightened green */
+  /* } */
+
+  :root {
+    --whole: #333333;
+    --color1: #ff0000; /* original color */
+    --color2: #e7c102; /* original color */
+    --color3: #00a54b; /* original color */
+    --color1-darken: #740606; /* darkened color1 */
+    --color2-darken: #816c04; /* darkened color2 */
+    --color3-darken: #065c2d; /* darkened color3 */
+    --color1-lighten: #ff6851; /* lightened color1 */
+    --color2-lighten: #ecc70e; /* lightened color2 */
+    --color3-lighten: #01ff73; /* lightened color3 */
+  }
+
+  body {
+    /* background-image: url(https://f.cl.ly/items/2K0P3z2y3X3c052f2B3Y/Image%202013.04.30%2021%3A28%3A02.png); */
+    /* display: flex;
+    align-items: center;
+    justify-content: space-evenly; */
+  }
+  
+  #traffic-light {
+    /* Main traffic light */
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    /* background-color: var(--whole); */
+    height: 120px;
+    width: 320px;
+    border-radius: 30px;
+  }
+  
+  .traffic-light-color {
+    /* Remove default style */
+    appearance: none;
+    /* Make the traffic lights appear */
+    position: relative;
+    width: 70px;
+    height: 70px;
+    background-color: grey;
+    vertical-align: middle;
+    border-radius: 100%;
+    display: block;
+  }
+  
+  .traffic-light-color#color1 {
+    background-color: var(--color1-darken);
+  }
+  .traffic-light-color .color1-active {
+    animation: blink1 1.1s step-end infinite;
+  }
+  .traffic-light-color#color1:checked {
+    background-color: var(--color1);
+    box-shadow: 0 0 6em var(--color1-lighten);
+  }
+  
+  .traffic-light-color#color2 {
+    background-color: var(--color2-darken);
+  }
+  .color2-active {
+    animation: blink2 1s step-end infinite;
+  }
+  .traffic-light-color#color2:checked {
+    background-color: var(--color2);
+    box-shadow: 0 0 6em var(--color2-lighten);
+  }
+  
+  .traffic-light-color#color3 {
+    background-color: var(--color3-darken);
+  }
+  .traffic-light-color .color3-active {
+    animation: blink3 1s step-end infinite;
+  }
+  .traffic-light-color#color3:checked {
+    background-color: var(--color3);
+    box-shadow: 0 0 6em var(--color3-lighten);
+  }
+  
+  @keyframes blink1 {
+    0% {
+      background-color: var(--color1);
+      box-shadow: 0 0 6em var(--color1-lighten);
+    }
+    50% {
+      background-color: var(--color1-darken);
+      box-shadow: 0 0 0em transparent;
+    }
+  }
+  
+  @keyframes blink2 {
+    0% {
+      background-color: var(--color2);
+      box-shadow: 0 0 6em var(--color2-lighten);
+    }
+    50% {
+      background-color: var(--color2-darken);
+      box-shadow: 0 0 0em transparent;
+    }
+  }
+  
+  @keyframes blink3 {
+    0% {
+      background-color: var(--color3);
+      box-shadow: 0 0 6em var(--color3-lighten);
+    }
+    50% {
+      background-color: var(--color3-darken);
+      box-shadow: 0 0 0em transparent;
+    }
+  }
+  
+  /* Extra stuff */
+  * {
+    user-select: none;
+    outline: none;
+  }
+  

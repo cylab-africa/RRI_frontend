@@ -189,13 +189,15 @@ const DashboardScreen = () => {
   // ----------------------------------- 
 
   const generatePDF = async () => {
-    const blob = await ReactPDF.pdf(<PDFDocument />).toBlob();
+    // const report = await api.getRequest('/report/'+currentProject.id, true);
+    // console.log(report)
+    const blob = await ReactPDF.pdf(<PDFDocument surveyData={[]} names={"MIRA"} project={currentProject} generalScore={currentEvaluation.score[3]} />).toBlob();
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
     link.download = 'RRI_Report.pdf';
     link.click();
-};
+  };
 
 
 
@@ -208,7 +210,7 @@ const DashboardScreen = () => {
       response = await api.getRequest("/projects", true);
       // console.log(response)
       if (response.status === 200) {
-       
+
         let allProjects = response.data.data;
         allProjects.sort((a, b) => {
           return new Date(b.dateCreated) - new Date(a.dateCreated);
@@ -216,7 +218,7 @@ const DashboardScreen = () => {
         setProjects(allProjects);
         let seectedProject;
         if (pid) {
-                    
+
           seectedProject = response.data.data.find((obj) => obj.id === pid);
           // console.log(seectedProject)
 
@@ -246,7 +248,7 @@ const DashboardScreen = () => {
     generatePDF(content);
   };
 
-  
+
   const trafficLights = (color, score, type) => {
     if (color === "red") {
       if (getColorBasedOnNumber(score) === "red") {
@@ -326,7 +328,7 @@ const DashboardScreen = () => {
   }, []);
 
   useEffect(() => {
-    
+
     let page = switchLights();
     setPage(page);
   }, [evaluation]);
@@ -344,7 +346,7 @@ const DashboardScreen = () => {
   if (loading) {
     return (
       <div className="container">
-        <LoadingModal show={true}  />
+        <LoadingModal show={true} />
       </div>
     );
   }
@@ -359,7 +361,7 @@ const DashboardScreen = () => {
                 <div className="col"></div>
                 <div className="col">
                   <div class="heading_container">
-                    
+
                     <h2>Your dahboard is empty</h2>
                   </div>
 
@@ -474,13 +476,21 @@ const DashboardScreen = () => {
                         {/* <h5>Your RRI Index Score</h5> */}
 
                         <div className="row">
+
+                          <div id="traffic-light">
+                            <input type="radio" className="traffic-light-color" id="color1" value="color1" />
+                            <input type="radio" className="traffic-light-color color2-active" id="color2" value="color2" />
+                            <input type="radio" className="traffic-light-color" id="color3" value="colo3" />
+                          </div>
+                        </div>
+                        <div hidden className="row">
                           <div className="col-md-3">
                             <div class={trafficLights(
-                                  "red",
-                                  currentEvaluation.score[3],
-                                  "class"
+                              "red",
+                              currentEvaluation.score[3],
+                              "class"
 
-                                )}>
+                            )}>
                               <img
                                 src={trafficLights(
                                   "red",
@@ -496,11 +506,11 @@ const DashboardScreen = () => {
                           </div>
                           <div className="col-md-3">
                             <div class={trafficLights(
-                                  "orange",
-                                  currentEvaluation.score[3],
-                                  "class"
+                              "orange",
+                              currentEvaluation.score[3],
+                              "class"
 
-                                )}>
+                            )}>
                               <img
                                 src={trafficLights(
                                   "orange",
@@ -516,11 +526,11 @@ const DashboardScreen = () => {
                           </div>
                           <div className="col-md-3">
                             <div class={trafficLights(
-                                  "green",
-                                  currentEvaluation.score[3],
-                                  "class"
+                              "green",
+                              currentEvaluation.score[3],
+                              "class"
 
-                                )}>
+                            )}>
                               <img
                                 src={trafficLights(
                                   "green",
@@ -542,11 +552,11 @@ const DashboardScreen = () => {
                               <span
                                 style={{
                                   color: getColorBasedOnNumber(
-                                    currentEvaluation.score[3]
+                                    currentEvaluation.score[3], 100
                                   ),
                                 }}
                               >
-                                {currentEvaluation.score[3]}%
+                                {normalizeScoreFun(currentEvaluation.score[3], 100, 100)}%
                               </span>{" "}
                             </h4>
                             <div
@@ -617,7 +627,7 @@ const DashboardScreen = () => {
                               Score :{" "}
                               <span
                                 style={{
-                                  backgroundColor: getColorBasedOnNumber(currentEvaluation.score[0],34.6),
+                                  backgroundColor: getColorBasedOnNumber(currentEvaluation.score[0], 34.6),
                                   color: "#fff",
                                 }}
                                 className="badge"
@@ -636,18 +646,18 @@ const DashboardScreen = () => {
                               performance on questions related to Layer 2 of the
                               RRI Framework. These questions cover topics such
                               as <b>Transparency and accountabiity</b> , <b>Gender equity
-                              and inclusion</b> , <b>Fairness</b> and various other aspects.
+                                and inclusion</b> , <b>Fairness</b> and various other aspects.
                             </p>
                             <p>
                               Score :{" "}
                               <span
                                 style={{
-                                  backgroundColor: getColorBasedOnNumber(currentEvaluation.score[1],30),
+                                  backgroundColor: getColorBasedOnNumber(currentEvaluation.score[1], 30),
                                   color: "#fff",
                                 }}
                                 className="badge"
                               >
-                                {normalizeScoreFun(currentEvaluation.score[1],100,33.1)}/33.1
+                                {normalizeScoreFun(currentEvaluation.score[1], 100, 33.1)}/33.1
                               </span>
                             </p>
                           </div>
@@ -666,12 +676,12 @@ const DashboardScreen = () => {
                               Score :{" "}
                               <span
                                 style={{
-                                  backgroundColor: getColorBasedOnNumber(currentEvaluation.score[2],20),
+                                  backgroundColor: getColorBasedOnNumber(currentEvaluation.score[2], 20),
                                   color: "#fff"
                                 }}
                                 className="badge"
                               >
-                                {normalizeScoreFun(currentEvaluation.score[2],100,32.3)}/32.3
+                                {normalizeScoreFun(currentEvaluation.score[2], 100, 32.3)}/32.3
                               </span>
                             </p>
                           </div>
@@ -688,10 +698,10 @@ const DashboardScreen = () => {
                           <div className="card-body">
                             <div className="row">
                               <div className="col-md-10 col-sm-6">
-                                Total score : {currentEvaluation.score[3]}%
+                                Total score : {normalizeScoreFun(currentEvaluation.score[3], 100, 100)}%
                               </div>
                               <div className="col-md-2 col-sm-6">
-                                <button onClick={generatePDF} type="button" class="btn btn-success">
+                                <button hidden onClick={generatePDF} type="button" class="btn btn-success">
                                   Your report
                                 </button>
                               </div>
@@ -719,7 +729,7 @@ const DashboardScreen = () => {
                           Previous evaluation projects ({projects.length})
                         </h3>
                         <ProjectPagination itemsPerPage={2} items={projects} changeTab={changeTab} />
-                       
+
                       </div>
                     </div>
                   </div>
@@ -734,8 +744,8 @@ const DashboardScreen = () => {
                 aria-labelledby="profile-tab"
               >
 
-                <div  className="card">
-                <div className="card-body">
+                <div className="card">
+                  <div className="card-body">
                     <h3>Profile</h3>
 
                     <p>Full name : Patrick Iradukunda</p>
@@ -764,7 +774,7 @@ const DashboardScreen = () => {
                       </div>
                     </div>
 
-                </div>
+                  </div>
                 </div>
 
               </div>

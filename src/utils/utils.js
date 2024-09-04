@@ -23,7 +23,7 @@ export function formatDate(dateString) {
     }
     
     const normalizedScore = (score / maxScore) * mormalTo;
-    return Math.round(normalizedScore); // Rounding to the nearest integer
+    return parseFloat(normalizedScore.toFixed(1)); // Rounding to the nearest integer
   }
 
 

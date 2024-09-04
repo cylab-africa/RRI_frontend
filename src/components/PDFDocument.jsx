@@ -244,13 +244,13 @@ const generateAnswerElement = (answer) => {
     }
 };
 
-const PDFDocument = () => (
+const PDFDocument = ({surveyData, names, project, generalScore}) => (
     <Document>
         <Page size="A4" style={styles.page}>
             <View style={styles.header}>
                 <Text style={styles.title}>Responsible Research and Innovation Report</Text>
-                <Text style={styles.subtitle}>Name: John Doe</Text>
-                <Text style={styles.subtitle}>Project Name: Mira Project</Text>
+                <Text style={styles.subtitle}>Name: {names}</Text>
+                <Text style={styles.subtitle}>Project Name: {project.name}</Text>
                 <Text style={styles.subtitle}>Date Downloaded: {new Date().toLocaleDateString()}</Text>
             </View>
 
