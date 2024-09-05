@@ -83,7 +83,7 @@ export default function MainApp() {
             <div>
               <img src="images/mail.png" alt="" />
               <p>
-                cylab.info@gmail.com
+                upanzi@andrew.cmu.edu
               </p>
             </div>
           </div>
@@ -94,14 +94,14 @@ export default function MainApp() {
             Affiliations
             </h5>
             
-            <div >
+            {/* <div >
                   <p>
                   <a  href="/about">
                 About us
               </a>
                   </p>
                 
-            </div>
+            </div> */}
 
             <div >
           
