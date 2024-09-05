@@ -290,6 +290,25 @@ const DashboardScreen = () => {
     // src={require("../images/red-dotted.png")}
   };
 
+
+  const chekIflightIsOn =(color, score)=>{
+      if(score >= 70){
+        if(color === 'green'){
+          return true
+        }
+
+      }else if(score < 70 && score >= 50){
+        if(color === 'yellow'){
+          return true
+        } 
+      }else if(score < 50 && score >= 0 ){
+        if(color === 'red'){
+          return true
+        }
+      }
+      return false;
+  }
+
   const selectProject = (pid) => {
     const selectedProject = projects.find((obj) => obj.id === pid);
     setCurrentProject(selectedProject);
@@ -478,11 +497,13 @@ const DashboardScreen = () => {
                         <div className="row">
 
                           <div id="traffic-light">
-                            <input type="radio" className="traffic-light-color" id="color1" value="color1" />
-                            <input type="radio" className="traffic-light-color color2-active" id="color2" value="color2" />
-                            <input type="radio" className="traffic-light-color" id="color3" value="colo3" />
+                            
+                            <input type="radio" className={chekIflightIsOn('red',currentEvaluation.score[3])? "traffic-light-color color1-active":"traffic-light-color"} id="color1" value="color1" />
+                            <input type="radio" className={chekIflightIsOn('yellow',currentEvaluation.score[3])? "traffic-light-color color2-active":"traffic-light-color"} id="color2" value="color2" />
+                            <input type="radio" className={chekIflightIsOn('green',currentEvaluation.score[3])? "traffic-light-color color3-active":"traffic-light-color"} id="color3" value="colo3" />
                           </div>
                         </div>
+                        {/* ----------- */}
                         <div hidden className="row">
                           <div className="col-md-3">
                             <div class={trafficLights(
@@ -544,6 +565,7 @@ const DashboardScreen = () => {
                             </div>
                           </div>
                         </div>
+                        {/* ---------------- */}
                         <br />
                         <div className="row">
                           <div className="col">
