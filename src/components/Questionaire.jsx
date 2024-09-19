@@ -12,7 +12,6 @@ const EvaluationForm = (props) => {
   const { scrollUp, questions } = props;
 
   const findQuestion = (number) => {
-    //   return staticQuestions.filter((que)=>que.number===number)
     return questions.filter((que) => que.number === number);
   };
 
@@ -68,11 +67,8 @@ const EvaluationForm = (props) => {
     let updated = updateAnswer(answer);
   };
 
-  //   console.log(cQuestion)
   // Function to handle next question
   const handleNextQuestion = () => {
-    // if(currentQuestion < staticQuestions.length)
-
     if (currentQuestion < questions.length)
       setCurrentQuestion(currentQuestion + 1);
     scrollUp();
@@ -144,7 +140,12 @@ const EvaluationForm = (props) => {
   }, [currentQuestion]);
 
   return (
-    <div className="evaluation-form">
+    <div
+      style={{
+        paddingTop:100,
+        paddingBottom:100,
+      }}
+      className="evaluation-form">
       {/* Progress bar */}
       <div
         style={{
@@ -165,18 +166,12 @@ const EvaluationForm = (props) => {
             ${currentQuestion}/${questions.length}
           </span>
         </progress>
-        {/* Progress: {currentQuestion} / {staticQuestions.length} */}
-
-        {/* <div
-          className="progress"
-          style={{ width: `${(currentQuestion / 6) * 100}%` }}
-        ></div> */}
+        
       </div>
       <br />
       {/* Company name */}
       <h4  style={{ marginBottom: 30 }}>  {currentQuestion}. {cQuestion[0].question}</h4>
       <hr />
-      {/* {console.log(cQuestion[0].id)} */}
       {/* Questions */}
       <div>
         {cQuestion[0].subquestions.map((question, index) => {
