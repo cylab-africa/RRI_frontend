@@ -22,6 +22,7 @@ import ProjectPagination from "../components/ProjectPaginator";
 import LoadingModal from "../components/LoadingModal";
 import { PDFDocument } from "../components/PDFDocument";
 import ReactPDF from "@react-pdf/renderer";
+import { IconContext } from "react-icons";
 
 const ChipList = ({ items, setEvaluation, active }) => {
   const [startIndex, setStartIndex] = useState(0);
@@ -188,15 +189,53 @@ const DashboardScreen = () => {
 
   // ----------------------------------- 
 
+    function getQuestionsAndAnswers(data) {
+      return data.project.answers.map((answerObj, index) => ({
+          number: index + 1,
+          question: answerObj.question.questionText,
+          answer: {
+              score: answerObj.score,
+              type: answerObj.question.type
+          },
+          weight: answerObj.weight
+      }));
+  }
+
   const generatePDF = async () => {
-    // const report = await api.getRequest('/report/'+currentProject.id, true);
-    // console.log(report)
-    const blob = await ReactPDF.pdf(<PDFDocument surveyData={[]} names={"MIRA"} project={currentProject} generalScore={currentEvaluation.score[3]} />).toBlob();
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'RRI_Report.pdf';
-    link.click();
+
+    swal({
+      text: 'Your names',
+      content: "input",
+      button: {
+        text: "Download",
+        closeModal: false,
+      },
+    })
+    .then(async name => {
+      if (!name) throw null;
+      const report = await api.getRequest('/report/'+currentEvaluation.id, true);
+      const filtaredData = getQuestionsAndAnswers(report.data);
+      // console.log(filtaredData)
+  
+      const blob = await ReactPDF.pdf(<PDFDocument surveyData={filtaredData} names={name} project={currentProject} generalScore={currentEvaluation.score[3]} />).toBlob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'RRI_Report.pdf';
+      link.click();
+      swal.close();
+      
+    })
+    .catch(err => {
+      if (err) {
+        swal("The name is displayed on the report file");
+      } else {
+        swal("The name is displayed on the report file");
+        swal.close();
+      }
+    });
+    
+    
   };
 
 
@@ -503,69 +542,7 @@ const DashboardScreen = () => {
                             <input type="radio" className={chekIflightIsOn('green',currentEvaluation.score[3])? "traffic-light-color color3-active":"traffic-light-color"} id="color3" value="colo3" />
                           </div>
                         </div>
-                        {/* ----------- */}
-                        <div hidden className="row">
-                          <div className="col-md-3">
-                            <div class={trafficLights(
-                              "red",
-                              currentEvaluation.score[3],
-                              "class"
-
-                            )}>
-                              <img
-                                src={trafficLights(
-                                  "red",
-                                  currentEvaluation.score[3],
-                                  "light"
-
-                                )}
-                                alt=""
-                                srcset=""
-                              />
-                              <div class="text-overlay">{"Lower"}</div>
-                            </div>
-                          </div>
-                          <div className="col-md-3">
-                            <div class={trafficLights(
-                              "orange",
-                              currentEvaluation.score[3],
-                              "class"
-
-                            )}>
-                              <img
-                                src={trafficLights(
-                                  "orange",
-                                  currentEvaluation.score[3],
-                                  "light"
-
-                                )}
-                                alt=""
-                                srcset=""
-                              />
-                              <div class="text-overlay">{"Average"}</div>
-                            </div>
-                          </div>
-                          <div className="col-md-3">
-                            <div class={trafficLights(
-                              "green",
-                              currentEvaluation.score[3],
-                              "class"
-
-                            )}>
-                              <img
-                                src={trafficLights(
-                                  "green",
-                                  currentEvaluation.score[3],
-                                  "light"
-                                )}
-                                alt=""
-                                srcset=""
-                              />
-                              <div class="text-overlay">{"Higher"}</div>
-                            </div>
-                          </div>
-                        </div>
-                        {/* ---------------- */}
+                      
                         <br />
                         <div className="row">
                           <div className="col">
@@ -723,7 +700,7 @@ const DashboardScreen = () => {
                                 Total score : {normalizeScoreFun(currentEvaluation.score[3], 100, 100)}%
                               </div>
                               <div className="col-md-2 col-sm-6">
-                                <button hidden onClick={generatePDF} type="button" class="btn btn-success">
+                                <button  onClick={generatePDF} type="button" class="btn btn-success">
                                   Your report
                                 </button>
                               </div>

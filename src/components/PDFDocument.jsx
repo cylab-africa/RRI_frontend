@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     },
     question: {
         marginBottom: 5,
-        fontSize:14
+        fontSize:13
     },
     summary: {
         marginTop: 20,
@@ -229,16 +229,17 @@ const Checkbox = ({ checked }) => (
 );
 
 const generateAnswerElement = (answer) => {
-    if (typeof answer === 'number' && answer >= 1 && answer <= 10) {
-        return <Text style={styles.text}>Score: {answer}</Text>;
+    if (answer.type === 'scale' && answer.score >= 0 && answer.score <= 10) {
+        return <Text style={styles.text}>Score: {answer.score>0 ? `${answer.score}/10` :"N/A"}</Text>;
     } else {
         return (
             <View style={styles.checkboxGroup}>
-                <View style={styles.checkboxLabel}><Checkbox checked={answer === 'Strongly agree'} /> <Text style={styles.text}>Strongly agree</Text></View>
-                <View style={styles.checkboxLabel}><Checkbox checked={answer === 'Agree'} /> <Text style={styles.text}>Agree</Text></View>
-                <View style={styles.checkboxLabel}><Checkbox checked={answer === 'Neutral'} /> <Text style={styles.text}>Neutral</Text></View>
-                <View style={styles.checkboxLabel}><Checkbox checked={answer === 'Disagree'} /> <Text style={styles.text}>Disagree</Text></View>
-                <View style={styles.checkboxLabel}><Checkbox checked={answer === 'Strongly disagree'} /> <Text style={styles.text}>Strongly disagree</Text></View>
+                <View style={styles.checkboxLabel}><Checkbox checked={answer.score === 0} /> <Text style={styles.text}>N/A</Text></View>
+                <View style={styles.checkboxLabel}><Checkbox checked={answer.score === 1} /> <Text style={styles.text}>Strongly agree</Text></View>
+                <View style={styles.checkboxLabel}><Checkbox checked={answer.score === 2.5} /> <Text style={styles.text}>Agree</Text></View>
+                <View style={styles.checkboxLabel}><Checkbox checked={answer.score === 5} /> <Text style={styles.text}>Neutral</Text></View>
+                <View style={styles.checkboxLabel}><Checkbox checked={answer.score === 7.5} /> <Text style={styles.text}>Disagree</Text></View>
+                <View style={styles.checkboxLabel}><Checkbox checked={answer.score ===10} /> <Text style={styles.text}>Strongly disagree</Text></View>
             </View>
         );
     }
@@ -268,7 +269,7 @@ const PDFDocument = ({surveyData, names, project, generalScore}) => (
                         <Text style={styles.tableCell}>Name</Text>
                     </View>
                     <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>John Doe</Text>
+                        <Text style={styles.tableCell}>{names}</Text>
                     </View>
                 </View>
                 <View style={styles.tableRow}>
@@ -276,7 +277,7 @@ const PDFDocument = ({surveyData, names, project, generalScore}) => (
                         <Text style={styles.tableCell}>Project Name</Text>
                     </View>
                     <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>Mira Project</Text>
+                        <Text style={styles.tableCell}>{project.name}</Text>
                     </View>
                 </View>
                 <View style={styles.tableRow}>
@@ -331,7 +332,7 @@ const PDFDocument = ({surveyData, names, project, generalScore}) => (
             
 
             <View style={styles.summary}>
-                <Text style={styles.text}>Project Name: Mira Project</Text>
+                {/* <Text style={styles.text}>Project Name: {project.name}</Text> */}
                 <View style={[styles.badge, getBadgeStyle(generalScore)]}>
                     <Text>General Score: {generalScore.toFixed(2)}</Text>
                 </View>

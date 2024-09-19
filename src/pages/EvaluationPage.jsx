@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import QuestionCard from "../components/QuestionCard";
 import { API } from "../apis/http";
 import { Button, Col, Placeholder, Row } from "react-bootstrap";
@@ -24,167 +24,172 @@ const EvaluationPage = (props) => {
 
   // console.log(project)
 
-  const DisplayQuestions=(questions)=>{
-    if(layerId === 1){
+  const DisplayQuestions = (questions) => {
+    if (layerId === 1) {
 
     }
   }
 
 
-  const validateForm = ()=>{
-    if(questions.length != answers.length){
+  const validateForm = () => {
+    if (questions.length != answers.length) {
       swal("Please assign a score to each question.");
       return false
     }
     return true
   }
 
-  const submitEvaluation = async(e)=>{
-    try{
-    const isFormValid = validateForm()
-    if(!isFormValid){
-      return
-    }
-    // Clear the selections first
-    document.getElementById('form').reset()
-    setLoading(true)
-    const body = {layerId:layerId, projectId:projectId, answers:answers}
-    let response = await api.postRequest('/answers', body, true)
-    if(response.status === 202){
-      addToken(response.data.data.token)
-      response = await api.postRequest('/answers', body, true)
-    }
+  const submitEvaluation = async (e) => {
+    try {
+      const isFormValid = validateForm()
+      if (!isFormValid) {
+        return
+      }
+      // Clear the selections first
+      document.getElementById('form').reset()
+      setLoading(true)
+      const body = { layerId: layerId, projectId: projectId, answers: answers }
+      let response = await api.postRequest('/answers', body, true)
+      if (response.status === 202) {
+        addToken(response.data.data.token)
+        response = await api.postRequest('/answers', body, true)
+      }
 
-   
-    if(response.status === 200){
-      // Some stuffs will be recorded here
-    }
-    setTimeout(()=>{
+
+      if (response.status === 200) {
+        // Some stuffs will be recorded here
+      }
+      setTimeout(() => {
+        setLoading(false)
+        if (layerId < 3) {
+          setShowConfirm(true)
+        } else {
+          history.push({
+            pathname: "/dashboard",
+            state: { projectId: projectId },
+          });
+        }
+      }, 1000)
+
+
+    } catch (e) {
+      // console.log(e)
       setLoading(false)
-      if(layerId<3){
-        setShowConfirm(true)
-      }else{
-        history.push({
-          pathname: "/dashboard",
-          state: { projectId: projectId },
-        });
-      }
-    },1000)
 
-   
-  }catch(e){
-    // console.log(e)
-    setLoading(false)
-    
-    swal(e.response.data.message)
-    setTimeout(()=>{
-      if(e.response.status === 401){
-        history.push({
-          pathname: "/dashboard",
-          state: { projectId: projectId },
-        });
-      }
-    },1000)
-    
-  }
+      swal(e.response.data.message)
+      setTimeout(() => {
+        if (e.response.status === 401) {
+          history.push({
+            pathname: "/dashboard",
+            state: { projectId: projectId },
+          });
+        }
+      }, 1000)
+
+    }
     // some codes here 
 
   }
 
-  const getQuestionsLayer = async ()=>{
+  const getQuestionsLayer = async () => {
     setLoading(true)
-    try{
-      
-        const response = await api.getRequest('/questions')
-        // console.log(response)
-        setQuestions(response.data.questions)
-    }catch(e){
-        // console.log(e)
+    try {
+
+      const response = await api.getRequest('/questions')
+      // console.log(response)
+      setQuestions(response.data.questions)
+    } catch (e) {
+      // console.log(e)
     }
-    setTimeout(()=>{
+    setTimeout(() => {
       setLoading(false)
       window.scrollTo(0, 0)
     }, 1000)
 
   }
 
-  const changeLayer=()=>{
+  const changeLayer = () => {
     setAnswers([])
-    if(layerId === 1){
+    if (layerId === 1) {
       setLayerId(2)
 
-    }else if(layerId === 2){
+    } else if (layerId === 2) {
       setLayerId(3)
-    }else{
+    } else {
       alert("Redirect to score view page.")
-    }  
+    }
     setShowConfirm(false)
   }
 
-  
-  useEffect(()=>{
-        if(layerId > 3){
-          history.push({
-            pathname: "/dashboard",
-            state: { projectId: location.state.project.id },
-          });
-        }
-        getQuestionsLayer()
-        setProjectId(location.state.project.id)
-        setProject(location.state.project)
 
-  },[layerId])
+  useEffect(() => {
+    if (layerId > 3) {
+      history.push({
+        pathname: "/dashboard",
+        state: { projectId: location.state.project.id },
+      });
+    }
+    getQuestionsLayer()
+    setProjectId(location.state.project.id)
+    setProject(location.state.project)
 
-  const selectScore =(selected)=>{
-     let lisOfAnswers = answers;
-     const index = lisOfAnswers.findIndex(ans => ans.id === selected.id);
-     if (index !== -1) {
-        lisOfAnswers[index] = selected;
-      } else {
-        lisOfAnswers.push(selected);
-      }
-     setAnswers(lisOfAnswers)
+  }, [layerId])
+
+  const selectScore = (selected) => {
+    let lisOfAnswers = answers;
+    const index = lisOfAnswers.findIndex(ans => ans.id === selected.id);
+    if (index !== -1) {
+      lisOfAnswers[index] = selected;
+    } else {
+      lisOfAnswers.push(selected);
+    }
+    setAnswers(lisOfAnswers)
   }
 
   return (
     <div class="container layout_padding2" >
+
+      {!loading ? 
       
-   {!loading ? <EvaluationForm projectId={projectId} questions={questions} scrollUp={()=>{window.scrollTo(60,60)}} />:
+        <EvaluationForm 
+            projectId={projectId} 
+            questions={questions} 
+            scrollUp={() => { window.scrollTo(60, 60) }} 
+        /> 
+        
+        :
 
-   <div>
-          <Placeholder  animation="glow">
-            <Placeholder style={{height:30, margin:5}} xs={10} />
-            <Placeholder style={{height:30, margin:5}} xs={10} />
-            <Placeholder style={{height:30, margin:5}} xs={10} />   
-            {/* <Placeholder style={{height:30, margin:5}} xs={10} />
-            <Placeholder style={{height:30, margin:5}} xs={10} />
-            <Placeholder style={{height:30, margin:5}} xs={10} /> */}
-            <Placeholder style={{height:30, margin:5}} xs={10} /> 
-            <Placeholder style={{height:30, margin:5}} xs={10} />  
-            <Placeholder style={{height:30, margin:5}} xs={10} />
-            <Placeholder style={{height:30, margin:5}} xs={10} />
-            <Placeholder style={{height:30, margin:5}} xs={10} />
-            <Placeholder style={{height:30, margin:5}} xs={10} />
-            <Placeholder style={{height:30, margin:5}} xs={10} /> 
+        <div>
+          <Placeholder animation="glow">
+            <Placeholder style={{ height: 30, margin: 5 }} xs={10} />
+            <Placeholder style={{ height: 30, margin: 5 }} xs={10} />
+            <Placeholder style={{ height: 30, margin: 5 }} xs={10} />
+            <Placeholder style={{ height: 30, margin: 5 }} xs={10} />
+            <Placeholder style={{ height: 30, margin: 5 }} xs={10} />
+            <Placeholder style={{ height: 30, margin: 5 }} xs={10} />
+            <Placeholder style={{ height: 30, margin: 5 }} xs={10} />
+            <Placeholder style={{ height: 30, margin: 5 }} xs={10} />
+            <Placeholder style={{ height: 30, margin: 5 }} xs={10} />
+            <Placeholder style={{ height: 30, margin: 5 }} xs={10} />
           </Placeholder>
-    </div>
-}
+        </div>
+      }
 
-     <LoadingModal show={loading}  />
-     <ConfirmModal
-        setShow={(val)=>{setShowConfirm(false)}}
-        show={showConfirm} 
-        nextEvaluation={changeLayer} 
-        finishEvaluation={()=>{
-            // alert("Redirect to score view page.")
-            setShowConfirm(false)
+      <LoadingModal show={loading} />
+      <ConfirmModal
+        setShow={(val) => { setShowConfirm(false) }}
+        show={showConfirm}
+        nextEvaluation={changeLayer}
+        finishEvaluation={() => {
+          // alert("Redirect to score view page.")
+          setShowConfirm(false)
 
-            history.push({
-              pathname: "/dashboard",
-              state: { projectId: projectId },
-            });
+          history.push({
+            pathname: "/dashboard",
+            state: { projectId: projectId },
+          });
         }}
-    />
+      />
     </div>
   );
 };
