@@ -94,9 +94,9 @@ const styles = StyleSheet.create({
     badgeExcellent: {
         backgroundColor: '#4CAF50'
     },
-    badgeGood: {
-        backgroundColor: '#2196F3'
-    },
+    // badgeGood: {
+    //     backgroundColor: '#2196F3'
+    // },
     badgeAverage: {
         backgroundColor: '#FFC107'
     },
@@ -211,12 +211,13 @@ const styles = StyleSheet.create({
 });
 
 const getBadgeStyle = (score) => {
-    if (score >= 8.5) {
+    console.log(score)
+    if (score >= 70) {
         return styles.badgeExcellent;
-    } else if (score >= 7) {
-        return styles.badgeGood;
-    } else if (score >= 5) {
+    } else if (score >= 50) {
         return styles.badgeAverage;
+    } else if (score >= 0) {
+        return styles.badgePoor;
     } else {
         return styles.badgePoor;
     }
@@ -333,7 +334,7 @@ const PDFDocument = ({surveyData, names, project, generalScore}) => (
 
             <View style={styles.summary}>
                 {/* <Text style={styles.text}>Project Name: {project.name}</Text> */}
-                <View style={[styles.badge, getBadgeStyle(generalScore)]}>
+                <View style={[styles.badge, getBadgeStyle(generalScore.toFixed(2))]}>
                     <Text>General Score: {generalScore.toFixed(2)}</Text>
                 </View>
             </View>
