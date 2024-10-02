@@ -19,8 +19,14 @@ import { GoogleLogin, googleLogout, useGoogleLogin } from "@react-oauth/google";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
+import {jwtDecode} from "jwt-decode";
+import { Button } from "react-bootstrap";
+import { API } from "../apis/http";
+
+
 
 export default function MainApp() {
+  const api = new API();
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [profilePic, setProfilePic] = useState('');
@@ -32,12 +38,41 @@ export default function MainApp() {
     document.getElementById("myNav").classList.toggle("menu_width")
     document.querySelector(".custom_menu-btn").classList.toggle("menu_btn-style")
   }
-  const login = useGoogleLogin({
-    onSuccess: (codeResponse) =>{
-      setUser(codeResponse)
-    },
-    onError: (error) => console.log('Login Failed:', error)
-  });
+  const onSuccess = async (response) => {
+    console.log('successful: ',response)
+    
+
+    try {
+      const checkUserBody = { token: response.credential };
+    // check if user exit
+    const checkUserResponse = await api.postRequest("/check-user", checkUserBody, true);
+    console.log('check user: ',checkUserResponse)
+      const data = await checkUserResponse.data;
+    console.log('registered: ',data)
+    if(data.userRegistered==false){
+      const decodedToken = jwtDecode(response.credential);
+    console.log("Decoded JWT token:", decodedToken);
+    const registerBody={
+      email:decodedToken.email,
+      firstName:decodedToken.given_name,
+      lastName:decodedToken.family_name,
+      googleCredential:response.credential
+    };
+    const signupResponse=await api.postRequest("/signup", registerBody, true);
+    console.log('sign up successful',signupResponse)
+
+    setProfile(decodedToken);
+    }else{
+      console.log('google credential: ',response)
+      const decodedToken = jwtDecode(response.credential);
+      setProfile(decodedToken);
+    }
+    
+    openNav()
+    } catch (error) {
+      console.log(error)
+    }
+  };
 
   // log out function to log the user out of google and set the profile array to null
   const logOut = (e) => {
@@ -47,28 +82,7 @@ export default function MainApp() {
     setProfilePic(null) // Reset profile state
     openNav()
   };
-  useEffect(
-    () => {
-      if (user) {
-        axios
-          .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
-            headers: {
-              Authorization: `Bearer ${user.access_token}`,
-              Accept: 'application/json'
-            }
-          })
-          .then((res) => {
-            console.log('User profile data:', res.data);
-            console.log('Profile picture URL:', res.data.picture);
-            openNav();
-            setProfile(res.data);
-            setProfilePic(res.data.picture)
-          })
-          .catch((err) => console.log(err));
-      }
-    },
-    [user]
-  );
+
   return (
     <Router>
       <div class="hero_area ">
@@ -92,8 +106,10 @@ export default function MainApp() {
                         'height':'90px',
                         borderRadius:'50%'
                        }}
-                       src={profilePic} 
-                       alt="" />
+                       src={`${profile.picture}?v=${new Date().getTime()}`}
+                       referrerPolicy="no-referrer"
+                       alt="" 
+                       loading="lazy"/>
                     </button>:
                     <button onClick={openNav}>
                     <span class="s-1">
@@ -117,8 +133,8 @@ export default function MainApp() {
                     <a href="/dashboard">Dashboard</a>
                     <a className="google-btn" href="">
                       {profile ?
-                        <button onClick={logOut}>Log out</button>
-                        : <GoogleLogin onSuccess={login} onError={errorMessage} />
+                        <Button onClick={logOut}>Log out</Button>
+                        : <GoogleLogin onSuccess={onSuccess} onError={errorMessage} />
                       }</a>
                   </div>
                 </div>
