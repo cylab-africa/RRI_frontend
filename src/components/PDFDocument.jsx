@@ -92,16 +92,16 @@ const styles = StyleSheet.create({
         // marginLeft: 10
     },
     badgeExcellent: {
-        backgroundColor: '#4CAF50'
+        backgroundColor: '#008000'
     },
     // badgeGood: {
     //     backgroundColor: '#2196F3'
     // },
     badgeAverage: {
-        backgroundColor: '#FFC107'
+        backgroundColor: '#FFA500'
     },
     badgePoor: {
-        backgroundColor: '#FF5722'
+        backgroundColor: '#FF0000'
     },
     checkboxGroup: {
         flexDirection: 'column',
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
         height: 10,
         borderWidth: 1,
         borderColor: '#fff',
-        backgroundColor:'red',
+        backgroundColor:'grey',
         marginRight: 5,
         position: 'relative'
     },
@@ -335,7 +335,7 @@ const PDFDocument = ({surveyData, names, project, generalScore}) => (
             <View style={styles.summary}>
                 {/* <Text style={styles.text}>Project Name: {project.name}</Text> */}
                 <View style={[styles.badge, getBadgeStyle(generalScore.toFixed(2))]}>
-                    <Text>General Score: {generalScore.toFixed(2)}</Text>
+                    <Text>Overall Score: {generalScore.toFixed(2)}</Text>
                 </View>
             </View>
         </Page>

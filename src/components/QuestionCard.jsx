@@ -33,7 +33,7 @@ const ChoiceQuestion = (props) => {
                             <input checked={answer && 0==answer.score} onClick={()=>{select(question.id, 0)}}  type="radio"  id=""/>
                         </div>
                         <div class="score">
-                            <p style={{padding: 0, margin: 0}}>Much disagry</p>
+                            <p style={{padding: 0, margin: 0}}>Strongly disagree</p>
                             <input checked={answer && 1==answer.score} onClick={()=>{select(question.id, 1)}}  type="radio"  id=""/>
                         </div>
                         <div class="score">
@@ -52,7 +52,7 @@ const ChoiceQuestion = (props) => {
                             <input checked={answer && 7.5==answer.score} onClick={()=>{select(question.id, 7.5)}}  type="radio"  id=""/>
                         </div>
                         <div class="score">
-                            <p style={{padding: 0, margin: 0}}>Much agree</p>
+                            <p style={{padding: 0, margin: 0}}>Strongly agree</p>
                             <input checked={answer && 10==answer.score} onClick={()=>{select(question.id, 10)}}  type="radio"  id=""/>
                         </div>
 
@@ -66,7 +66,7 @@ const ChoiceQuestion = (props) => {
                         
                         </div>
                         <div class="score">
-                            <p style={{padding: 0, margin: 0}}>Strongly disagry</p>
+                            <p style={{padding: 0, margin: 0}}>Strongly disagree</p>
                             <input checked={answer && 1==answer.score} onChange={()=>{select(question.id, 1)}}  type="radio"  id=""/>
                         </div>
                         <div class="score">

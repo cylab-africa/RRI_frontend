@@ -47,6 +47,8 @@ export default function MainApp() {
                 </span>
               </button>
             </div>
+            {/* include the registration button here right next to the navigation|| if the user doesn't have an acount yet
+            the pop up to register with gmail will appear */}
             <div id="myNav" class="overlay">
               <div class="overlay-content">
                 <a href="/">Home</a>
@@ -81,10 +83,10 @@ export default function MainApp() {
             </h5>
             
             <div>
-              <img src="images/mail.png" alt="" />
-              <p>
-                upanzi@andrew.cmu.edu
-              </p>
+              <img  src="images/mail.png" alt="" />
+              <a style={{color:'#fff'}} href="mailto:cylab-africa-kigali@andrew.cmu.edu">
+                cylab-africa-kigali@andrew.cmu.edu
+              </a>
             </div>
           </div>
         </div>
@@ -117,7 +119,7 @@ export default function MainApp() {
 
               <p>
               <a target="_blank"  href="https://www.africa.engineering.cmu.edu/research/cybersecurity/cylab/index.html">
-                CyaLab Africa
+                CyLab Africa
               </a>
               </p>
               
