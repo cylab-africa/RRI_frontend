@@ -22,6 +22,7 @@ import axios from "axios";
 import {jwtDecode} from "jwt-decode";
 import { Button } from "react-bootstrap";
 import { API } from "../apis/http";
+import { SaveToIndexedDB } from "../helpers/indexedDB.js";
 
 
 
@@ -39,36 +40,38 @@ export default function MainApp() {
     document.querySelector(".custom_menu-btn").classList.toggle("menu_btn-style")
   }
   const onSuccess = async (response) => {
-    console.log('successful: ',response)
-    
-
     try {
       const checkUserBody = { token: response.credential };
-    // check if user exit
-    const checkUserResponse = await api.postRequest("/check-user", checkUserBody, true);
-    console.log('check user: ',checkUserResponse)
+      // check if user exit
+      const checkUserResponse = await api.postRequest("/check-user", checkUserBody, true);
       const data = await checkUserResponse.data;
-    console.log('registered: ',data)
-    if(data.userRegistered==false){
       const decodedToken = jwtDecode(response.credential);
-    console.log("Decoded JWT token:", decodedToken);
-    const registerBody={
-      email:decodedToken.email,
-      firstName:decodedToken.given_name,
-      lastName:decodedToken.family_name,
-      googleCredential:response.credential
+      if (data.userRegistered == false) {
+        
+        const registerBody = {
+          email: decodedToken.email,
+          firstName: decodedToken.given_name,
+          lastName: decodedToken.family_name,
+          googleCredential: response.credential
+        };
+        const signupResponse = await api.postRequest("/signup", registerBody, true);
+        setProfile(decodedToken);
+      } else {
+        setProfile(decodedToken);
+      }
+      // Save Google credentials to IndexedDB
+    const googleCredentials = {
+      id: decodedToken.sub, // unique identifier
+      token: response.credential,
+      email: decodedToken.email,
+      firstName: decodedToken.given_name,
+      lastName: decodedToken.family_name,
+      picture:decodedToken.picture
     };
-    const signupResponse=await api.postRequest("/signup", registerBody, true);
-    console.log('sign up successful',signupResponse)
+      await SaveToIndexedDB('GoogleCredentialsDB', 'CredentialsStore', googleCredentials);
+      
+      openNav()
 
-    setProfile(decodedToken);
-    }else{
-      console.log('google credential: ',response)
-      const decodedToken = jwtDecode(response.credential);
-      setProfile(decodedToken);
-    }
-    
-    openNav()
     } catch (error) {
       console.log(error)
     }
@@ -96,35 +99,35 @@ export default function MainApp() {
 
                 <div class="custom_menu-btn">
                   {
-                    profile?<button
-                    style={{
-                      width:'fit-content'
-                    }} onClick={openNav}>
-                       <img 
-                       style={{
-                        'width':'90px',
-                        'height':'90px',
-                        borderRadius:'50%'
-                       }}
-                       src={`${profile.picture}?v=${new Date().getTime()}`}
-                       referrerPolicy="no-referrer"
-                       alt="" 
-                       loading="lazy"/>
-                    </button>:
-                    <button onClick={openNav}>
-                    <span class="s-1">
+                    profile ? <button
+                      style={{
+                        width: 'fit-content'
+                      }} onClick={openNav}>
+                      <img
+                        style={{
+                          'width': '90px',
+                          'height': '90px',
+                          borderRadius: '50%'
+                        }}
+                        src={`${profile.picture}?v=${new Date().getTime()}`}
+                        referrerPolicy="no-referrer"
+                        alt=""
+                        loading="lazy" />
+                    </button> :
+                      <button onClick={openNav}>
+                        <span class="s-1">
 
-                    </span>
-                    <span class="s-2">
+                        </span>
+                        <span class="s-2">
 
-                    </span>
-                    <span class="s-3">
+                        </span>
+                        <span class="s-3">
 
-                    </span>
-                  </button>
+                        </span>
+                      </button>
 
                   }
-                  
+
                 </div>
                 <div id="myNav" class="overlay">
                   <div class="overlay-content">
