@@ -23,6 +23,7 @@ import LoadingModal from "../components/LoadingModal";
 import { PDFDocument } from "../components/PDFDocument";
 import ReactPDF from "@react-pdf/renderer";
 import { IconContext } from "react-icons";
+import { checkUserLoggedIn } from "../helpers/indexedDB";
 
 const ChipList = ({ items, setEvaluation, active }) => {
   const [startIndex, setStartIndex] = useState(0);
@@ -202,7 +203,16 @@ const DashboardScreen = () => {
   }
 
   const generatePDF = async () => {
-
+    const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB','CredentialsStore');
+    if (!isLoggedIn) {
+      swal({
+        title: "Not Logged In",
+        text: "You need to be logged in to download the report.",
+        icon: "warning",  // You can change the icon as needed
+        button: "OK",
+      });
+      return;
+    }
     swal({
       text: 'Your names',
       content: "input",
