@@ -311,7 +311,7 @@ const PDFDocument = ({ surveyData, names, project, generalScore, logoUrl }) => (
             {/* Summary Section */}
             <View style={styles.summary}>
                 <View style={[styles.badge, getBadgeStyle(generalScore.toFixed(2))]}>
-                    <Text>General Score: {generalScore.toFixed(2)}</Text>
+                    <Text>Overall Score: {generalScore.toFixed(2)}</Text>
                 </View>
             </View>
         </Page>
