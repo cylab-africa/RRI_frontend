@@ -1,4 +1,4 @@
-# RR
+# RRI
 
 A quick project setup documentation for the dev environment.
 
