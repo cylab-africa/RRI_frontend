@@ -166,7 +166,7 @@ const HomePage = () => {
       <hr/>
 
       <h4>
-        The evauation process
+        The evaluation process
       </h4>
 
       <div class="us_container">

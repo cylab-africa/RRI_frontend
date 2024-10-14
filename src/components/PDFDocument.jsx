@@ -1,5 +1,5 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 
 // Survey data
 const surveyData = [
@@ -46,8 +46,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
         padding: 20,
     },
-    section: {
-        marginBottom: 10
+    image: {
+        width: 150,
+        height: 50,
+        marginBottom: 10,
+        alignSelf: 'center'
     },
     header: {
         textAlign: 'center',
@@ -64,23 +67,26 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 11,
-        marginBottom: 5
+        marginBottom: 5,
+        textAlign: 'justify' // Text justification
     },
-
-    resultsTitle:{
-        fontSize:20,
-        fontWeight:'bold',
-        textTransform:'uppercase',
-        marginBottom:10,
-        textDecoration:'underline'
+    resultsTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+        marginBottom: 10,
+        textDecoration: 'underline',
+        textAlign: 'center'
     },
     question: {
         marginBottom: 5,
-        fontSize:13
+        fontSize: 13,
+        textAlign: 'justify' // Text justification
     },
     summary: {
         marginTop: 20,
-        fontSize: 12
+        fontSize: 12,
+        textAlign: 'center' // Center alignment for summary
     },
     badge: {
         display: 'inline-block',
@@ -89,77 +95,37 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
         borderRadius: 4,
-        // marginLeft: 10
     },
     badgeExcellent: {
-        backgroundColor: '#4CAF50'
+        backgroundColor: '#008000'
     },
-    // badgeGood: {
-    //     backgroundColor: '#2196F3'
-    // },
     badgeAverage: {
-        backgroundColor: '#FFC107'
+        backgroundColor: '#FFA500'
     },
     badgePoor: {
-        backgroundColor: '#FF5722'
-    },
-    checkboxGroup: {
-        flexDirection: 'column',
-        marginTop: 5,
-        marginLeft: 20
-    },
-    checkboxLabel: {
-        marginBottom: 5,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    square: {
-        width: 10,
-        height: 10,
-        borderWidth: 1,
-        borderColor: '#000',
-        marginRight: 5
-    },
-    checkedSquare: {
-        width: 10,
-        height: 10,
-        borderWidth: 1,
-        borderColor: '#fff',
-        backgroundColor:'red',
-        marginRight: 5,
-        position: 'relative'
-    },
-    cross: {
-        position: 'absolute',
-        left: 2,
-        top: 0,
-        fontSize: 14,
-        lineHeight: 1,
-        color: '#000'
+        backgroundColor: '#FF0000'
     },
     table: {
-        // display: 'table',
         width: 'auto',
         borderStyle: 'solid',
         borderWidth: 1,
         borderRightWidth: 0,
         borderBottomWidth: 0,
         marginBottom: 10,
-        textAlign:'left'
+        textAlign: 'left'
     },
     tableRow: {
         margin: 'auto',
         flexDirection: 'row'
     },
-    tableColHeader: {
-        width: '50%',
-        borderStyle: 'solid',
-        borderWidth: 1,
-        borderLeftWidth: 0,
-        borderTopWidth: 0,
-        backgroundColor: '#f3f3f3'
-    },
+    // tableColHeader: {
+    //     width: '50%',
+    //     borderStyle: 'solid',
+    //     borderWidth: 1,
+    //     borderLeftWidth: 0,
+    //     borderTopWidth: 0,
+    //     backgroundColor: '#f3f3f3'
+    // },
     tableCol: {
         width: '50%',
         borderStyle: 'solid',
@@ -177,9 +143,10 @@ const styles = StyleSheet.create({
         marginBottom: 20
     },
     descriptionText: {
-        marginTop:12,
+        marginTop: 12,
         fontSize: 12,
-        marginBottom: 5
+        marginBottom: 5,
+        textAlign: 'justify' // Text justification for descriptions
     },
     scoreSection: {
         marginTop: 20,
@@ -187,7 +154,8 @@ const styles = StyleSheet.create({
     },
     scoreText: {
         fontSize: 12,
-        marginBottom: 5
+        marginBottom: 5,
+        textAlign: 'justify' // Text justification for score
     },
     scoreLegend: {
         flexDirection: 'row',
@@ -207,31 +175,42 @@ const styles = StyleSheet.create({
     },
     scoreBoxGreen: {
         backgroundColor: '#008000'
+    },
+    square: {
+        width: 10,
+        height: 10,
+        borderWidth: 1,
+        borderColor: '#000',
+        marginRight: 5
+    },
+    checkedSquare: {
+        width: 10,
+        height: 10,
+        borderWidth: 1,
+        borderColor: '#fff',
+        backgroundColor:'grey',
+        marginRight: 5,
+        position: 'relative'
     }
 });
 
 const getBadgeStyle = (score) => {
-    console.log(score)
     if (score >= 70) {
         return styles.badgeExcellent;
     } else if (score >= 50) {
         return styles.badgeAverage;
-    } else if (score >= 0) {
-        return styles.badgePoor;
     } else {
         return styles.badgePoor;
     }
 };
 
 const Checkbox = ({ checked }) => (
-    <View style={checked ? styles.checkedSquare : styles.square}>
-        {/* {checked && <Text style={styles.cross}>x</Text>} */}
-    </View>
+    <View style={checked ? styles.checkedSquare : styles.square} />
 );
 
 const generateAnswerElement = (answer) => {
     if (answer.type === 'scale' && answer.score >= 0 && answer.score <= 10) {
-        return <Text style={styles.text}>Score: {answer.score>0 ? `${answer.score}/10` :"N/A"}</Text>;
+        return <Text style={styles.text}>Score: {answer.score > 0 ? `${answer.score}/10` : "N/A"}</Text>;
     } else {
         return (
             <View style={styles.checkboxGroup}>
@@ -240,34 +219,30 @@ const generateAnswerElement = (answer) => {
                 <View style={styles.checkboxLabel}><Checkbox checked={answer.score === 2.5} /> <Text style={styles.text}>Agree</Text></View>
                 <View style={styles.checkboxLabel}><Checkbox checked={answer.score === 5} /> <Text style={styles.text}>Neutral</Text></View>
                 <View style={styles.checkboxLabel}><Checkbox checked={answer.score === 7.5} /> <Text style={styles.text}>Disagree</Text></View>
-                <View style={styles.checkboxLabel}><Checkbox checked={answer.score ===10} /> <Text style={styles.text}>Strongly disagree</Text></View>
+                <View style={styles.checkboxLabel}><Checkbox checked={answer.score === 10} /> <Text style={styles.text}>Strongly disagree</Text></View>
             </View>
         );
     }
 };
 
-const PDFDocument = ({surveyData, names, project, generalScore}) => (
+const PDFDocument = ({ surveyData, names, project, generalScore, logoUrl }) => (
     <Document>
         <Page size="A4" style={styles.page}>
+            <Image style={styles.image} src={require('../images/Upanzi-Network-logo.png')} />
             <View style={styles.header}>
                 <Text style={styles.title}>Responsible Research and Innovation Report</Text>
-                <Text style={styles.subtitle}>Name: {names}</Text>
+                {/* <Text style={styles.subtitle}>Name: {names}</Text>
                 <Text style={styles.subtitle}>Project Name: {project.name}</Text>
-                <Text style={styles.subtitle}>Date Downloaded: {new Date().toLocaleDateString()}</Text>
+                <Text style={styles.subtitle}>Date Downloaded: {new Date().toLocaleDateString()}</Text> */}
             </View>
 
+            Table for project details
             <View style={styles.table}>
                 <View style={styles.tableRow}>
-                    <View style={styles.tableColHeader}>
-                        <Text style={styles.tableCell}>Field</Text>
-                    </View>
-                    <View style={styles.tableColHeader}>
-                        <Text style={styles.tableCell}>Value</Text>
-                    </View>
                 </View>
                 <View style={styles.tableRow}>
                     <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>Name</Text>
+                        <Text style={styles.tableCell}>Project Owner</Text>
                     </View>
                     <View style={styles.tableCol}>
                         <Text style={styles.tableCell}>{names}</Text>
@@ -290,23 +265,24 @@ const PDFDocument = ({surveyData, names, project, generalScore}) => (
                     </View>
                 </View>
             </View>
-           
 
+            {/* Description Section */}
             <View style={styles.descriptionSection}>
-                <Text style={styles.descriptionText}>RRI is a policy-driven concept focused on inclusive and sustainable research and innovation. While prevalent in the Global North as a technology-driven approach, in sub-Saharan Africa, it demands a community-based and livelihood-oriented perspective.  Layer 1 focuses on topics such as Privacy, Security, and various other aspects and weighs 0.346, Layer 2 focuses on topics such as Transparency and accountability, Gender equity and inclusion, Fairness and weighs 0.331, Layer 3 focuses on topics like Human Agency and Oversight, and weighs 0.323.</Text>
-                <Text></Text>
-                <Text></Text>
-                <Text style={styles.descriptionText}>Our RRI index consists of 3 layers each with a corresponding weight: </Text>
-                <Text></Text>
-                <Text style={styles.descriptionText}>  - Layer 1 focuses on topics such as Privacy, Security, and various other aspects and weighs 0.346. </Text>
-                <Text></Text>
-                <Text style={styles.descriptionText}>  - Layer 2 focuses on topics such as Transparency and accountability, Gender equity and inclusion, Fairness and weighs 0.331.</Text>
-                <Text></Text>
-                <Text style={styles.descriptionText}>  - Layer 3 focuses on topics like Human Agency and Oversight, and weighs 0.323.</Text>
-                <Text></Text>
-                <Text style={styles.descriptionText}>You can read more on the RRI index here</Text>
+                <Text style={styles.descriptionText}>
+                    RRI is a policy-driven concept focused on inclusive and sustainable research and innovation.
+                    While prevalent in the Global North as a technology-driven approach, in sub-Saharan Africa,
+                    it demands a community-based and livelihood-oriented perspective.
+                </Text>
+                <Text style={styles.descriptionText}>
+                    Our RRI index consists of 3 layers each with a corresponding weight:
+                </Text>
+                <Text style={styles.descriptionText}>- Layer 1: Privacy, Security (0.346 weight)</Text>
+                <Text style={styles.descriptionText}>- Layer 2: Transparency, Gender equity (0.331 weight)</Text>
+                <Text style={styles.descriptionText}>- Layer 3: Human Agency, Oversight (0.323 weight)</Text>
+                {/* <Text style={styles.descriptionText}>You can read more on the RRI index here.</Text> */}
             </View>
 
+            {/* Score Explanation */}
             <View style={styles.scoreSection}>
                 <Text style={styles.scoreText}>Score Explanation:</Text>
                 <View style={styles.scoreLegend}>
@@ -322,6 +298,8 @@ const PDFDocument = ({surveyData, names, project, generalScore}) => (
                     <Text style={styles.scoreText}>Green: 70-100%</Text>
                 </View>
             </View>
+
+            {/* Results Section */}
             <Text style={styles.resultsTitle}>Your results</Text>
             {surveyData.map((item, index) => (
                 <View key={index} style={styles.section}>
@@ -330,12 +308,10 @@ const PDFDocument = ({surveyData, names, project, generalScore}) => (
                 </View>
             ))}
 
-            
-
+            {/* Summary Section */}
             <View style={styles.summary}>
-                {/* <Text style={styles.text}>Project Name: {project.name}</Text> */}
                 <View style={[styles.badge, getBadgeStyle(generalScore.toFixed(2))]}>
-                    <Text>General Score: {generalScore.toFixed(2)}</Text>
+                    <Text>Overall Score: {generalScore.toFixed(2)}</Text>
                 </View>
             </View>
         </Page>

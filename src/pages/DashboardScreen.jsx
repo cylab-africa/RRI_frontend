@@ -21,6 +21,7 @@ import amber_image from "../images/amber.png";
 import ProjectPagination from "../components/ProjectPaginator";
 import LoadingModal from "../components/LoadingModal";
 import { PDFDocument } from "../components/PDFDocument";
+//import {PDFaltered} from "../components/PDFaltered";
 import ReactPDF from "@react-pdf/renderer";
 import { IconContext } from "react-icons";
 import { checkUserLoggedIn } from "../helpers/indexedDB";
@@ -221,31 +222,35 @@ const DashboardScreen = () => {
         closeModal: false,
       },
     })
-      .then(async name => {
-        if (!name) throw null;
-        const report = await api.getRequest('/report/' + currentEvaluation.id, true);
-        const filtaredData = getQuestionsAndAnswers(report.data);
-        // console.log(filtaredData)
-
-        const blob = await ReactPDF.pdf(<PDFDocument surveyData={filtaredData} names={name} project={currentProject} generalScore={currentEvaluation.score[3]} />).toBlob();
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'RRI_Report.pdf';
-        link.click();
-        swal.close();
-
-      })
-      .catch(err => {
-        if (err) {
-          swal("The name is displayed on the report file");
-        } else {
-          swal("The name is displayed on the report file");
-          swal.close();
-        }
-      });
-
-
+    .then(async name => {
+      if (!name) throw null;
+      const report = await api.getRequest('/report/'+currentEvaluation.id, true);
+      const filtaredData = getQuestionsAndAnswers(report.data);
+      // console.log(filtaredData)
+      // console.log('Filtered Data:', filtaredData);
+      // console.log('General Score:', currentEvaluation.score[3]);
+      const blob = await ReactPDF.pdf(<PDFDocument surveyData={filtaredData} names={name} project={currentProject} generalScore={currentEvaluation.score[3]} />).toBlob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'RRI_Report.pdf';
+      link.click();
+      swal.close();
+      
+    })
+  
+    .catch(err => {
+      if (err?.response) {
+         // API error
+         swal("Error fetching report data: " + err.response.data.message);
+      } else if (err === null) {
+         swal("You must provide a name for the report.");
+      } else {
+         // Generic error
+         swal("Something went wrong while generating the report.");
+      }
+   });
+    
   };
 
 
