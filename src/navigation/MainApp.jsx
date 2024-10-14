@@ -201,7 +201,7 @@ export default function MainApp() {
 
                     <p>
                       <a target="_blank" href="https://www.africa.engineering.cmu.edu/research/cybersecurity/cylab/index.html">
-                        CyaLab Africa
+                        CyLab Africa
                       </a>
                     </p>
 
