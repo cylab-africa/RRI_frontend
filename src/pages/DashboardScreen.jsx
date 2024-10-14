@@ -24,6 +24,7 @@ import { PDFDocument } from "../components/PDFDocument";
 //import {PDFaltered} from "../components/PDFaltered";
 import ReactPDF from "@react-pdf/renderer";
 import { IconContext } from "react-icons";
+import { checkUserLoggedIn } from "../helpers/indexedDB";
 
 const ChipList = ({ items, setEvaluation, active }) => {
   const [startIndex, setStartIndex] = useState(0);
@@ -190,20 +191,29 @@ const DashboardScreen = () => {
 
   // ----------------------------------- 
 
-    function getQuestionsAndAnswers(data) {
-      return data.project.answers.map((answerObj, index) => ({
-          number: index + 1,
-          question: answerObj.question.questionText,
-          answer: {
-              score: answerObj.score,
-              type: answerObj.question.type
-          },
-          weight: answerObj.weight
-      }));
+  function getQuestionsAndAnswers(data) {
+    return data.project.answers.map((answerObj, index) => ({
+      number: index + 1,
+      question: answerObj.question.questionText,
+      answer: {
+        score: answerObj.score,
+        type: answerObj.question.type
+      },
+      weight: answerObj.weight
+    }));
   }
 
   const generatePDF = async () => {
-
+    const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
+    if (!isLoggedIn) {
+      swal({
+        title: "Not Logged In",
+        text: "You need to be logged in to download the report.",
+        icon: "warning",  // You can change the icon as needed
+        button: "OK",
+      });
+      return;
+    }
     swal({
       text: 'Your names',
       content: "input",
@@ -335,22 +345,22 @@ const DashboardScreen = () => {
   };
 
 
-  const chekIflightIsOn =(color, score)=>{
-      if(score >= 70){
-        if(color === 'green'){
-          return true
-        }
-
-      }else if(score < 70 && score >= 50){
-        if(color === 'yellow'){
-          return true
-        } 
-      }else if(score < 50 && score >= 0 ){
-        if(color === 'red'){
-          return true
-        }
+  const chekIflightIsOn = (color, score) => {
+    if (score >= 70) {
+      if (color === 'green') {
+        return true
       }
-      return false;
+
+    } else if (score < 70 && score >= 50) {
+      if (color === 'yellow') {
+        return true
+      }
+    } else if (score < 50 && score >= 0) {
+      if (color === 'red') {
+        return true
+      }
+    }
+    return false;
   }
 
   const selectProject = (pid) => {
@@ -382,6 +392,38 @@ const DashboardScreen = () => {
       state: { project: currentProject },
     });
   };
+
+  useEffect(() => {
+    const verifyUser = async () => {
+      const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
+      if (!isLoggedIn) {
+        swal({
+          title: "Not Logged In",
+          text: "You need to be logged in to download the report.",
+          icon: "warning",  // You can change the icon as needed
+          buttons: {
+            confirm: {
+              text: "OK",
+              value: true,
+              visible: true,
+              className: "",
+              closeModal: true, // Close the modal when clicked
+            },
+          },
+          closeOnClickOutside: false, // Prevent clicking outside to close the modal
+          closeOnEsc: false,
+        }).then((willRedirect) => {
+          if (willRedirect) {
+            // Redirect to the landing page
+            history.push("/"); // Adjust the path to your landing page
+          }
+        });
+        return;
+      }
+    }
+    verifyUser()
+
+  }, [])
   useEffect(() => {
     // getEvaluations();
 
@@ -443,7 +485,7 @@ const DashboardScreen = () => {
 
   return (
     <div>
-      <section className="about_section layout_padding2">
+      <section className="about_section layout_padding2 blur">
         <div class="container">
           <div class="detail-box">
             <div class="heading_container">
@@ -541,13 +583,13 @@ const DashboardScreen = () => {
                         <div className="row">
 
                           <div id="traffic-light">
-                            
-                            <input type="radio" className={chekIflightIsOn('red',currentEvaluation.score[3])? "traffic-light-color color1-active":"traffic-light-color"} id="color1" value="color1" />
-                            <input type="radio" className={chekIflightIsOn('yellow',currentEvaluation.score[3])? "traffic-light-color color2-active":"traffic-light-color"} id="color2" value="color2" />
-                            <input type="radio" className={chekIflightIsOn('green',currentEvaluation.score[3])? "traffic-light-color color3-active":"traffic-light-color"} id="color3" value="colo3" />
+
+                            <input type="radio" className={chekIflightIsOn('red', currentEvaluation.score[3]) ? "traffic-light-color color1-active" : "traffic-light-color"} id="color1" value="color1" />
+                            <input type="radio" className={chekIflightIsOn('yellow', currentEvaluation.score[3]) ? "traffic-light-color color2-active" : "traffic-light-color"} id="color2" value="color2" />
+                            <input type="radio" className={chekIflightIsOn('green', currentEvaluation.score[3]) ? "traffic-light-color color3-active" : "traffic-light-color"} id="color3" value="colo3" />
                           </div>
                         </div>
-                      
+
                         <br />
                         <div className="row">
                           <div className="col">
@@ -705,7 +747,7 @@ const DashboardScreen = () => {
                                 Total score : {normalizeScoreFun(currentEvaluation.score[3], 100, 100)}%
                               </div>
                               <div className="col-md-2 col-sm-6">
-                                <button  onClick={generatePDF} type="button" class="btn btn-success">
+                                <button onClick={generatePDF} type="button" class="btn btn-success">
                                   Your report
                                 </button>
                               </div>
