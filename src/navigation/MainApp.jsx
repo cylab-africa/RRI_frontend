@@ -22,7 +22,7 @@ import axios from "axios";
 import {jwtDecode} from "jwt-decode";
 import { Button } from "react-bootstrap";
 import { API } from "../apis/http";
-import { logoutUser, SaveToIndexedDB } from "../helpers/indexedDB.js";
+import { checkUserLoggedIn, logoutUser, SaveToIndexedDB } from "../helpers/indexedDB.js";
 
 
 
@@ -39,6 +39,30 @@ export default function MainApp() {
     document.getElementById("myNav").classList.toggle("menu_width")
     document.querySelector(".custom_menu-btn").classList.toggle("menu_btn-style")
   }
+  useEffect(() => {
+    checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore')
+      .then((isLoggedIn) => {
+        if (isLoggedIn) {
+          // Retrieve user data from IndexedDB
+          const request = indexedDB.open('GoogleCredentialsDB', 2);
+
+          request.onsuccess = (event) => {
+            const db = event.target.result;
+            const transaction = db.transaction(['CredentialsStore'], 'readonly');
+            const store = transaction.objectStore('CredentialsStore');
+            const getAllRequest = store.getAll();
+
+            getAllRequest.onsuccess = (event) => {
+              const storedData = event.target.result[0]; // Assuming you only store one user's credentials
+              if (storedData) {
+                setProfile(storedData);
+              }
+            };
+          };
+        }
+      })
+      .catch((error) => console.error("Error checking logged-in status:", error));
+  }, []);
   const onSuccess = async (response) => {
     try {
       const checkUserBody = { token: response.credential };
