@@ -164,7 +164,7 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
         <p>Create a project/Select existing one</p>
         {projects.length > 0 &&  
         (<>
-        <label style={{textAlign:'left'}} htmlFor="">Select from prevous projects</label>
+        <label style={{textAlign:'left'}} htmlFor="">Select from previous projects</label>
         <Select
           value={selectedProject}
           onChange={(e) => setSelectedProject(e.target.value)}
