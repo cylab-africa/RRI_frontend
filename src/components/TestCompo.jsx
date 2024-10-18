@@ -106,7 +106,7 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
     }
     try{
     let respo = await api.postRequest("/project", { projectName: projectName }, true);
-
+    console.log(respo);
         if(respo.status === 202){
             addToken(respo.data.data.token);
             respo = await api.postRequest(

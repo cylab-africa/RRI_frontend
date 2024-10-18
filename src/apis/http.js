@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getToke } from "../utils/localStorageUtils";
+import { getFirstItemFromIndexedDB } from "../helpers/indexedDB";
 
 export const ip = process.env.REACT_APP_BASE_URL_LOCAL;
 
@@ -14,17 +15,25 @@ export class API {
 
   baseFormHeaders = {
     "Content-Type": "multipart/form-data",
-    Athorization:  this.token,
+    Athorization: this.token,
   };
   token = null
 
-  async getHeaders (protectedRoute=false) {
+  async getHeaders(protectedRoute = false) {
     // this.token = await restoreToken()
     // console.log(`There it is again ${this.token}`)
-    const response = getToke()
-    if(response){
-      this.token = response
-    } 
+    const data = await getFirstItemFromIndexedDB('GoogleCredentialsDB', 'CredentialsStore')
+      .catch((error) => {
+        console.error('Error:', error);
+        return null; // Return null if there's an error
+      });
+    // Check if data exists and retrieve the accessToken
+    if (data && data.accessToken) {
+      this.token = data.accessToken; // Save the token
+    } else {
+      console.log('No data found in IndexedDB.');
+      this.token = null; // Ensure token is null if not found
+    }
 
     const headers = (protectedRoute && this.token)
       ? { ...this.baseJsonHeaders, Authorization: this.token }
@@ -37,7 +46,7 @@ export class API {
   async getRequest(endpoint, protectedRoute = false) {
     const headers = await this.getHeaders(protectedRoute);
     // console.log(this.BASE_URL)
-   
+
     try {
       const response = await axios({
         method: "get",
@@ -47,30 +56,31 @@ export class API {
 
       return response;
     } catch (e) {
-        throw e
+      throw e
     }
   }
 
   async postRequest(endpoint, body, protectedRoute = false) {
     try {
-      // console.table("Here we are")
+      console.log('protected: ', protectedRoute)
+      // Await the result of getHeaders (which returns a promise)
       const headers = await this.getHeaders(protectedRoute);
-      // console.log(headers)
+
+      console.log('Authorization Header:', headers.Authorization); // Verify the headers are correctly resolved
+
+      // Make the POST request with axios
       const response = await axios({
         method: "post",
         url: `${this.BASE_URL}${endpoint}`,
-        headers: headers,
-        data:body,
-
+        headers: headers,  // Use the resolved headers here
+        data: body,        // Pass the body of the request
       });
-      // const response = await axios.post(this.BASE_URL+endpoint, body, {
-      //   headers: headers,
-      // });
-     
-      return response;
+
+      return response;  // Return the response after the request
     } catch (e) {
-      throw e
-  }
+      console.error('Error in postRequest:', e);  // Log any errors for debugging
+      throw e;  // Rethrow the error to handle it outside the function
+    }
   }
 
   async putRequest(endpoint, body, protectedRoute = false) {
@@ -82,13 +92,13 @@ export class API {
         headers: headers,
         data: body,
       });
-
+      console.log('response: ',response)
       return response;
     } catch (e) {
-      return  e ;
+      return e;
     }
   }
 
-  
+
 }
 
