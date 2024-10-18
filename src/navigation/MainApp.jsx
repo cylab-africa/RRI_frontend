@@ -69,18 +69,23 @@ export default function MainApp() {
       // check if user exit
       const checkUserResponse = await api.postRequest("/check-user", checkUserBody, true);
       const data = await checkUserResponse.data;
+      console.log('true registration:', data)
       const decodedToken = jwtDecode(response.credential);
+      let authResponse;
+      let accessToken;
       if (data.userRegistered == false) {
-        
+        console.log('false registration')
         const registerBody = {
           email: decodedToken.email,
           firstName: decodedToken.given_name,
           lastName: decodedToken.family_name,
           googleCredential: response.credential
         };
-        const signupResponse = await api.postRequest("/signup", registerBody, true);
+        authResponse = await api.postRequest("/signup", registerBody, true);
+        accessToken=authResponse.data.accessToken;
         setProfile(decodedToken);
       } else {
+        accessToken=data.accessToken;
         setProfile(decodedToken);
       }
       // Save Google credentials to IndexedDB
@@ -90,7 +95,8 @@ export default function MainApp() {
       email: decodedToken.email,
       firstName: decodedToken.given_name,
       lastName: decodedToken.family_name,
-      picture:decodedToken.picture
+      picture:decodedToken.picture,
+      accessToken:accessToken
     };
       SaveToIndexedDB('GoogleCredentialsDB', 'CredentialsStore', googleCredentials);
       

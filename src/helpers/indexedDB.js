@@ -41,6 +41,48 @@ export const SaveToIndexedDB = (dbName, storeName, data) => {
   };
 };
 
+export const getFirstItemFromIndexedDB = (dbName, storeName) => {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(dbName, 2);
+
+    request.onsuccess = (event) => {
+      const db = event.target.result;
+
+      // Check if the object store exists
+      if (!db.objectStoreNames.contains(storeName)) {
+        console.error(`Object store not found: ${storeName}`);
+        resolve(null); // No data found if the store doesn't exist
+        return;
+      }
+
+      // Start a transaction to read from the store
+      const transaction = db.transaction([storeName], "readonly");
+      const store = transaction.objectStore(storeName);
+
+      // Open a cursor to get the first record
+      const cursorRequest = store.openCursor();
+
+      cursorRequest.onsuccess = (event) => {
+        const cursor = event.target.result;
+        if (cursor) {
+          resolve(cursor.value); // Return the first item found in the store
+        } else {
+          resolve(null); // No data in the store
+        }
+      };
+
+      cursorRequest.onerror = (event) => {
+        reject("Error retrieving data from IndexedDB");
+      };
+    };
+
+    request.onerror = (event) => {
+      reject("Error opening IndexedDB: " + event.target.error);
+    };
+  });
+};
+
+
   // Function to check if the user is logged in
   export const checkUserLoggedIn = (dbName, storeName) => {
     return new Promise((resolve, reject) => {

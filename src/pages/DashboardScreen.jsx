@@ -262,7 +262,7 @@ const DashboardScreen = () => {
     try {
       let response;
       response = await api.getRequest("/projects", true);
-      // console.log(response)
+      console.log(response)
       if (response.status === 200) {
 
         let allProjects = response.data.data;
@@ -467,7 +467,7 @@ const DashboardScreen = () => {
                 <div className="col">
                   <div class="heading_container">
 
-                    <h2>Your dahboard is empty</h2>
+                    <h2>Your dashboard is empty</h2>
                   </div>
 
                   <a className="green-link" href="/">
