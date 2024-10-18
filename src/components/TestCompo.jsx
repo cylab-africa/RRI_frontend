@@ -108,9 +108,25 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
     if(isLoggedIn==false){
       swal({
         title: "Not Logged In",
-        text: "You need to be logged in to download the report.",
+        text: "Please login before you proceed with the test.",
         icon: "warning",  // You can change the icon as needed
-        button: "OK",
+        buttons: {
+          confirm: {
+            text: "OK",
+            value: true,
+            visible: true,
+            className: "",
+            closeModal: true, // Close the modal when clicked
+          },
+        },
+        closeOnClickOutside: false, // Prevent clicking outside to close the modal
+        closeOnEsc: false,
+      }).then((willRedirect) => {
+        if (willRedirect) {
+          // Redirect to the landing page
+          onClose()
+          history.push("/"); // Adjust the path to your landing page
+        }
       });
       return;
     }
