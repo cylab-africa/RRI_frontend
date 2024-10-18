@@ -5,7 +5,7 @@ import swal from "sweetalert";
 import { API } from "../apis/http";
 import { addToken } from '../utils/localStorageUtils';
 import { useHistory, useLocation } from "react-router-dom";
-
+import { checkUserLoggedIn } from '../helpers/indexedDB';
 
 const Overlay = styled.div`
   position: fixed;
@@ -104,6 +104,16 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
       // setModalOpen(false)
       return
     }
+    const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
+    if(isLoggedIn==false){
+      swal({
+        title: "Not Logged In",
+        text: "You need to be logged in to download the report.",
+        icon: "warning",  // You can change the icon as needed
+        button: "OK",
+      });
+      return;
+    }
     try{
     let respo = await api.postRequest("/project", { projectName: projectName }, true);
     console.log(respo);
@@ -136,7 +146,8 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
 
 
     }catch(e){
-
+      console.log("Errora!", `${e.response?e.response.data.message:e.message}`);
+      swal("Error!", `${e.response?e.response.data.message:e.message}`);
       if (e) {
         // console.log(e)
         swal("Error!", `${e.response?e.response.data.message:e.message}`);
@@ -151,7 +162,7 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
   const handleSubmit = () => {
     if(selectedProject != ''){
        registerProject(selectedProject);
-    }else if( newProjectName != ''){
+    }else if( newProjectName != ''&&newProjectName){
       registerProject(newProjectName)
     }
   };
