@@ -62,11 +62,8 @@ export class API {
 
   async postRequest(endpoint, body, protectedRoute = false) {
     try {
-      console.log('protected: ', protectedRoute)
       // Await the result of getHeaders (which returns a promise)
       const headers = await this.getHeaders(protectedRoute);
-
-      console.log('Authorization Header:', headers.Authorization); // Verify the headers are correctly resolved
 
       // Make the POST request with axios
       const response = await axios({
@@ -75,6 +72,7 @@ export class API {
         headers: headers,  // Use the resolved headers here
         data: body,        // Pass the body of the request
       });
+      console.log('response: ',response)
 
       return response;  // Return the response after the request
     } catch (e) {

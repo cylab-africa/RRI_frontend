@@ -192,12 +192,13 @@ const DashboardScreen = () => {
   // ----------------------------------- 
 
   function getQuestionsAndAnswers(data) {
+    console.log('data question: ',data.project.answers)
     return data.project.answers.map((answerObj, index) => ({
       number: index + 1,
-      question: answerObj.question.questionText,
+      question: answerObj.subQuestion.text,
       answer: {
         score: answerObj.score,
-        type: answerObj.question.type
+        type: answerObj.subQuestion.type
       },
       weight: answerObj.weight
     }));
@@ -240,6 +241,7 @@ const DashboardScreen = () => {
     })
   
     .catch(err => {
+      console.log('error in report generating: ',err)
       if (err?.response) {
          // API error
          swal("Error fetching report data: " + err.response.data.message);
@@ -262,7 +264,7 @@ const DashboardScreen = () => {
     try {
       let response;
       response = await api.getRequest("/projects", true);
-      console.log(response)
+      console.log('projects: ',response)
       if (response.status === 200) {
 
         let allProjects = response.data.data;
@@ -273,14 +275,17 @@ const DashboardScreen = () => {
         let seectedProject;
         if (pid) {
 
+
+          console.log('selected project: ',response.data.data)
           seectedProject = response.data.data.find((obj) => obj.id === pid);
-          // console.log(seectedProject)
+          console.log(seectedProject)
 
           setCurrentProject(seectedProject);
         } else {
           seectedProject = response.data.data[0];
           setCurrentProject(seectedProject);
         }
+        console.log('seectedProject.evaluations[0]: ',seectedProject.evaluations[0])
         setCurrentEvaluation(seectedProject.evaluations[0]);
         setLoading(false);
 
@@ -572,7 +577,7 @@ const DashboardScreen = () => {
                       <div className="col"></div>
                       <div className="col-md-2">
                         <small style={{ fontSize: 11 }}>
-                          {formatDate(currentEvaluation.timeStarted)}
+                          {formatDate(currentEvaluation.startTime)}
                         </small>
                       </div>
                     </div>
@@ -639,14 +644,14 @@ const DashboardScreen = () => {
                                   style={{ textDecoration: "underline" }}
                                 >
                                   Evaluation {currentProject.evaluations.length - index} :{" "}
-                                  {formatDate(element.timeStarted)}
+                                  {formatDate(element.startTime)}
                                 </li>
                               );
                             }
                             return (
                               <li onClick={() => setCurrentEvaluation(element)}>
                                 Evaluation {currentProject.evaluations.length - index} :{" "}
-                                {formatDate(element.timeStarted)}
+                                {formatDate(element.startTime)}
                               </li>
                             );
                           })}
