@@ -227,10 +227,14 @@ const DashboardScreen = () => {
       if (!name) throw null;
       const report = await api.getRequest('/report/'+currentEvaluation.id, true);
       const filtaredData = getQuestionsAndAnswers(report.data);
-      // console.log(filtaredData)
       // console.log('Filtered Data:', filtaredData);
       // console.log('General Score:', currentEvaluation.score[3]);
-      const blob = await ReactPDF.pdf(<PDFDocument surveyData={filtaredData} names={name} project={currentProject} generalScore={currentEvaluation.score[3]} />).toBlob();
+      const blob = await ReactPDF.pdf(<PDFDocument 
+        layerScores={[currentEvaluation.score[0],currentEvaluation.score[1],currentEvaluation.score[2]]} 
+        surveyData={filtaredData} 
+        principleScores={report.data.project.principleScores} 
+        names={name} project={currentProject} 
+        generalScore={currentEvaluation.score[3]} />).toBlob();
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;

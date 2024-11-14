@@ -1,5 +1,6 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { normalizeScoreFun } from '../utils/utils';
 
 // Survey data
 const surveyData = [
@@ -41,6 +42,11 @@ const calculateGeneralScore = (data) => {
 const generalScore = calculateGeneralScore(surveyData);
 
 const styles = StyleSheet.create({
+    principle: {
+        textAlign: 'left',
+        fontSize: 10
+    },
+
     page: {
         flexDirection: 'column',
         backgroundColor: '#ffffff',
@@ -188,7 +194,7 @@ const styles = StyleSheet.create({
         height: 10,
         borderWidth: 1,
         borderColor: '#fff',
-        backgroundColor:'grey',
+        backgroundColor: 'grey',
         marginRight: 5,
         position: 'relative'
     }
@@ -225,15 +231,41 @@ const generateAnswerElement = (answer) => {
     }
 };
 
-const PDFDocument = ({ surveyData, names, project, generalScore, logoUrl }) => (
+const PDFDocument = ({ surveyData, names, project, generalScore, principleScores, layerScores, logoUrl }) => (
     <Document>
         <Page size="A4" style={styles.page}>
             <Image style={styles.image} src={require('../images/Upanzi-Network-logo.png')} />
             <View style={styles.header}>
-                <Text style={styles.title}>Responsible Research and Innovation Report</Text>
+                <Text style={styles.title}>Responsible Research and Innovation Report1</Text>
                 {/* <Text style={styles.subtitle}>Name: {names}</Text>
                 <Text style={styles.subtitle}>Project Name: {project.name}</Text>
                 <Text style={styles.subtitle}>Date Downloaded: {new Date().toLocaleDateString()}</Text> */}
+            </View>
+
+
+            {/* start of principles details */}
+            <View style={styles.header}>
+                <Text>Principle: </Text>
+            </View>
+            <View style={styles.header}>
+                <Text style={[styles.principle, getBadgeStyle((principleScores['Benefits to Society & Public Engagement']?.avg * 10).toFixed(2))]}>{'- Benefits to Society & Public Engagement'} {principleScores['Benefits to Society & Public Engagement']?.avg.toFixed(2)}</Text>
+                <Text style={[styles.principle, getBadgeStyle((principleScores['Ethics & Governance']?.avg * 10).toFixed(2))]}>{'- Ethics & Governance'} {principleScores['Ethics & Governance']?.avg}</Text>
+                <Text style={[styles.principle, getBadgeStyle((principleScores['Fairness, Gender Equality & Inclusivity']?.avg * 10).toFixed(2))]}>{'- Fairness, Gender Equality & Inclusivity'} {principleScores['Fairness, Gender Equality & Inclusivity']?.avg.toFixed(2)}</Text>
+                <Text style={[styles.principle, getBadgeStyle((principleScores['Human Agency & Oversight']?.avg * 10).toFixed(2))]}>{'- Human Agency & Oversight'} {principleScores['Human Agency & Oversight']?.avg.toFixed(2)}</Text>
+                <Text style={[styles.principle, getBadgeStyle((principleScores['Open Access']?.avg * 10).toFixed(2))]}>{'- Open Access'} {principleScores['Open Access']?.avg.toFixed(2)}</Text>
+                <Text style={[styles.principle, getBadgeStyle((principleScores['Privacy & Security']?.avg * 10).toFixed(2))]}>{'- Privacy & Security'} {principleScores['Privacy & Security']?.avg}</Text>
+                <Text style={[styles.principle, getBadgeStyle((principleScores['Responsiveness, Transparency & Accountability']?.avg * 10).toFixed(2))]}>{'- Responsiveness, Transparency & Accountability'} {principleScores['Responsiveness, Transparency & Accountability']?.avg.toFixed(2)}</Text>
+            </View>
+
+
+            {/* start of layers details */}
+            <View style={styles.header}>
+                <Text>Layers: </Text>
+            </View>
+            <View style={styles.header}>
+                <Text style={[styles.principle, getBadgeStyle(layerScores[0])]}>{'- Layer 1:'} {layerScores[0].toFixed(1)}{' %'}</Text>
+                <Text style={[styles.principle, getBadgeStyle(layerScores[1])]}>{'- Layer 2:'} {layerScores[1].toFixed(1)}{' %'}</Text>
+                <Text style={[styles.principle, getBadgeStyle(layerScores[2])]}>{'- Layer 3:'} {layerScores[2].toFixed(1)}{' %'}</Text>
             </View>
 
             Table for project details
@@ -310,8 +342,8 @@ const PDFDocument = ({ surveyData, names, project, generalScore, logoUrl }) => (
 
             {/* Summary Section */}
             <View style={styles.summary}>
-                <View style={[styles.badge, getBadgeStyle(generalScore.toFixed(2))]}>
-                    <Text>Overall Score: {generalScore.toFixed(2)}</Text>
+                <View style={[styles.badge, getBadgeStyle(generalScore.toFixed(1))]}>
+                    <Text>Overall Score: {generalScore.toFixed(1)}%</Text>
                 </View>
             </View>
         </Page>
