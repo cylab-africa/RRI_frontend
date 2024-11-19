@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     },
     question: {
         marginBottom: 5,
-        marginTop:10,
+        marginTop: 10,
         fontSize: 12,
         textAlign: 'justify' // Text justification
     },
@@ -262,46 +262,43 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 4,
         margin: 16,
-      },
-      titleText: {
+    },
+    titleText: {
         fontSize: 14,
         fontWeight: 'bold',
         marginBottom: 12,
         color: '#333',
-      },
-      scoreLegend: {
+    },
+    scoreLegend: {
         flexDirection: 'row',
         alignItems: 'center',
         marginVertical: 8,
-      },
-      scoreBox: {
+    },
+    scoreBox: {
         width: 20,
         height: 20,
         borderRadius: 4,
         marginRight: 12,
-      },
-      scoreBoxRed: {
-        backgroundColor: '#ff4d4f',
-      },
-      scoreBoxOrange: {
-        backgroundColor: '#ffa500',
-      },
-      scoreBoxGreen: {
-        backgroundColor: '#52c41a',
-      },
-      legendText: {
+    },
+    scoreBoxRed: {
+        backgroundColor: '#FF0000',
+    },
+    scoreBoxOrange: {
+        backgroundColor: '#FFA500',
+    },
+    legendText: {
         fontSize: 10,
         color: '#555',
         flexShrink: 1,
-      },
-      severityText: {
+    },
+    severityText: {
         fontWeight: 'bold',
         color: '#333',
-      },
-      percentageRange: {
+    },
+    percentageRange: {
         fontWeight: '600',
         color: '#111',
-      },
+    },
 });
 
 const getBadgeStyle = (score) => {
@@ -323,6 +320,16 @@ const getBadgeColorStyle = (score) => {
         return styles.badgeColorPoor;
     }
 };
+const getPerformanceLabel = (score) => {
+    if (score >= 70) {
+        return '(Excellent)';
+    } else if (score >= 50) {
+        return '(Needs improvement)';
+    } else {
+        return '(Requires Attention)';
+    }
+}
+
 const Checkbox = ({ checked }) => (
     <View style={checked ? styles.checkedSquare : styles.square} />
 );
@@ -355,9 +362,26 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
                 </View>
 
 
+
+                {/* report overview */}
+                <View style={styles.textSection}>
+                    <Text style={styles.sectionTitle}>1. Report Overview</Text>
+                </View>
+                <View style={styles.descriptionSection}>
+                    <Text style={styles.descriptionText}>
+                        This report provides an evaluation of the project based on the Responsible Research
+                        and Innovation (RRI) framework. The purpose is to assess how well the project
+                        aligns with RRI principles such as public engagement, ethics, governance, open access,
+                        and gender equality. The assessment uses a traffic light system (green, yellow, red)
+                        to visually indicate the level of adherence to RRI principles.
+                    </Text>
+                </View>
+
+
+
                 {/* personal information  */}
                 <View style={styles.textSection}>
-                    <Text style={styles.sectionTitle}>1. Owners Information</Text>
+                    <Text style={styles.sectionTitle}>2. Project Information</Text>
                 </View>
                 <View style={styles.table}>
                     <View style={styles.tableRow}>
@@ -390,14 +414,20 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
 
                 {/* RRI explanation  */}
                 <View style={styles.textSection}>
-                    <Text style={styles.sectionTitle}>2. RRI Explanation </Text>
+                    <Text style={styles.sectionTitle}>3. RRI Explanation </Text>
                 </View>
                 <View style={styles.descriptionSection}>
                     <Text style={styles.descriptionText}>
-                        Responsible Research and Innovation (RRI) emphasizes inclusive,
-                        transparent, and sustainable innovation processes by promoting social interaction among various stakeholders.
-                        It encourages researchers and innovators to consider ethical, societal, environmental, and safety aspects
-                        throughout the lifecycle of a project.
+                        Responsible Research and Innovation (RRI) promotes inclusive, transparent,
+                        and socially responsible research and innovation. It incorporates ethical,
+                        societal, and sustainability considerations throughout the research process,
+                        actively engaging stakeholders to align research with societal needs.
+                    </Text>
+                    <Text style={styles.descriptionText}>
+                        RRI is crucial because it fosters a positive societal impact from research,
+                        addressing challenges while promoting fairness, inclusivity, and long-term
+                        sustainability. It encourages innovation that is both scientifically
+                        rigorous and socially responsible.
                     </Text>
                 </View>
 
@@ -409,7 +439,9 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
 
                 <View style={[styles.textSection, styles.overall]}>
                     <Text style={styles.sectionSubTitle}>a. Overall Scores:</Text>
-                    <Text style={[styles.sectionSubTitle, getBadgeColorStyle(generalScore.toFixed(1))]}>{generalScore.toFixed(1)}{' '} out of 100</Text>
+                    <Text style={[styles.sectionSubTitle, getBadgeColorStyle(generalScore.toFixed(1))]}>{generalScore.toFixed(1)}{' '} out of 100
+                        {getPerformanceLabel(generalScore.toFixed(1))}
+                    </Text>
                 </View>
 
                 <View style={[styles.layerSection, styles.overall]}>
@@ -417,15 +449,24 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
                 </View>
                 <View style={[styles.overall]}>
                     <Text style={[styles.layersText]}>- Layer 1:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle(layerScores[0])]}>{layerScores[0].toFixed(1)}{' '} out of 100</Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle(layerScores[0])]}>{layerScores[0].toFixed(1)}{' '} out of 100
+                        {getPerformanceLabel(layerScores[0].toFixed(1))}
+                    </Text>
+
                 </View>
                 <View style={[styles.overall]}>
-                    <Text style={[ styles.layersText]}>- Layer 2:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle(layerScores[1].toFixed(1))]}>{layerScores[1].toFixed(1)}{' '} out of 100</Text>
+                    <Text style={[styles.layersText]}>- Layer 2:{' '} </Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle(layerScores[1].toFixed(1))]}>
+                        {layerScores[1].toFixed(1)}{' '} out of 100
+                        {getPerformanceLabel(layerScores[1].toFixed(1))}
+                    </Text>
                 </View>
                 <View style={[styles.overall]}>
-                    <Text style={[ styles.layersText]}>- Layer 2:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle(layerScores[2].toFixed(1))]}>{layerScores[2].toFixed(1)}{' '} out of 100</Text>
+                    <Text style={[styles.layersText]}>- Layer 3:{' '} </Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle(layerScores[2].toFixed(1))]}>
+                        {layerScores[2].toFixed(1)}{' '} out of 100
+                        {getPerformanceLabel(layerScores[2].toFixed(1))}
+                    </Text>
                 </View>
 
 
@@ -436,33 +477,54 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
                     <Text style={styles.sectionSubTitle}>c. Principle Scores </Text>
                 </View>
                 <View style={[styles.overall]}>
-                    <Text style={[ styles.layersText]}>- Benefits to Society & Public Engagement:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Benefits to Society & Public Engagement']?.avg * 10).toFixed(2))]}>{principleScores['Benefits to Society & Public Engagement']?.avg.toFixed(2) * 10}{' '} out of 100</Text>
+                    <Text style={[styles.layersText]}>- Benefits to Society & Public Engagement:{' '} </Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Benefits to Society & Public Engagement']?.avg * 10).toFixed(2))]}>
+                        {principleScores['Benefits to Society & Public Engagement']?.avg.toFixed(2) * 10}{' '} out of 100
+                        {getPerformanceLabel(principleScores['Benefits to Society & Public Engagement']?.avg.toFixed(2) * 10)}
+                    </Text>
                 </View>
                 <View style={[styles.overall]}>
                     <Text style={[styles.layersText]}>- Ethics & Governance:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Ethics & Governance']?.avg * 10).toFixed(2))]}>{principleScores['Ethics & Governance']?.avg.toFixed(2) * 10}{' '} out of 100</Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Ethics & Governance']?.avg * 10).toFixed(2))]}>
+                        {principleScores['Ethics & Governance']?.avg.toFixed(2) * 10}{' '} out of 100
+                        {getPerformanceLabel(principleScores['Ethics & Governance']?.avg.toFixed(2) * 10)}
+                    </Text>
                 </View>
 
                 <View style={[styles.overall]}>
                     <Text style={[styles.layersText]}>- Privacy & Security:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Privacy & Security']?.avg * 10).toFixed(2))]}>{principleScores['Privacy & Security']?.avg.toFixed(2) * 10}{' '} out of 100</Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Privacy & Security']?.avg * 10).toFixed(2))]}>
+                        {principleScores['Privacy & Security']?.avg.toFixed(2) * 10}{' '} out of 100
+                        {getPerformanceLabel(principleScores['Privacy & Security']?.avg.toFixed(2) * 10)}
+                    </Text>
                 </View>
                 <View style={[styles.overall]}>
                     <Text style={[styles.layersText]}>- Fairness, Gender Equality & Inclusivity:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Fairness, Gender Equality & Inclusivity']?.avg * 10).toFixed(2))]}>{principleScores['Fairness, Gender Equality & Inclusivity']?.avg.toFixed(2) * 10}{' '} out of 100</Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Fairness, Gender Equality & Inclusivity']?.avg * 10).toFixed(2))]}>
+                        {principleScores['Fairness, Gender Equality & Inclusivity']?.avg.toFixed(2) * 10}{' '} out of 100
+                        {getPerformanceLabel(principleScores['Fairness, Gender Equality & Inclusivity']?.avg.toFixed(2) * 10)}
+                    </Text>
                 </View>
                 <View style={[styles.overall]}>
-                    <Text style={[ styles.layersText]}>- Responsiveness, Transparency & Accountability:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Responsiveness, Transparency & Accountability']?.avg * 10).toFixed(2))]}>{principleScores['Responsiveness, Transparency & Accountability']?.avg.toFixed(2) * 10}{' '} out of 100</Text>
+                    <Text style={[styles.layersText]}>- Responsiveness, Transparency & Accountability:{' '} </Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Responsiveness, Transparency & Accountability']?.avg * 10).toFixed(2))]}>
+                        {principleScores['Responsiveness, Transparency & Accountability']?.avg.toFixed(2) * 10}{' '} out of 100
+                        {getPerformanceLabel(principleScores['Responsiveness, Transparency & Accountability']?.avg.toFixed(2) * 10)}
+                    </Text>
                 </View>
                 <View style={[styles.overall]}>
-                    <Text style={[ styles.layersText]}>- Human Agency & Oversight:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Human Agency & Oversight']?.avg * 10).toFixed(2))]}>{principleScores['Human Agency & Oversight']?.avg.toFixed(2) * 10}{' '} out of 100</Text>
+                    <Text style={[styles.layersText]}>- Human Agency & Oversight:{' '} </Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Human Agency & Oversight']?.avg * 10).toFixed(2))]}>
+                        {principleScores['Human Agency & Oversight']?.avg.toFixed(2) * 10}{' '} out of 100
+                        {getPerformanceLabel(principleScores['Human Agency & Oversight']?.avg.toFixed(2) * 10)}
+                    </Text>
                 </View>
                 <View style={[styles.overall]}>
                     <Text style={[styles.layersText]}>- Open Access:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Open Access']?.avg * 10).toFixed(2))]}>{principleScores['Open Access']?.avg.toFixed(2) * 10}{' '} out of 100</Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Open Access']?.avg * 10).toFixed(2))]}>
+                        {principleScores['Open Access']?.avg.toFixed(2) * 10}{' '} out of 100
+                        {getPerformanceLabel(principleScores['Open Access']?.avg.toFixed(2) * 10)}
+                    </Text>
                 </View>
 
 
@@ -501,32 +563,32 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
 
                 {/* Score Explanation */}
                 <View style={styles.scoreSection}>
-      <Text style={styles.titleText}>Score and Severity Explanation:</Text>
-      
-      <View style={styles.scoreLegend}>
-        <View style={[styles.scoreBox, styles.scoreBoxRed]} />
-        <Text style={styles.legendText}>
-          <Text style={styles.severityText}>Red </Text>
-          {'(Critical problems that require immediate attention)'}: <Text style={styles.percentageRange}>0-49%</Text>
-        </Text>
-      </View>
-      
-      <View style={styles.scoreLegend}>
-        <View style={[styles.scoreBox, styles.scoreBoxOrange]} />
-        <Text style={styles.legendText}>
-          <Text style={styles.severityText}>Orange </Text>
-          {'(Potential issues that could affect the project if unaddressed)'}: <Text style={styles.percentageRange}>50-70%</Text>
-        </Text>
-      </View>
-      
-      <View style={styles.scoreLegend}>
-        <View style={[styles.scoreBox, styles.scoreBoxGreen]} />
-        <Text style={styles.legendText}>
-          <Text style={styles.severityText}>Green </Text>
-          {'(Everything is progressing without significant issues.)'}: <Text style={styles.percentageRange}>70-100%</Text>
-        </Text>
-      </View>
-    </View>
+                    <Text style={styles.titleText}>Score and Severity Explanation:</Text>
+
+                    <View style={styles.scoreLegend}>
+                        <View style={[styles.scoreBox, styles.scoreBoxRed]} />
+                        <Text style={styles.legendText}>
+                            <Text style={styles.severityText}>Red </Text>
+                            {'(Requires Attention)'}: <Text style={styles.percentageRange}>0-49%</Text>
+                        </Text>
+                    </View>
+
+                    <View style={styles.scoreLegend}>
+                        <View style={[styles.scoreBox, styles.scoreBoxOrange]} />
+                        <Text style={styles.legendText}>
+                            <Text style={styles.severityText}>Amber </Text>
+                            {'(Needs Improvement)'}: <Text style={styles.percentageRange}>50-70%</Text>
+                        </Text>
+                    </View>
+
+                    <View style={styles.scoreLegend}>
+                        <View style={[styles.scoreBox, styles.scoreBoxGreen]} />
+                        <Text style={styles.legendText}>
+                            <Text style={styles.severityText}>Green </Text>
+                            {'(Excellent)'}: <Text style={styles.percentageRange}>70-100%</Text>
+                        </Text>
+                    </View>
+                </View>
 
                 {/* Results Section */}
                 {/* <Text style={styles.resultsTitle}>Questions and Responses</Text>
