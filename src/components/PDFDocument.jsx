@@ -46,11 +46,35 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         fontSize: 10
     },
-
+    document: {
+        padding: 20,
+    },
     page: {
         flexDirection: 'column',
-        backgroundColor: '#ffffff',
-        padding: 20,
+        padding: 30,
+    },
+    pageView: {
+        width: '100%',
+        borderStyle: 'solid',
+        borderWidth: 1,
+        backgroundColor: '#F2F2F2',
+        borderRadius: '10px',
+        padding: 30
+    },
+    sectionTitle: {
+        fontSize: 14,
+    },
+    sectionSubTitle: {
+        fontSize: 12,
+        marginLeft: 10,
+    },
+    textSection: {
+        marginTop: 20,
+        marginBottom: 10
+    },
+    layerSection: {
+        marginTop: 20,
+        marginBottom: 5
     },
     image: {
         width: 150,
@@ -64,7 +88,7 @@ const styles = StyleSheet.create({
         marginBottom: 20
     },
     title: {
-        fontSize: 24,
+        fontSize: 20,
         margin: 0
     },
     subtitle: {
@@ -72,12 +96,12 @@ const styles = StyleSheet.create({
         marginBottom: 5
     },
     text: {
-        fontSize: 11,
+        fontSize: 10,
         marginBottom: 5,
         textAlign: 'justify' // Text justification
     },
     resultsTitle: {
-        fontSize: 20,
+        fontSize: 14,
         fontWeight: 'bold',
         textTransform: 'uppercase',
         marginBottom: 10,
@@ -86,7 +110,8 @@ const styles = StyleSheet.create({
     },
     question: {
         marginBottom: 5,
-        fontSize: 13,
+        marginTop:10,
+        fontSize: 12,
         textAlign: 'justify' // Text justification
     },
     summary: {
@@ -101,6 +126,15 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
         borderRadius: 4,
+    },
+    badgeColorExcellent: {
+        color: '#008000'
+    },
+    badgeColorAverage: {
+        color: '#FFA500'
+    },
+    badgeColorPoor: {
+        color: '#FF0000'
     },
     badgeExcellent: {
         backgroundColor: '#008000'
@@ -140,19 +174,25 @@ const styles = StyleSheet.create({
         borderTopWidth: 0
     },
     tableCell: {
-        margin: 'auto',
+        margin: '10',
         marginTop: 5,
         fontSize: 10,
-        padding: 3
+        padding: 3,
+        textAlign: 'left'
     },
     descriptionSection: {
         marginBottom: 20
     },
     descriptionText: {
-        marginTop: 12,
+        marginTop: 5,
         fontSize: 12,
+        lineHeight: '1.5',
         marginBottom: 5,
         textAlign: 'justify' // Text justification for descriptions
+    },
+    overall: {
+        display: 'flex',
+        flexDirection: 'row'
     },
     scoreSection: {
         marginTop: 20,
@@ -163,11 +203,20 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         textAlign: 'justify' // Text justification for score
     },
+    layersText: {
+        marginLeft: 15,
+        marginTop: 5,
+        fontSize: 10,
+        lineHeight: '1.5',
+        marginBottom: 5,
+        textAlign: 'justify' // Text justification for descriptions
+    },
     scoreLegend: {
         flexDirection: 'row',
         marginTop: 5,
         marginLeft: 20
     },
+
     scoreBox: {
         width: 10,
         height: 10,
@@ -189,6 +238,10 @@ const styles = StyleSheet.create({
         borderColor: '#000',
         marginRight: 5
     },
+    checkboxLabel: {
+        display: 'flex',
+        flexDirection: 'row'
+    },
     checkedSquare: {
         width: 10,
         height: 10,
@@ -197,7 +250,58 @@ const styles = StyleSheet.create({
         backgroundColor: 'grey',
         marginRight: 5,
         position: 'relative'
-    }
+    },
+
+    // score description
+    scoreSection: {
+        padding: 16,
+        backgroundColor: '#f9f9f9',
+        borderRadius: 8,
+        elevation: 3,
+        shadowColor: '#000',
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        margin: 16,
+      },
+      titleText: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        marginBottom: 12,
+        color: '#333',
+      },
+      scoreLegend: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 8,
+      },
+      scoreBox: {
+        width: 20,
+        height: 20,
+        borderRadius: 4,
+        marginRight: 12,
+      },
+      scoreBoxRed: {
+        backgroundColor: '#ff4d4f',
+      },
+      scoreBoxOrange: {
+        backgroundColor: '#ffa500',
+      },
+      scoreBoxGreen: {
+        backgroundColor: '#52c41a',
+      },
+      legendText: {
+        fontSize: 10,
+        color: '#555',
+        flexShrink: 1,
+      },
+      severityText: {
+        fontWeight: 'bold',
+        color: '#333',
+      },
+      percentageRange: {
+        fontWeight: '600',
+        color: '#111',
+      },
 });
 
 const getBadgeStyle = (score) => {
@@ -210,6 +314,15 @@ const getBadgeStyle = (score) => {
     }
 };
 
+const getBadgeColorStyle = (score) => {
+    if (score >= 70) {
+        return styles.badgeColorExcellent;
+    } else if (score >= 50) {
+        return styles.badgeColorAverage;
+    } else {
+        return styles.badgeColorPoor;
+    }
+};
 const Checkbox = ({ checked }) => (
     <View style={checked ? styles.checkedSquare : styles.square} />
 );
@@ -234,117 +347,205 @@ const generateAnswerElement = (answer) => {
 const PDFDocument = ({ surveyData, names, project, generalScore, principleScores, layerScores, logoUrl }) => (
     <Document>
         <Page size="A4" style={styles.page}>
-            <Image style={styles.image} src={require('../images/Upanzi-Network-logo.png')} />
-            <View style={styles.header}>
-                <Text style={styles.title}>Responsible Research and Innovation Report1</Text>
-                {/* <Text style={styles.subtitle}>Name: {names}</Text>
-                <Text style={styles.subtitle}>Project Name: {project.name}</Text>
-                <Text style={styles.subtitle}>Date Downloaded: {new Date().toLocaleDateString()}</Text> */}
-            </View>
+            <View style={styles.pageView}>
 
-
-            {/* start of principles details */}
-            <View style={styles.header}>
-                <Text>Principle: </Text>
-            </View>
-            <View style={styles.header}>
-                <Text style={[styles.principle, getBadgeStyle((principleScores['Benefits to Society & Public Engagement']?.avg * 10).toFixed(2))]}>{'- Benefits to Society & Public Engagement'} {principleScores['Benefits to Society & Public Engagement']?.avg.toFixed(2)}</Text>
-                <Text style={[styles.principle, getBadgeStyle((principleScores['Ethics & Governance']?.avg * 10).toFixed(2))]}>{'- Ethics & Governance'} {principleScores['Ethics & Governance']?.avg}</Text>
-                <Text style={[styles.principle, getBadgeStyle((principleScores['Fairness, Gender Equality & Inclusivity']?.avg * 10).toFixed(2))]}>{'- Fairness, Gender Equality & Inclusivity'} {principleScores['Fairness, Gender Equality & Inclusivity']?.avg.toFixed(2)}</Text>
-                <Text style={[styles.principle, getBadgeStyle((principleScores['Human Agency & Oversight']?.avg * 10).toFixed(2))]}>{'- Human Agency & Oversight'} {principleScores['Human Agency & Oversight']?.avg.toFixed(2)}</Text>
-                <Text style={[styles.principle, getBadgeStyle((principleScores['Open Access']?.avg * 10).toFixed(2))]}>{'- Open Access'} {principleScores['Open Access']?.avg.toFixed(2)}</Text>
-                <Text style={[styles.principle, getBadgeStyle((principleScores['Privacy & Security']?.avg * 10).toFixed(2))]}>{'- Privacy & Security'} {principleScores['Privacy & Security']?.avg}</Text>
-                <Text style={[styles.principle, getBadgeStyle((principleScores['Responsiveness, Transparency & Accountability']?.avg * 10).toFixed(2))]}>{'- Responsiveness, Transparency & Accountability'} {principleScores['Responsiveness, Transparency & Accountability']?.avg.toFixed(2)}</Text>
-            </View>
-
-
-            {/* start of layers details */}
-            <View style={styles.header}>
-                <Text>Layers: </Text>
-            </View>
-            <View style={styles.header}>
-                <Text style={[styles.principle, getBadgeStyle(layerScores[0])]}>{'- Layer 1:'} {layerScores[0].toFixed(1)}{' %'}</Text>
-                <Text style={[styles.principle, getBadgeStyle(layerScores[1])]}>{'- Layer 2:'} {layerScores[1].toFixed(1)}{' %'}</Text>
-                <Text style={[styles.principle, getBadgeStyle(layerScores[2])]}>{'- Layer 3:'} {layerScores[2].toFixed(1)}{' %'}</Text>
-            </View>
-
-            Table for project details
-            <View style={styles.table}>
-                <View style={styles.tableRow}>
+                <Image style={styles.image} src={require('../images/Upanzi-Network-logo.png')} />
+                <View style={styles.header}>
+                    <Text style={styles.title}>Responsible Research and Innovation Report</Text>
                 </View>
-                <View style={styles.tableRow}>
-                    <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>Project Owner</Text>
+
+
+                {/* personal information  */}
+                <View style={styles.textSection}>
+                    <Text style={styles.sectionTitle}>1. Owners Information</Text>
+                </View>
+                <View style={styles.table}>
+                    <View style={styles.tableRow}>
                     </View>
-                    <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>{names}</Text>
+                    <View style={styles.tableRow}>
+                        <View style={styles.tableCol}>
+                            <Text style={styles.tableCell}>Project Owner</Text>
+                        </View>
+                        <View style={styles.tableCol}>
+                            <Text style={styles.tableCell}>{names}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.tableRow}>
+                        <View style={styles.tableCol}>
+                            <Text style={styles.tableCell}>Project Name</Text>
+                        </View>
+                        <View style={styles.tableCol}>
+                            <Text style={styles.tableCell}>{project.name}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.tableRow}>
+                        <View style={styles.tableCol}>
+                            <Text style={styles.tableCell}>Date Downloaded</Text>
+                        </View>
+                        <View style={styles.tableCol}>
+                            <Text style={styles.tableCell}>{new Date().toLocaleDateString()}</Text>
+                        </View>
                     </View>
                 </View>
-                <View style={styles.tableRow}>
-                    <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>Project Name</Text>
-                    </View>
-                    <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>{project.name}</Text>
-                    </View>
-                </View>
-                <View style={styles.tableRow}>
-                    <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>Date Downloaded</Text>
-                    </View>
-                    <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>{new Date().toLocaleDateString()}</Text>
-                    </View>
-                </View>
-            </View>
 
-            {/* Description Section */}
-            <View style={styles.descriptionSection}>
-                <Text style={styles.descriptionText}>
-                    RRI is a policy-driven concept focused on inclusive and sustainable research and innovation.
-                    While prevalent in the Global North as a technology-driven approach, in sub-Saharan Africa,
-                    it demands a community-based and livelihood-oriented perspective.
-                </Text>
-                <Text style={styles.descriptionText}>
-                    Our RRI index consists of 3 layers each with a corresponding weight:
-                </Text>
-                <Text style={styles.descriptionText}>- Layer 1: Privacy, Security (0.346 weight)</Text>
-                <Text style={styles.descriptionText}>- Layer 2: Transparency, Gender equity (0.331 weight)</Text>
-                <Text style={styles.descriptionText}>- Layer 3: Human Agency, Oversight (0.323 weight)</Text>
-                {/* <Text style={styles.descriptionText}>You can read more on the RRI index here.</Text> */}
-            </View>
+                {/* RRI explanation  */}
+                <View style={styles.textSection}>
+                    <Text style={styles.sectionTitle}>2. RRI Explanation </Text>
+                </View>
+                <View style={styles.descriptionSection}>
+                    <Text style={styles.descriptionText}>
+                        Responsible Research and Innovation (RRI) emphasizes inclusive,
+                        transparent, and sustainable innovation processes by promoting social interaction among various stakeholders.
+                        It encourages researchers and innovators to consider ethical, societal, environmental, and safety aspects
+                        throughout the lifecycle of a project.
+                    </Text>
+                </View>
 
-            {/* Score Explanation */}
-            <View style={styles.scoreSection}>
-                <Text style={styles.scoreText}>Score Explanation:</Text>
-                <View style={styles.scoreLegend}>
-                    <View style={[styles.scoreBox, styles.scoreBoxRed]}></View>
-                    <Text style={styles.scoreText}>Red: 0-49%</Text>
-                </View>
-                <View style={styles.scoreLegend}>
-                    <View style={[styles.scoreBox, styles.scoreBoxOrange]}></View>
-                    <Text style={styles.scoreText}>Orange: 50-70%</Text>
-                </View>
-                <View style={styles.scoreLegend}>
-                    <View style={[styles.scoreBox, styles.scoreBoxGreen]}></View>
-                    <Text style={styles.scoreText}>Green: 70-100%</Text>
-                </View>
-            </View>
 
-            {/* Results Section */}
-            <Text style={styles.resultsTitle}>Your results</Text>
-            {surveyData.map((item, index) => (
-                <View key={index} style={styles.section}>
-                    <Text style={styles.question}>{index + 1}. {item.question}</Text>
-                    {generateAnswerElement(item.answer)}
+                {/* summary results */}
+                <View style={styles.textSection}>
+                    <Text style={styles.sectionTitle}>3. Summary Results </Text>
                 </View>
-            ))}
 
-            {/* Summary Section */}
-            <View style={styles.summary}>
-                <View style={[styles.badge, getBadgeStyle(generalScore.toFixed(1))]}>
-                    <Text>Overall Score: {generalScore.toFixed(1)}%</Text>
+                <View style={[styles.textSection, styles.overall]}>
+                    <Text style={styles.sectionSubTitle}>a. Overall Scores:</Text>
+                    <Text style={[styles.sectionSubTitle, getBadgeColorStyle(generalScore.toFixed(1))]}>{generalScore.toFixed(1)}{' '} out of 100</Text>
                 </View>
+
+                <View style={[styles.layerSection, styles.overall]}>
+                    <Text style={styles.sectionSubTitle}>b. Layer Score </Text>
+                </View>
+                <View style={[styles.overall]}>
+                    <Text style={[styles.layersText]}>- Layer 1:{' '} </Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle(layerScores[0])]}>{layerScores[0].toFixed(1)}{' '} out of 100</Text>
+                </View>
+                <View style={[styles.overall]}>
+                    <Text style={[ styles.layersText]}>- Layer 2:{' '} </Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle(layerScores[1].toFixed(1))]}>{layerScores[1].toFixed(1)}{' '} out of 100</Text>
+                </View>
+                <View style={[styles.overall]}>
+                    <Text style={[ styles.layersText]}>- Layer 2:{' '} </Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle(layerScores[2].toFixed(1))]}>{layerScores[2].toFixed(1)}{' '} out of 100</Text>
+                </View>
+
+
+
+
+                {/* start of principles details */}
+                <View style={[styles.layerSection, styles.overall]}>
+                    <Text style={styles.sectionSubTitle}>c. Principle Scores </Text>
+                </View>
+                <View style={[styles.overall]}>
+                    <Text style={[ styles.layersText]}>- Benefits to Society & Public Engagement:{' '} </Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Benefits to Society & Public Engagement']?.avg * 10).toFixed(2))]}>{principleScores['Benefits to Society & Public Engagement']?.avg.toFixed(2) * 10}{' '} out of 100</Text>
+                </View>
+                <View style={[styles.overall]}>
+                    <Text style={[styles.layersText]}>- Ethics & Governance:{' '} </Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Ethics & Governance']?.avg * 10).toFixed(2))]}>{principleScores['Ethics & Governance']?.avg.toFixed(2) * 10}{' '} out of 100</Text>
+                </View>
+
+                <View style={[styles.overall]}>
+                    <Text style={[styles.layersText]}>- Privacy & Security:{' '} </Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Privacy & Security']?.avg * 10).toFixed(2))]}>{principleScores['Privacy & Security']?.avg.toFixed(2) * 10}{' '} out of 100</Text>
+                </View>
+                <View style={[styles.overall]}>
+                    <Text style={[styles.layersText]}>- Fairness, Gender Equality & Inclusivity:{' '} </Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Fairness, Gender Equality & Inclusivity']?.avg * 10).toFixed(2))]}>{principleScores['Fairness, Gender Equality & Inclusivity']?.avg.toFixed(2) * 10}{' '} out of 100</Text>
+                </View>
+                <View style={[styles.overall]}>
+                    <Text style={[ styles.layersText]}>- Responsiveness, Transparency & Accountability:{' '} </Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Responsiveness, Transparency & Accountability']?.avg * 10).toFixed(2))]}>{principleScores['Responsiveness, Transparency & Accountability']?.avg.toFixed(2) * 10}{' '} out of 100</Text>
+                </View>
+                <View style={[styles.overall]}>
+                    <Text style={[ styles.layersText]}>- Human Agency & Oversight:{' '} </Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Human Agency & Oversight']?.avg * 10).toFixed(2))]}>{principleScores['Human Agency & Oversight']?.avg.toFixed(2) * 10}{' '} out of 100</Text>
+                </View>
+                <View style={[styles.overall]}>
+                    <Text style={[styles.layersText]}>- Open Access:{' '} </Text>
+                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Open Access']?.avg * 10).toFixed(2))]}>{principleScores['Open Access']?.avg.toFixed(2) * 10}{' '} out of 100</Text>
+                </View>
+
+
+                {/* Questions and Responses */}
+                <View style={styles.textSection}>
+                    <Text style={styles.sectionTitle}>4. Questions and Responses </Text>
+                </View>
+
+                {surveyData.map((item, index) => (
+                    <View key={index} style={styles.section}>
+                        <Text style={styles.question}>{index + 1}. {item.question}</Text>
+                        {generateAnswerElement(item.answer)}
+                    </View>
+                ))}
+
+
+
+                {/* Description Section */}
+                <View style={styles.textSection}>
+                    <Text style={styles.sectionTitle}>5. Description of the Framework</Text>
+                </View>
+                <View style={styles.descriptionSection}>
+                    {/* <Text style={styles.descriptionText}>
+                        RRI is a policy-driven concept focused on inclusive and sustainable research and innovation.
+                        While prevalent in the Global North as a technology-driven approach, in sub-Saharan Africa,
+                        it demands a community-based and livelihood-oriented perspective.
+                    </Text> */}
+                    <Text style={styles.descriptionText}>
+                        Our RRI index consists of 3 layers each with a corresponding weight:
+                    </Text>
+                    <Text style={styles.descriptionText}>- Layer 1: Privacy, Security (0.346 weight)</Text>
+                    <Text style={styles.descriptionText}>- Layer 2: Transparency, Gender equity (0.331 weight)</Text>
+                    <Text style={styles.descriptionText}>- Layer 3: Human Agency, Oversight (0.323 weight)</Text>
+                    {/* <Text style={styles.descriptionText}>You can read more on the RRI index here.</Text> */}
+                </View>
+
+                {/* Score Explanation */}
+                <View style={styles.scoreSection}>
+      <Text style={styles.titleText}>Score and Severity Explanation:</Text>
+      
+      <View style={styles.scoreLegend}>
+        <View style={[styles.scoreBox, styles.scoreBoxRed]} />
+        <Text style={styles.legendText}>
+          <Text style={styles.severityText}>Red </Text>
+          {'(Critical problems that require immediate attention)'}: <Text style={styles.percentageRange}>0-49%</Text>
+        </Text>
+      </View>
+      
+      <View style={styles.scoreLegend}>
+        <View style={[styles.scoreBox, styles.scoreBoxOrange]} />
+        <Text style={styles.legendText}>
+          <Text style={styles.severityText}>Orange </Text>
+          {'(Potential issues that could affect the project if unaddressed)'}: <Text style={styles.percentageRange}>50-70%</Text>
+        </Text>
+      </View>
+      
+      <View style={styles.scoreLegend}>
+        <View style={[styles.scoreBox, styles.scoreBoxGreen]} />
+        <Text style={styles.legendText}>
+          <Text style={styles.severityText}>Green </Text>
+          {'(Everything is progressing without significant issues.)'}: <Text style={styles.percentageRange}>70-100%</Text>
+        </Text>
+      </View>
+    </View>
+
+                {/* Results Section */}
+                {/* <Text style={styles.resultsTitle}>Questions and Responses</Text>
+                {surveyData.map((item, index) => (
+                    <View key={index} style={[styles.section]}>
+                        <Text style={styles.question}>{index + 1}. {item.question}</Text>
+                        <Text>
+                        {generateAnswerElement(item.answer)}
+                        </Text>
+                        
+                    </View>
+                ))} */}
+
+                {/* Summary Section */}
+                {/* <View style={styles.summary}>
+                    <View style={[styles.badge, getBadgeStyle(generalScore.toFixed(1))]}>
+                        <Text>Overall Score: {generalScore.toFixed(1)}{' '} out of 100</Text>
+                    </View>
+                </View> */}
             </View>
         </Page>
     </Document>
