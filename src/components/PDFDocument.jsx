@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
         marginBottom: 6,
     },
     textSection: {
-        marginTop: 20,
+        marginTop: 10,
         marginBottom: 10
     },
     layerSection: {
@@ -161,14 +161,7 @@ const styles = StyleSheet.create({
         margin: 'auto',
         flexDirection: 'row'
     },
-    // tableColHeader: {
-    //     width: '50%',
-    //     borderStyle: 'solid',
-    //     borderWidth: 1,
-    //     borderLeftWidth: 0,
-    //     borderTopWidth: 0,
-    //     backgroundColor: '#f3f3f3'
-    // },
+    
     tableCol: {
         width: '50%',
         borderStyle: 'solid',
@@ -285,10 +278,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#000',
     },
-
-
-
-
 
     layersText: {
 
