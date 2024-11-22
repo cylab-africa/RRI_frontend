@@ -44,7 +44,8 @@ const generalScore = calculateGeneralScore(surveyData);
 const styles = StyleSheet.create({
     principle: {
         textAlign: 'left',
-        fontSize: 10
+        fontSize: 12
+
     },
     document: {
         padding: 20,
@@ -65,8 +66,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
     },
     sectionSubTitle: {
-        fontSize: 12,
-        marginLeft: 10,
+        fontSize: 13,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 6,
     },
     textSection: {
         marginTop: 20,
@@ -96,12 +99,12 @@ const styles = StyleSheet.create({
         marginBottom: 5
     },
     text: {
-        fontSize: 10,
+        fontSize: 12,
         marginBottom: 5,
         textAlign: 'justify' // Text justification
     },
     resultsTitle: {
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: 'bold',
         textTransform: 'uppercase',
         marginBottom: 10,
@@ -123,7 +126,7 @@ const styles = StyleSheet.create({
         display: 'inline-block',
         padding: '5px 10px',
         color: '#fff',
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: 'bold',
         borderRadius: 4,
     },
@@ -176,37 +179,122 @@ const styles = StyleSheet.create({
     tableCell: {
         margin: '10',
         marginTop: 5,
-        fontSize: 10,
+        fontSize: 12,
         padding: 3,
         textAlign: 'left'
     },
+
+    spacer: {
+        marginVertical: 10,  // Adjust the space as needed
+    },
+
     descriptionSection: {
         marginBottom: 20
     },
     descriptionText: {
-        marginTop: 5,
-        fontSize: 12,
-        lineHeight: '1.5',
-        marginBottom: 5,
-        textAlign: 'justify' // Text justification for descriptions
+        fontSize: 12, // Smaller than section title for hierarchy
+        color: '#555', // Neutral color for description
+        lineHeight: '1.5', // Comfortable line spacing for readability
+        marginBottom: 10,
+        textAlign: 'justify', // Clean alignment for explanatory text
     },
     overall: {
-        display: 'flex',
-        flexDirection: 'row'
+        flexDirection: 'column',  // Ensures that items are stacked vertically
+        alignItems: 'flex-start',  // Aligns text to the left (you can adjust as needed)
+        marginBottom: 20,  // Adds space below the section
     },
     scoreSection: {
         marginTop: 20,
         marginBottom: 20
     },
     scoreText: {
+
         fontSize: 12,
-        marginBottom: 5,
-        textAlign: 'justify' // Text justification for score
+        marginLeft: 15,
+        marginTop: 10,
+        fontWeight: 'bold',
+        textAlign: 'center'
     },
+    bullets: {
+        marginVertical: 10,
+    },
+    bulletText: {
+        fontSize: 12,
+        color: '#666',  // Lighter color to keep focus on the score
+        marginBottom: 5,
+    },
+
+    scoreContainer: {
+        alignItems: 'center',
+        padding: 10,
+        borderRadius: 10,
+        backgroundColor: '#f9f9f9',  // Add a subtle background color
+    },
+    scoreTextLarge: {
+        fontSize: 24,  // Make the score number stand out
+        fontWeight: 'bold',
+        // color: '#000',
+    },
+    scoreLabelText: {
+        fontSize: 14,
+        // color: '#666',
+    },
+    performanceLabelText: {
+        fontSize: 16,
+        fontWeight: '500',
+        // color: '#000',
+    },
+
+    layerScoreContainer: {
+        flexDirection: 'row',  // Ensures Layer label and score are side by side
+        justifyContent: 'space-between',  // Keeps label and score at opposite ends
+        alignItems: 'center',  // Centers content vertically
+        paddingVertical: 8,  // Adds spacing between layers
+        borderBottomWidth: 1,  // Optional: add a divider
+        borderBottomColor: '#ddd',  // Light gray divider
+    },
+
+    layerText: {
+        fontSize: 12,
+        fontWeight: '500',
+        color: '#333',
+    },
+
+    layerScore: {
+        fontSize: 14,
+        fontWeight: 'bold',
+    },
+
+    principleScoreContainer: {
+        flexDirection: 'row',  // Displays principle name and score side by side
+        justifyContent: 'space-between',  // Aligns name to the left, score to the right
+        alignItems: 'center',  // Vertically aligns content
+        paddingVertical: 8,  // Adds vertical padding between principles
+        borderBottomWidth: 1,  // Optional: add a separator
+        borderBottomColor: '#ddd',  // Light gray separator
+    },
+
+    principleText: {
+        fontSize: 12,
+        fontWeight: '500',
+        color: '#333',
+    },
+
+    principleScore: {
+        fontSize: 12,
+        fontWeight: 'bold',
+        color: '#000',
+    },
+
+
+
+
+
     layersText: {
+
         marginLeft: 15,
         marginTop: 5,
-        fontSize: 10,
+        fontSize: 12,
         lineHeight: '1.5',
         marginBottom: 5,
         textAlign: 'justify' // Text justification for descriptions
@@ -257,11 +345,11 @@ const styles = StyleSheet.create({
         padding: 16,
         backgroundColor: '#f9f9f9',
         borderRadius: 8,
-        elevation: 3,
+        elevation: 30,
         shadowColor: '#000',
         shadowOpacity: 0.2,
         shadowRadius: 4,
-        margin: 16,
+        margin: 14,
     },
     titleText: {
         fontSize: 14,
@@ -287,7 +375,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFA500',
     },
     legendText: {
-        fontSize: 10,
+        fontSize: 12,
         color: '#555',
         flexShrink: 1,
     },
@@ -430,107 +518,95 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
                         rigorous and socially responsible.
                     </Text>
                 </View>
+                {/* Summary section */}
 
-
-                {/* summary results */}
                 <View style={styles.textSection}>
-                    <Text style={styles.sectionTitle}>3. Summary Results </Text>
+                    {/* Section Title */}
+                    <Text style={styles.sectionTitle}>4. Summary of Assessment Results</Text>
                 </View>
+                <View>
+
+                    {/* Description Text */}
+                    <Text style={styles.descriptionText}>
+                        This section provides a detailed overview of the assessment results, enabling project owners to understand their
+                        performance comprehensively. The results are presented hierarchically, starting from the overall project score,
+                        followed by performance evaluations across individual layers, and finally, insights on adherence to specific principles.
+                        This structure ensures that stakeholders can identify strengths and areas for improvement effectively, facilitating
+                        informed decision-making and alignment with Responsible Research and Innovation (RRI) principles.
+                    </Text>
+                </View>
+
 
                 <View style={[styles.textSection, styles.overall]}>
-                    <Text style={styles.sectionSubTitle}>a. Overall Scores:</Text>
-                    <Text style={[styles.sectionSubTitle, getBadgeColorStyle(generalScore.toFixed(1))]}>{generalScore.toFixed(1)}{' '} out of 100
-                        {getPerformanceLabel(generalScore.toFixed(1))}
-                    </Text>
-                </View>
 
-                <View style={[styles.layerSection, styles.overall]}>
-                    <Text style={styles.sectionSubTitle}>b. Layer Score </Text>
-                </View>
-                <View style={[styles.overall]}>
-                    <Text style={[styles.layersText]}>- Layer 1:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle(layerScores[0])]}>{layerScores[0].toFixed(1)}{' '} out of 100
-                        {getPerformanceLabel(layerScores[0].toFixed(1))}
+                    <Text style={styles.sectionSubTitle}>a. Overall Assessment:</Text>
+                    <Text style={styles.descriptionText}>
+                        The Overall Assessment summarizes the project's performance against Responsible Research and Innovation (RRI) principles,
+                        aggregating scores from all layers and principles.
                     </Text>
 
-                </View>
-                <View style={[styles.overall]}>
-                    <Text style={[styles.layersText]}>- Layer 2:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle(layerScores[1].toFixed(1))]}>
-                        {layerScores[1].toFixed(1)}{' '} out of 100
-                        {getPerformanceLabel(layerScores[1].toFixed(1))}
+                    {/* Key Points */}
+                    <View style={styles.bullets}>
+                        <Text style={styles.bulletText}>• High scores: Strong adherence to RRI values</Text>
+                        <Text style={styles.bulletText}>• Low scores: Highlight areas for improvement</Text>
+                    </View>
+
+                    {/* Spacer */}
+                    <View style={styles.spacer} />
+
+                    {/* Highlighted Score */}
+                    <View style={[styles.scoreContainer, getBadgeColorStyle(generalScore.toFixed(1))]}>
+                        <Text style={styles.scoreTextLarge}>{generalScore.toFixed(1)}</Text>
+                        <Text style={styles.scoreLabelText}>out of 100</Text>
+                        <Text style={styles.performanceLabelText}>{getPerformanceLabel(generalScore.toFixed(1))}</Text>
+                    </View>
+                {/* Layer section */}
+                <View style={[styles.textSection, styles.layerSection]}>
+                    <Text style={styles.sectionSubTitle}>b. Layer Results Overview</Text>
+
+                    {/* Brief Explanation */}
+                    <Text style={styles.descriptionText}>
+                    The Responsible Research and Innovation (RRI) framework is divided into three layers, each reflecting a key aspect of ethical, societal, and sustainability considerations. Below is a breakdown of the results from the self-assessment tool, along with the RRI score for each layer. The scoring is based on a 0 to 100% scale, where higher scores indicate better alignment with the RRI principles.
                     </Text>
-                </View>
-                <View style={[styles.overall]}>
-                    <Text style={[styles.layersText]}>- Layer 3:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle(layerScores[2].toFixed(1))]}>
-                        {layerScores[2].toFixed(1)}{' '} out of 100
-                        {getPerformanceLabel(layerScores[2].toFixed(1))}
-                    </Text>
+                    <View style={styles.spacer} />
+
+                    {/* Layer Scores */}
+                    {layerScores.map((score, index) => (
+                        <View key={index} style={[styles.layerScoreContainer]}>
+                            <Text style={styles.layerText}>Layer {index + 1}:</Text>
+                            <Text style={[styles.layerScore, getBadgeColorStyle(score.toFixed(1))]}>
+                                {score.toFixed(1)} out of 100  {getPerformanceLabel(score.toFixed(1))}
+                            </Text>
+                        </View>
+                    ))}
                 </View>
 
 
+                <View style={[styles.textSection, styles.principleSection]}>
+                    <Text style={styles.sectionSubTitle}>c. Principle Scores</Text>
 
+                    {/* Brief Explanation */}
+                    <Text style={styles.descriptionText}>
+                        The Principle Scores provide an in-depth evaluation of the project's alignment with individual Responsible
+                        Research and Innovation (RRI) principles. Each score highlights specific areas of strength and identifies
+                        opportunities for improvement.
+                    </Text>
+                    <View style={styles.spacer} />
 
-                {/* start of principles details */}
-                <View style={[styles.layerSection, styles.overall]}>
-                    <Text style={styles.sectionSubTitle}>c. Principle Scores </Text>
+                    {/* Principles List */}
+                    {Object.keys(principleScores).map((principle, index) => (
+                        <View key={index} style={[styles.principleScoreContainer]}>
+                            <Text style={styles.principleText}>{principle}:</Text>
+                            <Text style={[styles.principleScore, getBadgeColorStyle((principleScores[principle]?.avg * 10).toFixed(1))]}>
+                                {(principleScores[principle]?.avg * 10).toFixed(1)} out of 100  {getPerformanceLabel((principleScores[principle]?.avg * 10).toFixed(1))}
+                            </Text>
+                        </View>
+                    ))}
                 </View>
-                <View style={[styles.overall]}>
-                    <Text style={[styles.layersText]}>- Benefits to Society & Public Engagement:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Benefits to Society & Public Engagement']?.avg * 10).toFixed(2))]}>
-                        {principleScores['Benefits to Society & Public Engagement']?.avg.toFixed(2) * 10}{' '} out of 100
-                        {getPerformanceLabel(principleScores['Benefits to Society & Public Engagement']?.avg.toFixed(2) * 10)}
-                    </Text>
-                </View>
-                <View style={[styles.overall]}>
-                    <Text style={[styles.layersText]}>- Ethics & Governance:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Ethics & Governance']?.avg * 10).toFixed(2))]}>
-                        {principleScores['Ethics & Governance']?.avg.toFixed(2) * 10}{' '} out of 100
-                        {getPerformanceLabel(principleScores['Ethics & Governance']?.avg.toFixed(2) * 10)}
-                    </Text>
-                </View>
-
-                <View style={[styles.overall]}>
-                    <Text style={[styles.layersText]}>- Privacy & Security:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Privacy & Security']?.avg * 10).toFixed(2))]}>
-                        {principleScores['Privacy & Security']?.avg.toFixed(2) * 10}{' '} out of 100
-                        {getPerformanceLabel(principleScores['Privacy & Security']?.avg.toFixed(2) * 10)}
-                    </Text>
-                </View>
-                <View style={[styles.overall]}>
-                    <Text style={[styles.layersText]}>- Fairness, Gender Equality & Inclusivity:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Fairness, Gender Equality & Inclusivity']?.avg * 10).toFixed(2))]}>
-                        {principleScores['Fairness, Gender Equality & Inclusivity']?.avg.toFixed(2) * 10}{' '} out of 100
-                        {getPerformanceLabel(principleScores['Fairness, Gender Equality & Inclusivity']?.avg.toFixed(2) * 10)}
-                    </Text>
-                </View>
-                <View style={[styles.overall]}>
-                    <Text style={[styles.layersText]}>- Responsiveness, Transparency & Accountability:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Responsiveness, Transparency & Accountability']?.avg * 10).toFixed(2))]}>
-                        {principleScores['Responsiveness, Transparency & Accountability']?.avg.toFixed(2) * 10}{' '} out of 100
-                        {getPerformanceLabel(principleScores['Responsiveness, Transparency & Accountability']?.avg.toFixed(2) * 10)}
-                    </Text>
-                </View>
-                <View style={[styles.overall]}>
-                    <Text style={[styles.layersText]}>- Human Agency & Oversight:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Human Agency & Oversight']?.avg * 10).toFixed(2))]}>
-                        {principleScores['Human Agency & Oversight']?.avg.toFixed(2) * 10}{' '} out of 100
-                        {getPerformanceLabel(principleScores['Human Agency & Oversight']?.avg.toFixed(2) * 10)}
-                    </Text>
-                </View>
-                <View style={[styles.overall]}>
-                    <Text style={[styles.layersText]}>- Open Access:{' '} </Text>
-                    <Text style={[styles.layersText, getBadgeColorStyle((principleScores['Open Access']?.avg * 10).toFixed(2))]}>
-                        {principleScores['Open Access']?.avg.toFixed(2) * 10}{' '} out of 100
-                        {getPerformanceLabel(principleScores['Open Access']?.avg.toFixed(2) * 10)}
-                    </Text>
-                </View>
-
 
                 {/* Questions and Responses */}
                 <View style={styles.textSection}>
-                    <Text style={styles.sectionTitle}>4. Questions and Responses </Text>
+                    <Text style={styles.sectionTitle}>5. Questions and Responses </Text>
                 </View>
 
                 {surveyData.map((item, index) => (
@@ -542,72 +618,65 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
 
 
 
+
                 {/* Description Section */}
                 <View style={styles.textSection}>
-                    <Text style={styles.sectionTitle}>5. Description of the Framework</Text>
+                    <Text style={styles.sectionTitle}>6. Description of the Framework</Text>
                 </View>
                 <View style={styles.descriptionSection}>
-                    {/* <Text style={styles.descriptionText}>
-                        RRI is a policy-driven concept focused on inclusive and sustainable research and innovation.
-                        While prevalent in the Global North as a technology-driven approach, in sub-Saharan Africa,
-                        it demands a community-based and livelihood-oriented perspective.
-                    </Text> */}
                     <Text style={styles.descriptionText}>
-                        Our RRI index consists of 3 layers each with a corresponding weight:
+                        The Responsible Research and Innovation (RRI) framework provides a comprehensive approach to embedding ethical, societal, and sustainability considerations into research and innovation projects. Specifically adapted for the sub-Saharan African context, it evaluates projects across three distinct layers, each contributing to the overall RRI Index based on weighted importance:
                     </Text>
-                    <Text style={styles.descriptionText}>- Layer 1: Privacy, Security (0.346 weight)</Text>
-                    <Text style={styles.descriptionText}>- Layer 2: Transparency, Gender equity (0.331 weight)</Text>
-                    <Text style={styles.descriptionText}>- Layer 3: Human Agency, Oversight (0.323 weight)</Text>
-                    {/* <Text style={styles.descriptionText}>You can read more on the RRI index here.</Text> */}
+
+                    {/* Framework Layers */}
+                    <View style={styles.sectionSubTitle}>
+                        <Text style={styles.descriptionText}>Layer 1 assesses the privacy and security measures within a project, ensuring that they uphold the rights of individuals and communities. A higher score in this layer indicates strong adherence to principles like data protection, privacy by design, and the overall safeguarding of personal and community security.</Text>
+                        <Text style={styles.titleText}>Weight: 34.6%</Text>
+                        
+
+                        <Text style={styles.descriptionText}>Layer 2 emphasizes the need for transparency in decision-making and the promotion of gender equity throughout the innovation process. This includes open communication about project goals, the inclusion of diverse stakeholders, and ensuring that gender and other social biases do not impede participation in the project. A higher score signifies a commitment to fairness and openness.</Text>
+                        <Text style={styles.titleText}>Weight: 33.1%</Text>
+                        
+
+                        <Text style={styles.text}>Layer 3 ensures that the project respects human agency, providing stakeholders with a voice in decision-making, and maintains proper oversight through ethical review and accountability measures. Projects with a higher score in this layer demonstrate a strong commitment to ensuring ethical evaluation and societal impact assessments </Text>
+                        <Text style={styles.titleText}>Weight: 32.3%</Text>
+                        
+                    </View>
+
+                    <Text style={styles.descriptionText}>
+                        Each layer is evaluated using its principles, and scores are weighted to calculate the final RRI Index. The higher the score, the greater the alignment with RRI principles, offering a measurable benchmark for responsible innovation.
+                    </Text>
                 </View>
 
                 {/* Score Explanation */}
                 <View style={styles.scoreSection}>
-                    <Text style={styles.titleText}>Score and Severity Explanation:</Text>
+                    <Text style={styles.descriptionText}>The RRI Index is transformed into a simple traffic light system for ease of interpretation:</Text>
 
+                    {/* Visual Legend */}
                     <View style={styles.scoreLegend}>
                         <View style={[styles.scoreBox, styles.scoreBoxRed]} />
                         <Text style={styles.legendText}>
                             <Text style={styles.severityText}>Red </Text>
-                            {'(Requires Attention)'}: <Text style={styles.percentageRange}>0-49%</Text>
+                            {'(Indicates critical issues requiring immediate action to address gaps)'}: <Text style={styles.percentageRange}>0-49%</Text>
                         </Text>
                     </View>
-
                     <View style={styles.scoreLegend}>
                         <View style={[styles.scoreBox, styles.scoreBoxOrange]} />
                         <Text style={styles.legendText}>
                             <Text style={styles.severityText}>Amber </Text>
-                            {'(Needs Improvement)'}: <Text style={styles.percentageRange}>50-70%</Text>
+                            {'(Highlights moderate concerns and suggests areas for refinement to meet RRI principles)'}: <Text style={styles.percentageRange}>50-70%</Text>
                         </Text>
                     </View>
-
                     <View style={styles.scoreLegend}>
                         <View style={[styles.scoreBox, styles.scoreBoxGreen]} />
                         <Text style={styles.legendText}>
                             <Text style={styles.severityText}>Green </Text>
-                            {'(Excellent)'}: <Text style={styles.percentageRange}>70-100%</Text>
+                            {'(Signifies excellent performance with minimal or no adjustments needed)'}: <Text style={styles.percentageRange}>70-100%</Text>
                         </Text>
                     </View>
+
                 </View>
-
-                {/* Results Section */}
-                {/* <Text style={styles.resultsTitle}>Questions and Responses</Text>
-                {surveyData.map((item, index) => (
-                    <View key={index} style={[styles.section]}>
-                        <Text style={styles.question}>{index + 1}. {item.question}</Text>
-                        <Text>
-                        {generateAnswerElement(item.answer)}
-                        </Text>
-                        
-                    </View>
-                ))} */}
-
-                {/* Summary Section */}
-                {/* <View style={styles.summary}>
-                    <View style={[styles.badge, getBadgeStyle(generalScore.toFixed(1))]}>
-                        <Text>Overall Score: {generalScore.toFixed(1)}{' '} out of 100</Text>
-                    </View>
-                </View> */}
+            </View>
             </View>
         </Page>
     </Document>

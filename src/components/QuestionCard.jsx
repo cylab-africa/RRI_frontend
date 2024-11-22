@@ -25,7 +25,7 @@ const ChoiceQuestion = (props) => {
 
       <div   key={question.id}>
               <div  class="question">
-                  <p> number {number} {question.text} </p>
+                  <p>  {number} {question.text} </p>
                   <div  class="scores-phone">
                     <div  class="scores">
                         <div class="score">
