@@ -286,6 +286,7 @@ a:focus {
 .menu_btn-style button .s-1 {
   -webkit-transform: rotate(45deg) translateY(16px);
   transform: rotate(45deg) translateY(16px);
+  background-color: #fff;
 }
 
 .menu_btn-style button .s-2 {
@@ -296,20 +297,22 @@ a:focus {
 .menu_btn-style button .s-3 {
   -webkit-transform: rotate(-45deg) translateY(-16px);
   transform: rotate(-45deg) translateY(-16px);
+  background-color: #fff;
 }
 
 .overlay {
-  height: 100%;
+  height: 70%;
   width: 0;
   position: fixed;
   z-index: 1;
   top: 0;
-  left: 0;
-  background-color: black;
-  background-color: #6D6E71;
+  right: 0;
+  background-color: #009647;
   overflow-x: hidden;
   -webkit-transition: 0.5s;
   transition: 0.5s;
+  border-radius: 10px;
+ 
 }
 
 .overlay .closebtn {
@@ -334,14 +337,17 @@ a:focus {
 
 .overlay-content {
   position: relative;
-  top: 30%;
+  top: 10%;
   width: 100%;
   text-align: center;
   margin-top: 30px;
 }
 
 .menu_width {
-  width: 100%;
+  width: fit-content;
+  padding-left: 10px;
+  padding-right: 20px;
+  height: 100%;
 }
 
 .menu_width.overlay a {
