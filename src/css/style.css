@@ -1066,6 +1066,7 @@ a:focus {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  justify-content: flex-start;
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
@@ -1078,6 +1079,7 @@ a:focus {
 }
 
 .info_contact>div p {
+  text-align: left;
   margin: 0;
 }
 
@@ -1387,4 +1389,7 @@ a:focus {
 }
 .overview-card:hover{
 box-shadow: none
+}
+.info_time p{
+  margin-left: 0;
 }

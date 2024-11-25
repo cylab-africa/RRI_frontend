@@ -166,7 +166,7 @@ function Layout({ children }) {
 
                                         <p>
                                             <a target="_blank" href="https://www.africa.engineering.cmu.edu/research/upanzi/index.html">
-                                                Upanzi network
+                                            Upanzi Network
                                             </a>
                                         </p>
 
@@ -176,7 +176,7 @@ function Layout({ children }) {
 
                                         <p>
                                             <a target="_blank" href="https://www.africa.engineering.cmu.edu/research/cybersecurity/cylab/index.html">
-                                                CyaLab Africa
+                                                CyLab Africa
                                             </a>
                                         </p>
 
@@ -228,7 +228,7 @@ function Layout({ children }) {
                 <section class="container-fluid footer_section ">
                     <p>
 
-                        <a href=""> &copy; 2024 Upanzi network.</a>
+                        <a href=""> &copy; 2024 Upanzi Network</a>
                     </p>
                 </section>
 

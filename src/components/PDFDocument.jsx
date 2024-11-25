@@ -182,13 +182,14 @@ const styles = StyleSheet.create({
     },
 
     descriptionSection: {
-        marginBottom: 20
+        marginBottom: 10,
+        marginTop: 10,
     },
     descriptionText: {
         fontSize: 12, // Smaller than section title for hierarchy
         color: '#555', // Neutral color for description
         lineHeight: '1.5', // Comfortable line spacing for readability
-        marginBottom: 10,
+        // marginBottom: 10,
         textAlign: 'justify', // Clean alignment for explanatory text
     },
     overall: {
@@ -196,10 +197,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',  // Aligns text to the left (you can adjust as needed)
         marginBottom: 20,  // Adds space below the section
     },
-    scoreSection: {
-        marginTop: 20,
-        marginBottom: 20
-    },
+   
     scoreText: {
 
         fontSize: 12,
@@ -338,7 +336,10 @@ const styles = StyleSheet.create({
         shadowColor: '#000',
         shadowOpacity: 0.2,
         shadowRadius: 4,
-        margin: 14,
+        marginTop: 93,
+        marginBottom: 20,
+        marginLeft: 14,
+        marginRight: 14,
     },
     titleText: {
         fontSize: 14,
@@ -614,20 +615,20 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
                 </View>
                 <View style={styles.descriptionSection}>
                     <Text style={styles.descriptionText}>
-                        The Responsible Research and Innovation (RRI) framework provides a comprehensive approach to embedding ethical, societal, and sustainability considerations into research and innovation projects. Specifically adapted for the sub-Saharan African context, it evaluates projects across three distinct layers, each contributing to the overall RRI Index based on weighted importance:
+                        The Responsible Research and Innovation (RRI) framework provides a comprehensive approach to embedding ethical, societal, and sustainability considerations into research and innovation projects.It evaluates projects across three distinct layers, each contributing to the overall RRI Index based on weighted importance:
                     </Text>
 
                     {/* Framework Layers */}
                     <View style={styles.sectionSubTitle}>
-                        <Text style={styles.descriptionText}>Layer 1 assesses the privacy and security measures within a project, ensuring that they uphold the rights of individuals and communities. A higher score in this layer indicates strong adherence to principles like data protection, privacy by design, and the overall safeguarding of personal and community security.</Text>
+                        <Text style={styles.descriptionText}>Layer 1 assesses the privacy and security, benefit to society and ethics as well as governance. It ensures a project uphold the rights of individuals and communities. </Text>
                         <Text style={styles.titleText}>Weight: 34.6%</Text>
                         
 
-                        <Text style={styles.descriptionText}>Layer 2 emphasizes the need for transparency in decision-making and the promotion of gender equity throughout the innovation process. This includes open communication about project goals, the inclusion of diverse stakeholders, and ensuring that gender and other social biases do not impede participation in the project. A higher score signifies a commitment to fairness and openness.</Text>
+                        <Text style={styles.descriptionText}>Layer 2 emphasizes the need for transparency in decision-making and the promotion of gender equity throughout the innovation process. This includes open communication about project goals, the inclusion of diverse stakeholders, and ensuring that gender and other social biases do not impede participation in the project. </Text>
                         <Text style={styles.titleText}>Weight: 33.1%</Text>
                         
 
-                        <Text style={styles.text}>Layer 3 ensures that the project respects human agency, providing stakeholders with a voice in decision-making, and maintains proper oversight through ethical review and accountability measures. Projects with a higher score in this layer demonstrate a strong commitment to ensuring ethical evaluation and societal impact assessments </Text>
+                        <Text style={styles.descriptionText}>Layer 3 ensures that the project respects human agency, providing stakeholders with a voice in decision-making. It also emphasizes on open access making sure that projects are open to contributions from different individuals. </Text>
                         <Text style={styles.titleText}>Weight: 32.3%</Text>
                         
                     </View>
