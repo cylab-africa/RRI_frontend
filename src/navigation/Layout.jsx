@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { GoogleLogin, googleLogout, useGoogleLogin } from "@react-oauth/google";
-import { logoutUser, SaveToIndexedDB } from "../helpers/indexedDB";
+import { getFirstItemFromIndexedDB, logoutUser, SaveToIndexedDB } from "../helpers/indexedDB";
 import { jwtDecode } from "jwt-decode";
 import { API } from "../apis/http";
 import { Button } from "react-bootstrap";
@@ -9,19 +9,35 @@ import { Button } from "react-bootstrap";
 function Layout({ children }) {
     const api = new API();
     const location = useLocation();
-    const isAdminRoute = location.pathname === '/admin'; 
+    const isAdminRoute = location.pathname === '/admin';
     const [user, setUser] = useState(null);
     const [profile, setProfile] = useState(null);
     const [profilePic, setProfilePic] = useState('');
     const errorMessage = (error) => {
-      console.log(error);
+        console.log(error);
     };
 
-    
-  function openNav() {
-    document.getElementById("myNav").classList.toggle("menu_width")
-    document.querySelector(".custom_menu-btn").classList.toggle("menu_btn-style")
-  }
+
+    function openNav() {
+        document.getElementById("myNav").classList.toggle("menu_width")
+        document.querySelector(".custom_menu-btn").classList.toggle("menu_btn-style")
+    }
+
+    // Check if the user is logged in on component mount
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+            const storedCredentials = await getFirstItemFromIndexedDB('GoogleCredentialsDB', 'CredentialsStore');
+            if (storedCredentials) {
+                const decodedToken = jwtDecode(storedCredentials.token);
+                setProfile(decodedToken);
+                setProfilePic(storedCredentials.picture);
+                setUser(storedCredentials);
+            }
+        };
+
+        checkLoginStatus();
+    }, []); // Empty dependency array means this runs once when the component mounts
+
     const onSuccess = async (response) => {
         try {
             const checkUserBody = { token: response.credential };
@@ -95,9 +111,10 @@ function Layout({ children }) {
                                                 }} onClick={openNav}>
                                                 <img
                                                     style={{
-                                                        'width': '90px',
-                                                        'height': '90px',
-                                                        borderRadius: '50%'
+                                                        'width': '70px',
+                                                        'height': '70px',
+                                                        borderRadius: '50%',
+                                                        marginBottom: '30px'
                                                     }}
                                                     src={`${profile.picture}?v=${new Date().getTime()}`}
                                                     referrerPolicy="no-referrer"
@@ -166,7 +183,7 @@ function Layout({ children }) {
 
                                         <p>
                                             <a target="_blank" href="https://www.africa.engineering.cmu.edu/research/upanzi/index.html">
-                                            Upanzi Network
+                                                Upanzi Network
                                             </a>
                                         </p>
 
