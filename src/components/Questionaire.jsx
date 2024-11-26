@@ -12,13 +12,14 @@ const EvaluationForm = (props) => {
   const { scrollUp, questions } = props;
 
   const findQuestion = (number) => {
+    console.log(questions)
     return questions.filter((que) => que.number === number);
   };
 
   const findSubquestion = (answer) => {
     let question = findQuestion(answer.q_number)[0];
     if (question) {
-      return question.subquestions.filter((q) => q.id === answer.id)[0];
+      return question.subQuestions.filter((q) => q.id === answer.id)[0];
     }
     return null;
   };
@@ -100,10 +101,10 @@ const EvaluationForm = (props) => {
       console.log(answers)
       const body = { layerId: 1, projectId: props.projectId, answers: answers };
       let response = await api.postRequest("/answers", body, true);
-      if (response.status === 202) {
-        addToken(response.data.data.token);
-        response = await api.postRequest("/answers", body, true);
-      }
+      // if (response.status === 202) {
+      //   addToken(response.data.data.token);
+      //   response = await api.postRequest("/answers", body, true);
+      // }
 
       if (response.status === 200) {
         // Some stuffs will be recorded here
@@ -117,12 +118,16 @@ const EvaluationForm = (props) => {
         }, 1000);
       }
     } catch (e) {
-      // console.log(e)
+      console.log('error in submit ansers',e)
       setLoadingSubmit(false);
-
+     if(e?.response?.data){
       swal(e.response.data.message);
+     }
+     if(e.message){
+      swal(e.message);
+     }
       setTimeout(() => {
-        if (e.response.status === 401) {
+        if (e?.response?.status === 401) {
           history.push({
             pathname: "/dashboard",
             state: { projectId: props.projectId },
@@ -170,13 +175,13 @@ const EvaluationForm = (props) => {
       </div>
       <br />
       {/* Company name */}
-      <h4  style={{ marginBottom: 30 }}>  {currentQuestion}. {cQuestion[0].question}</h4>
+      <h4  style={{ marginBottom: 30 }}>  {currentQuestion}. {cQuestion[0]?.text}</h4>
       <hr />
       {/* Questions */}
       <div>
-        {cQuestion[0].subquestions.map((question, index) => {
+        {cQuestion[0].subQuestions.map((question, index) => {
           let q_number = alphabest[index] 
-          if(cQuestion[0].subquestions.length <= 1){
+          if(cQuestion[0].subQuestions.length <= 1){
             q_number = ""
           }
             
@@ -203,7 +208,7 @@ const EvaluationForm = (props) => {
         {currentQuestion < questions.length && (
           <button
             disabled={
-              !areAllQuestionsAnswered(answers, cQuestion[0].subquestions)
+              !areAllQuestionsAnswered(answers, cQuestion[0].subQuestions)
             }
             onClick={handleNextQuestion}
           >

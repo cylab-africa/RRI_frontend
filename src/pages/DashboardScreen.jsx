@@ -96,6 +96,7 @@ const ChipList = ({ items, setEvaluation, active }) => {
   );
 };
 
+
 const DashboardScreen = () => {
   const api = new API();
   let history = useHistory();
@@ -153,12 +154,22 @@ const DashboardScreen = () => {
 
       return 3;
     } else {
-      setText(`Somthing un expected happed!`);
+      setText(`Somthing unexpected happened!`);
 
       return 4;
     }
   };
 
+
+  const getPerformanceLabel = (score) => {
+    if (score >= 70) {
+      return '(Excellent)';
+    } else if (score >= 50) {
+      return '(Needs improvement)';
+    } else {
+      return '(Requires Attention)';
+    }
+  }
   const getEvaluations = async (pId) => {
     try {
       const response = await api.getRequest(
@@ -192,12 +203,13 @@ const DashboardScreen = () => {
   // ----------------------------------- 
 
   function getQuestionsAndAnswers(data) {
+    console.log('data question: ',data.project.answers)
     return data.project.answers.map((answerObj, index) => ({
       number: index + 1,
-      question: answerObj.question.questionText,
+      question: answerObj.subQuestion.text,
       answer: {
         score: answerObj.score,
-        type: answerObj.question.type
+        type: answerObj.subQuestion.type
       },
       weight: answerObj.weight
     }));
@@ -226,10 +238,14 @@ const DashboardScreen = () => {
       if (!name) throw null;
       const report = await api.getRequest('/report/'+currentEvaluation.id, true);
       const filtaredData = getQuestionsAndAnswers(report.data);
-      // console.log(filtaredData)
       // console.log('Filtered Data:', filtaredData);
       // console.log('General Score:', currentEvaluation.score[3]);
-      const blob = await ReactPDF.pdf(<PDFDocument surveyData={filtaredData} names={name} project={currentProject} generalScore={currentEvaluation.score[3]} />).toBlob();
+      const blob = await ReactPDF.pdf(<PDFDocument 
+        layerScores={[currentEvaluation.score[0],currentEvaluation.score[1],currentEvaluation.score[2]]} 
+        surveyData={filtaredData} 
+        principleScores={report.data.project.principleScores} 
+        names={name} project={currentProject} 
+        generalScore={currentEvaluation.score[3]} />).toBlob();
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -240,6 +256,7 @@ const DashboardScreen = () => {
     })
   
     .catch(err => {
+      console.log('error in report generating: ',err)
       if (err?.response) {
          // API error
          swal("Error fetching report data: " + err.response.data.message);
@@ -262,7 +279,7 @@ const DashboardScreen = () => {
     try {
       let response;
       response = await api.getRequest("/projects", true);
-      console.log(response)
+      console.log('projects: ',response)
       if (response.status === 200) {
 
         let allProjects = response.data.data;
@@ -273,14 +290,17 @@ const DashboardScreen = () => {
         let seectedProject;
         if (pid) {
 
+
+          console.log('selected project: ',response.data.data)
           seectedProject = response.data.data.find((obj) => obj.id === pid);
-          // console.log(seectedProject)
+          console.log(seectedProject)
 
           setCurrentProject(seectedProject);
         } else {
           seectedProject = response.data.data[0];
           setCurrentProject(seectedProject);
         }
+        console.log('seectedProject.evaluations[0]: ',seectedProject.evaluations[0])
         setCurrentEvaluation(seectedProject.evaluations[0]);
         setLoading(false);
 
@@ -553,7 +573,7 @@ const DashboardScreen = () => {
                 <div class="card">
                   <div class="card-body">
                     <div className="row">
-                      <div className="col-md-8">
+                      <div className="col-md-7">
                         <h3>{currentProject.name}</h3>
                         {currentEvaluation.layersDone === 0 && (
                           <a onClick={moveToProject} className="red_link">
@@ -563,21 +583,21 @@ const DashboardScreen = () => {
                         )}
                       </div>
                       <div className="col"></div>
-                      <div className="col-md-2">Completed</div>
+                      <div className="col-md-3">Completed</div>
                     </div>
                     <div className="row">
-                      <div className="col-md-8">
+                      <div className="col-md-7">
                         <p hidden>Project description</p>
                       </div>
                       <div className="col"></div>
-                      <div className="col-md-2">
+                      <div className="col-md-3">
                         <small style={{ fontSize: 11 }}>
-                          {formatDate(currentEvaluation.timeStarted)}
+                          {formatDate(currentEvaluation.startTime)}
                         </small>
                       </div>
                     </div>
                     <div className="row">
-                      <div className="col-md-4 col-sm-12">
+                      <div className="col-md-7 col-sm-12">
                         {/* <h5>Your RRI Index Score</h5> */}
 
                         <div className="row">
@@ -602,8 +622,16 @@ const DashboardScreen = () => {
                                   ),
                                 }}
                               >
-                                {normalizeScoreFun(currentEvaluation.score[3], 100, 100)}%
+                                {normalizeScoreFun(currentEvaluation.score[3], 100, 100)}%{' '}
                               </span>{" "}
+                              <span style={{
+                                color: getColorBasedOnNumber(
+                                  currentEvaluation.score[3], 100
+                                ),
+                                  width:'fit-content'
+                              }}>
+                              {getPerformanceLabel(normalizeScoreFun(currentEvaluation.score[3], 100, 100))}
+                              </span>
                             </h4>
                             <div
                               hidden
@@ -629,7 +657,7 @@ const DashboardScreen = () => {
                         </div>
                       </div>
                       <div className="col"></div>
-                      <div className="col-md-2">
+                      <div className="col-md-3">
                         <ol className="evaluation-list">
                           {currentProject.evaluations.map((element, index) => {
                             if (element.id === currentEvaluation.id) {
@@ -639,14 +667,14 @@ const DashboardScreen = () => {
                                   style={{ textDecoration: "underline" }}
                                 >
                                   Evaluation {currentProject.evaluations.length - index} :{" "}
-                                  {formatDate(element.timeStarted)}
+                                  {formatDate(element.startTime)}
                                 </li>
                               );
                             }
                             return (
                               <li onClick={() => setCurrentEvaluation(element)}>
                                 Evaluation {currentProject.evaluations.length - index} :{" "}
-                                {formatDate(element.timeStarted)}
+                                {formatDate(element.startTime)}
                               </li>
                             );
                           })}
@@ -680,6 +708,13 @@ const DashboardScreen = () => {
                               >
                                 {normalizeScoreFun(currentEvaluation.score[0], 100, 34.6)}/34.6
                               </span>
+                              <span style={{
+                                color: getColorBasedOnNumber(
+                                  currentEvaluation.score[0], 100
+                                )
+                              }}>
+                              {getPerformanceLabel(normalizeScoreFun(currentEvaluation.score[0], 100, 100))}
+                              </span>
                             </p>
                           </div>
                         </div>
@@ -705,6 +740,13 @@ const DashboardScreen = () => {
                               >
                                 {normalizeScoreFun(currentEvaluation.score[1], 100, 33.1)}/33.1
                               </span>
+                              <span style={{
+                                color: getColorBasedOnNumber(
+                                  currentEvaluation.score[1], 100
+                                )
+                              }}>
+                              {getPerformanceLabel(normalizeScoreFun(currentEvaluation.score[1], 100, 100))}
+                              </span>
                             </p>
                           </div>
                         </div>
@@ -728,6 +770,13 @@ const DashboardScreen = () => {
                                 className="badge"
                               >
                                 {normalizeScoreFun(currentEvaluation.score[2], 100, 32.3)}/32.3
+                              </span>
+                              <span style={{
+                                color: getColorBasedOnNumber(
+                                  currentEvaluation.score[2], 100
+                                )
+                              }}>
+                              {getPerformanceLabel(normalizeScoreFun(currentEvaluation.score[2], 100, 100))}
                               </span>
                             </p>
                           </div>

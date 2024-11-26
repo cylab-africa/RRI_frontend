@@ -9,7 +9,7 @@ const TextQuestion =(props)=>{
     return (
       <div  key={question.id}>
               <div  class="question">
-                  <p> {number} {question.questionText} </p>
+                  <p> {number} {question?.text} </p>
                   <textarea value={answer? answer.score : ""} onChange={(e)=>{select(question.id, e.target.value)}} style={{minHeight:100}} name="" id="" cols="30"   rows="20"></textarea>
               </div>
           </div>
@@ -25,7 +25,7 @@ const ChoiceQuestion = (props) => {
 
       <div   key={question.id}>
               <div  class="question">
-                  <p> {number} {question.questionText} </p>
+                  <p>  {number} {question.text} </p>
                   <div  class="scores-phone">
                     <div  class="scores">
                         <div class="score">
@@ -105,7 +105,7 @@ const ChoiceQuestion = (props) => {
         <div   key={question.id}>
                 <div  class="question">
 
-                    <p> {number} {question.questionText} </p>
+                    <p> {number} {question.text} </p>
                     <div class="scores">
                     <div class="score">
                                 <p style={{padding: 0, margin: 0}}>N/A</p>
@@ -165,7 +165,7 @@ const QuestionCard = (props) => {
   const {question, question_id, q_number, selectScore} = props;
 
   const select =(id,  score)=>{
-    const answer = {id:id, score:score, q_number:q_number, question_id:question_id}
+    const answer = {id:id, score:score, q_number:q_number, subQuestion_id:question_id}
     selectScore(answer)
   }
 

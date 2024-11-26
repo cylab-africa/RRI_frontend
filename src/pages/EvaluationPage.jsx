@@ -39,64 +39,13 @@ const EvaluationPage = (props) => {
     return true
   }
 
-  const submitEvaluation = async (e) => {
-    try {
-      const isFormValid = validateForm()
-      if (!isFormValid) {
-        return
-      }
-      // Clear the selections first
-      document.getElementById('form').reset()
-      setLoading(true)
-      const body = { layerId: layerId, projectId: projectId, answers: answers }
-      let response = await api.postRequest('/answers', body, true)
-      if (response.status === 202) {
-        addToken(response.data.data.token)
-        response = await api.postRequest('/answers', body, true)
-      }
-
-
-      if (response.status === 200) {
-        // Some stuffs will be recorded here
-      }
-      setTimeout(() => {
-        setLoading(false)
-        if (layerId < 3) {
-          setShowConfirm(true)
-        } else {
-          history.push({
-            pathname: "/dashboard",
-            state: { projectId: projectId },
-          });
-        }
-      }, 1000)
-
-
-    } catch (e) {
-      // console.log(e)
-      setLoading(false)
-
-      swal(e.response.data.message)
-      setTimeout(() => {
-        if (e.response.status === 401) {
-          history.push({
-            pathname: "/dashboard",
-            state: { projectId: projectId },
-          });
-        }
-      }, 1000)
-
-    }
-    // some codes here 
-
-  }
 
   const getQuestionsLayer = async () => {
     setLoading(true)
     try {
 
       const response = await api.getRequest('/questions')
-      // console.log(response)
+      console.log('response questions: ',response)
       setQuestions(response.data.questions)
     } catch (e) {
       // console.log(e)
@@ -135,16 +84,6 @@ const EvaluationPage = (props) => {
 
   }, [layerId])
 
-  const selectScore = (selected) => {
-    let lisOfAnswers = answers;
-    const index = lisOfAnswers.findIndex(ans => ans.id === selected.id);
-    if (index !== -1) {
-      lisOfAnswers[index] = selected;
-    } else {
-      lisOfAnswers.push(selected);
-    }
-    setAnswers(lisOfAnswers)
-  }
 
   return (
     <div class="container layout_padding2" >

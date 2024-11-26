@@ -11,6 +11,7 @@
     "axios": "^1.6.1",
     "bootstrap": "^5.3.2",
     "dotenv": "^16.4.5",
+    "gapi-script": "^1.2.0",
     "html2pdf.js": "^0.10.2",
     "jspdf": "^2.5.1",
     "jwt-decode": "^4.0.0",

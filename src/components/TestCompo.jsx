@@ -132,14 +132,20 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
     }
     try{
     let respo = await api.postRequest("/project", { projectName: projectName }, true);
-    console.log(respo);
+    console.log('respo: ',respo);
         if(respo.status === 202){
+          console.log(respo.data)
             addToken(respo.data.data.token);
-            respo = await api.postRequest(
-              "/project",
-              { projectName: projectName },
-              true
-            );
+            swal({
+              title: 'project created successfully',
+              text: `${respo.data.data.name}`,
+              button: "Start",
+            }).then((val) => {
+              history.push({
+                pathname: "/consent",
+                state: { project: respo.data.data },
+              });
+            });
         }
 
         if(respo.status === 200){
