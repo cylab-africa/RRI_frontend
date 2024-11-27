@@ -105,31 +105,6 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
       return
     }
     const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
-    if(isLoggedIn==false){
-      swal({
-        title: "Not Logged In",
-        text: "Please login before you proceed with the test.",
-        icon: "warning",  // You can change the icon as needed
-        buttons: {
-          confirm: {
-            text: "OK",
-            value: true,
-            visible: true,
-            className: "",
-            closeModal: true, // Close the modal when clicked
-          },
-        },
-        closeOnClickOutside: false, // Prevent clicking outside to close the modal
-        closeOnEsc: false,
-      }).then((willRedirect) => {
-        if (willRedirect) {
-          // Redirect to the landing page
-          onClose()
-          history.push("/"); // Adjust the path to your landing page
-        }
-      });
-      return;
-    }
     try{
     let respo = await api.postRequest("/project", { projectName: projectName }, true);
     console.log('respo: ',respo);

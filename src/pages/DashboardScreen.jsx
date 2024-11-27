@@ -113,15 +113,6 @@ const DashboardScreen = () => {
   const [currentProject, setCurrentProject] = useState(projects[0]);
   const [currentEvaluation, setCurrentEvaluation] = useState();
 
-  function policeFunction(score, min, max) {
-    // console.log(score, min, max)
-    return min <= score && score < max ? "" : "desactivated";
-  }
-
-  function hideText(score, min, max) {
-    return min <= score && score < max ? false : true;
-  }
-
   const switchLights = () => {
     // alert(evaluation.score)
     if (evaluation === undefined || evaluations.length === 0) {
@@ -238,8 +229,7 @@ const DashboardScreen = () => {
       if (!name) throw null;
       const report = await api.getRequest('/report/'+currentEvaluation.id, true);
       const filtaredData = getQuestionsAndAnswers(report.data);
-      // console.log('Filtered Data:', filtaredData);
-      // console.log('General Score:', currentEvaluation.score[3]);
+      
       const blob = await ReactPDF.pdf(<PDFDocument 
         layerScores={[currentEvaluation.score[0],currentEvaluation.score[1],currentEvaluation.score[2]]} 
         surveyData={filtaredData} 
@@ -303,9 +293,6 @@ const DashboardScreen = () => {
         console.log('seectedProject.evaluations[0]: ',seectedProject.evaluations[0])
         setCurrentEvaluation(seectedProject.evaluations[0]);
         setLoading(false);
-
-        // console.log(response.data.data[0])
-        // getEvaluations()
       }
     } catch (e) {
       setNoAccount(true);
@@ -413,37 +400,7 @@ const DashboardScreen = () => {
     });
   };
 
-  useEffect(() => {
-    const verifyUser = async () => {
-      const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
-      if (!isLoggedIn) {
-        swal({
-          title: "Not Logged In",
-          text: "You need to be logged in to download the report.",
-          icon: "warning",  // You can change the icon as needed
-          buttons: {
-            confirm: {
-              text: "OK",
-              value: true,
-              visible: true,
-              className: "",
-              closeModal: true, // Close the modal when clicked
-            },
-          },
-          closeOnClickOutside: false, // Prevent clicking outside to close the modal
-          closeOnEsc: false,
-        }).then((willRedirect) => {
-          if (willRedirect) {
-            // Redirect to the landing page
-            history.push("/"); // Adjust the path to your landing page
-          }
-        });
-        return;
-      }
-    }
-    verifyUser()
-
-  }, [])
+  
   useEffect(() => {
     // getEvaluations();
 
