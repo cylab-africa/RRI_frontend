@@ -154,7 +154,7 @@ const DashboardScreen = () => {
 
       return 3;
     } else {
-      setText(`Somthing unexpected happened!`);
+      setText(`Something unexpected happened!`);
 
       return 4;
     }

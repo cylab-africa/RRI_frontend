@@ -4,6 +4,7 @@ body {
   background-color: #ffffff;
 }
 
+
 .page-item.active .page-link {
   z-index: 1;
   color: #fff;
@@ -325,7 +326,7 @@ a:focus {
 .overlay a {
   padding: 0px;
   text-decoration: none;
-  font-size: 22px;
+  font-size: 14px;
   color: #ffffff;
   display: block;
   -webkit-transition: 0.3s;
