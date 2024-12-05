@@ -37,46 +37,41 @@ const HomePage = () => {
 
   return (
       <div>
-      <section class="slider_section">
-        <div
-          id="carouselExampleIndicators"
-          class="carousel slide"
-          data-ride="carousel"
-        >
-          <ol style={{zIndex:1}}  class="carousel-indicators">
+      <section className="slider_section">
+        <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
+          <ol style={{ zIndex: 1 }} className="carousel-indicators">
             <li
               data-target="#carouselExampleIndicators"
               data-slide-to="0"
-              class="active"
+              className="active"
             ></li>
             <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-            {/* <!-- <li data-target="#carouselExampleIndicators" data-slide-to="2"></li> --> */}
           </ol>
-          <div class="carousel-inner">
-            <div class="carousel-item active">
-              <div class="detail-box">
+          <div className="carousel-inner">
+            <div className="carousel-item active">
+              <div className="detail-box">
                 <h1>
                   RRI <br />
                   <span>Responsible Research and Innovation</span>
                 </h1>
                 <p>Towards Responsible Innovation for Digital Public Goods</p>
-                <div class="btn-box">
-                  <a onClick={()=>{setModalOpen(true)}} class="btn-1">
+                <div className="btn-box">
+                  <a onClick={() => setModalOpen(true)} className="btn-1">
                     Start evaluation
                   </a>
                 </div>
               </div>
             </div>
-            <div class="carousel-item">
-              <div class="detail-box">
-                <div class="number"></div>
+            <div className="carousel-item">
+              <div className="detail-box">
+                <div className="number"></div>
                 <h1>
                   RRI <br />
-                  <span>Upanzi network</span>
+                  <span>Upanzi Network</span>
                 </h1>
                 <p>Promoting Responsible Innovation by Design</p>
-                <div class="btn-box">
-                  <a href="" class="btn-1">
+                <div className="btn-box">
+                  <a href="/principles" className="btn-1">
                     Read More
                   </a>
                 </div>
@@ -85,6 +80,7 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+
 
       <div class="center-line">
         <img style={{width:50}} src={require('../images/ArrowDown.png')} alt="" srcset="" />
@@ -114,7 +110,7 @@ const HomePage = () => {
             <div class="col-md-6">
               <div class="detail-box">
                 <div class="heading_container">
-                  <h2>Upanzi network</h2>
+                  <h2>Upanzi Network</h2>
                 </div>
                 <p>
                   Upanzi-Network is at the forefront, exploring several digital
@@ -143,7 +139,7 @@ const HomePage = () => {
                     target="_blank"
                     href="https://www.africa.engineering.cmu.edu/research/upanzi/index.html"
                   >
-                    <span>Read More about Upanzi network</span>
+                    <span>Read More about Upanzi Network</span>
                     <img src={require('../images/link-arrow.png')} alt="" />
                   </a>
                 </div>

@@ -14,6 +14,7 @@ import AboutusPage from "../pages/AboutusPage";
 import DashboardScreen from "../pages/DashboardScreen";
 import ConsentPage from "../pages/ConsentPage";
 import NotFoundPage from "../pages/NotFoundPage";
+import PrinciplesPage  from "../pages/PrinciplesPage.jsx"
 import NewHomePage from "../pages/NewHope";
 import { GoogleLogin, googleLogout, useGoogleLogin } from "@react-oauth/google";
 import { useState } from "react";
@@ -129,6 +130,7 @@ export default function MainApp() {
 
           <Route exact path="/evaluation" component={EvaluationPage} />
           {/* <Route exact path="/score" component={ScoresPage}/> */}
+          <Route exact path="/principles" component={PrinciplesPage} />
           <Route exact path="/contacts" component={ContactsPage} />
           <Route exact path="/about" component={AboutusPage} />
           <Route exact path="/dashboard" component={DashboardScreen} />
