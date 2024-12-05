@@ -529,10 +529,11 @@ const DashboardScreen = () => {
         {/* modal */}
         {!isAuthenticated &&
           (
+            <div className="auth-modal">
             <Modal
               show={!isAuthenticated}
               onRequestClose={() => console.log("Modal closed")}
-              className="custom-modal"
+              className="auth-modal custom-modal"
               overlayClassName="custom-overlay"
             >
               <div className="modal-content">
@@ -546,6 +547,8 @@ const DashboardScreen = () => {
                 </Button>
               </div>
             </Modal>
+            </div>
+            
 
           )}
         {/* end of modal */}
