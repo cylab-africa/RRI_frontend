@@ -7,6 +7,7 @@ import swal from "sweetalert";
 import { API } from "../apis/http";
 import { useHistory, useLocation } from "react-router-dom";
 import { addToken } from "../utils/localStorageUtils";
+import { checkUserLoggedIn, SaveToIndexedDB } from "../helpers/indexedDB";
 
 const EvaluationForm = (props) => {
   const { scrollUp, questions } = props;
@@ -47,7 +48,7 @@ const EvaluationForm = (props) => {
       } else {
         setAnswers((prevAnswers) => [...prevAnswers, answer]);
       }
-      
+
       return 1;
     }
     return 0;
@@ -99,33 +100,75 @@ const EvaluationForm = (props) => {
     try {
       setLoadingSubmit(true);
       console.log(answers)
+      // const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
+      // if (!isLoggedIn) {
+      //   swal({
+      //     title: "Not Logged In",
+      //     text: "You need to be logged in to view the report.",
+      //     icon: "warning",  // You can change the icon as needed
+      //     buttons: {
+      //       confirm: {
+      //         text: "OK",
+      //         value: true,
+      //         visible: true,
+      //         className: "",
+      //         closeModal: true, // Close the modal when clicked
+      //       },
+      //     },
+      //     closeOnClickOutside: false, // Prevent clicking outside to close the modal
+      //     closeOnEsc: false,
+      //   }).then((willRedirect) => {
+      //     if (willRedirect) {
+      //       // Redirect to the landing page
+      //       history.push("/"); // Adjust the path to your landing page    
+      //       return;
+
+      //     }
+
+      //   });
+      // }
       const body = { layerId: 1, projectId: props.projectId, answers: answers };
-      let response = await api.postRequest("/answers", body, true);
+      
+      const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
+      if(isLoggedIn){
+        let response = await api.postRequest("/answers", body, true);
+        if (response.status === 200) {
+          // Some stuffs will be recorded here
+          setTimeout(() => {
+            setLoadingSubmit(false);
+  
+            history.push({
+              pathname: "/dashboard",
+              state: { projectId: props.projectId },
+            });
+          }, 1000);
+        }
+      }else{
+        
+        SaveToIndexedDB('projectDB', 'answersStore', body);
+
+        history.push({
+          pathname: "/dashboard",
+          state: { projectId: props.projectId },
+        });
+      }
+      
+
       // if (response.status === 202) {
       //   addToken(response.data.data.token);
       //   response = await api.postRequest("/answers", body, true);
       // }
 
-      if (response.status === 200) {
-        // Some stuffs will be recorded here
-        setTimeout(() => {
-          setLoadingSubmit(false);
-
-          history.push({
-            pathname: "/dashboard",
-            state: { projectId: props.projectId },
-          });
-        }, 1000);
-      }
+      
     } catch (e) {
-      console.log('error in submit ansers',e)
+      console.log('error in submit ansers', e)
       setLoadingSubmit(false);
-     if(e?.response?.data){
-      swal(e.response.data.message);
-     }
-     if(e.message){
-      swal(e.message);
-     }
+      if (e?.response?.data) {
+        swal(e.response.data.message);
+      }
+      if (e.message) {
+        swal(e.message);
+      }
       setTimeout(() => {
         if (e?.response?.status === 401) {
           history.push({
@@ -147,8 +190,8 @@ const EvaluationForm = (props) => {
   return (
     <div
       style={{
-        paddingTop:100,
-        paddingBottom:100,
+        paddingTop: 100,
+        paddingBottom: 100,
       }}
       className="evaluation-form">
       {/* Progress bar */}
@@ -159,9 +202,9 @@ const EvaluationForm = (props) => {
           alignItems: "center",
           flexDirection: "column",
         }}
-        // className="progress-bar"
+      // className="progress-bar"
       >
-       
+
         <progress
           class="progress progress1"
           max={`${questions.length}`}
@@ -171,20 +214,20 @@ const EvaluationForm = (props) => {
             ${currentQuestion}/${questions.length}
           </span>
         </progress>
-        
+
       </div>
       <br />
       {/* Company name */}
-      <h4  style={{ marginBottom: 30 }}>  {currentQuestion}. {cQuestion[0]?.text}</h4>
+      <h4 style={{ marginBottom: 30 }}>  {currentQuestion}. {cQuestion[0]?.text}</h4>
       <hr />
       {/* Questions */}
       <div>
         {cQuestion[0].subQuestions.map((question, index) => {
-          let q_number = alphabest[index] 
-          if(cQuestion[0].subQuestions.length <= 1){
+          let q_number = alphabest[index]
+          if (cQuestion[0].subQuestions.length <= 1) {
             q_number = ""
           }
-            
+
           return (
             <QuestionCard
               number={q_number}

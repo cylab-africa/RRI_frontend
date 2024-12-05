@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { API } from "../apis/http";
 import swal from "sweetalert";
 import { useHistory, useLocation } from "react-router-dom";
-import { Button, Badge, Container, Row, Col, Accordion } from "react-bootstrap";
+import { Button, Badge, Container, Row, Col, Accordion, Modal } from "react-bootstrap";
 import {
   FaAngleLeft,
   FaAngleRight,
@@ -24,7 +24,9 @@ import { PDFDocument } from "../components/PDFDocument";
 //import {PDFaltered} from "../components/PDFaltered";
 import ReactPDF from "@react-pdf/renderer";
 import { IconContext } from "react-icons";
-import { checkUserLoggedIn } from "../helpers/indexedDB";
+import { checkUserLoggedIn, getFirstItemFromIndexedDB, SaveToIndexedDB } from "../helpers/indexedDB";
+import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 
 const ChipList = ({ items, setEvaluation, active }) => {
   const [startIndex, setStartIndex] = useState(0);
@@ -106,21 +108,13 @@ const DashboardScreen = () => {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const [text, setText] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [noAccount, setNoAccount] = useState(false);
   const [page, setPage] = useState(0);
   const [buttonText, setButtonText] = useState("Home Page");
   const [projects, setProjects] = useState([]);
   const [currentProject, setCurrentProject] = useState(projects[0]);
   const [currentEvaluation, setCurrentEvaluation] = useState();
-
-  function policeFunction(score, min, max) {
-    // console.log(score, min, max)
-    return min <= score && score < max ? "" : "desactivated";
-  }
-
-  function hideText(score, min, max) {
-    return min <= score && score < max ? false : true;
-  }
 
   const switchLights = () => {
     // alert(evaluation.score)
@@ -203,7 +197,7 @@ const DashboardScreen = () => {
   // ----------------------------------- 
 
   function getQuestionsAndAnswers(data) {
-    console.log('data question: ',data.project.answers)
+    console.log('data question: ', data.project.answers)
     return data.project.answers.map((answerObj, index) => ({
       number: index + 1,
       question: answerObj.subQuestion.text,
@@ -234,40 +228,39 @@ const DashboardScreen = () => {
         closeModal: false,
       },
     })
-    .then(async name => {
-      if (!name) throw null;
-      const report = await api.getRequest('/report/'+currentEvaluation.id, true);
-      const filtaredData = getQuestionsAndAnswers(report.data);
-      // console.log('Filtered Data:', filtaredData);
-      // console.log('General Score:', currentEvaluation.score[3]);
-      const blob = await ReactPDF.pdf(<PDFDocument 
-        layerScores={[currentEvaluation.score[0],currentEvaluation.score[1],currentEvaluation.score[2]]} 
-        surveyData={filtaredData} 
-        principleScores={report.data.project.principleScores} 
-        names={name} project={currentProject} 
-        generalScore={currentEvaluation.score[3]} />).toBlob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'RRI_Report.pdf';
-      link.click();
-      swal.close();
-      
-    })
-  
-    .catch(err => {
-      console.log('error in report generating: ',err)
-      if (err?.response) {
-         // API error
-         swal("Error fetching report data: " + err.response.data.message);
-      } else if (err === null) {
-         swal("You must provide a name for the report.");
-      } else {
-         // Generic error
-         swal("Something went wrong while generating the report.");
-      }
-   });
-    
+      .then(async name => {
+        if (!name) throw null;
+        const report = await api.getRequest('/report/' + currentEvaluation.id, true);
+        const filtaredData = getQuestionsAndAnswers(report.data);
+
+        const blob = await ReactPDF.pdf(<PDFDocument
+          layerScores={[currentEvaluation.score[0], currentEvaluation.score[1], currentEvaluation.score[2]]}
+          surveyData={filtaredData}
+          principleScores={report.data.project.principleScores}
+          names={name} project={currentProject}
+          generalScore={currentEvaluation.score[3]} />).toBlob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'RRI_Report.pdf';
+        link.click();
+        swal.close();
+
+      })
+
+      .catch(err => {
+        console.log('error in report generating: ', err)
+        if (err?.response) {
+          // API error
+          swal("Error fetching report data: " + err.response.data.message);
+        } else if (err === null) {
+          swal("You must provide a name for the report.");
+        } else {
+          // Generic error
+          swal("Something went wrong while generating the report.");
+        }
+      });
+
   };
 
 
@@ -279,7 +272,7 @@ const DashboardScreen = () => {
     try {
       let response;
       response = await api.getRequest("/projects", true);
-      console.log('projects: ',response)
+      console.log('projects: ', response)
       if (response.status === 200) {
 
         let allProjects = response.data.data;
@@ -291,21 +284,25 @@ const DashboardScreen = () => {
         if (pid) {
 
 
-          console.log('selected project: ',response.data.data)
-          seectedProject = response.data.data.find((obj) => obj.id === pid);
-          console.log(seectedProject)
-
-          setCurrentProject(seectedProject);
+          console.log('selected project data: ', response.data.data)
+          if (pid) {
+            seectedProject = response.data.data.find((obj) => obj.id === pid);
+          }
+          console.log('pid', pid)
+          if (seectedProject) {
+            console.log('selected project:', seectedProject)
+            setCurrentProject(seectedProject);
+          } else {
+            seectedProject = response.data.data[0];
+            setCurrentProject(seectedProject);
+          }
         } else {
           seectedProject = response.data.data[0];
           setCurrentProject(seectedProject);
         }
-        console.log('seectedProject.evaluations[0]: ',seectedProject.evaluations[0])
+        console.log('seectedProject.evaluations[0]: ', seectedProject.evaluations[0])
         setCurrentEvaluation(seectedProject.evaluations[0]);
         setLoading(false);
-
-        // console.log(response.data.data[0])
-        // getEvaluations()
       }
     } catch (e) {
       setNoAccount(true);
@@ -413,37 +410,7 @@ const DashboardScreen = () => {
     });
   };
 
-  useEffect(() => {
-    const verifyUser = async () => {
-      const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
-      if (!isLoggedIn) {
-        swal({
-          title: "Not Logged In",
-          text: "You need to be logged in to download the report.",
-          icon: "warning",  // You can change the icon as needed
-          buttons: {
-            confirm: {
-              text: "OK",
-              value: true,
-              visible: true,
-              className: "",
-              closeModal: true, // Close the modal when clicked
-            },
-          },
-          closeOnClickOutside: false, // Prevent clicking outside to close the modal
-          closeOnEsc: false,
-        }).then((willRedirect) => {
-          if (willRedirect) {
-            // Redirect to the landing page
-            history.push("/"); // Adjust the path to your landing page
-          }
-        });
-        return;
-      }
-    }
-    verifyUser()
 
-  }, [])
   useEffect(() => {
     // getEvaluations();
 
@@ -452,11 +419,24 @@ const DashboardScreen = () => {
     getProjects(pid);
   }, []);
 
+  const checkAuthentication = async () => {
+    try {
+      const isLoggedIn = await checkUserLoggedIn("GoogleCredentialsDB", "CredentialsStore");
+      console.log('isloggedin: ', isLoggedIn)
+
+      setIsAuthenticated(isLoggedIn); // Update state based on authentication status
+    } catch (error) {
+      console.error("Error checking authentication:", error);
+      setIsAuthenticated(false); // Handle errors by defaulting to unauthenticated
+    }
+  };
   useEffect(() => {
 
+
+    checkAuthentication();
     let page = switchLights();
     setPage(page);
-  }, [evaluation]);
+  }, [evaluation, isAuthenticated]);
 
   if (noAccount) {
     return (
@@ -475,11 +455,103 @@ const DashboardScreen = () => {
       </div>
     );
   }
+
+
+  const onSuccess = async (response) => {
+    try {
+      const checkUserBody = { token: response.credential };
+      // check if user exit
+      const checkUserResponse = await api.postRequest("/check-user", checkUserBody, true);
+      const data = await checkUserResponse.data;
+      console.log('true registration:', data)
+      const decodedToken = jwtDecode(response.credential);
+      let authResponse;
+      let accessToken;
+      if (data.userRegistered == false) {
+        console.log('false registration')
+        const registerBody = {
+          email: decodedToken.email,
+          firstName: decodedToken.given_name,
+          lastName: decodedToken.family_name,
+          googleCredential: response.credential
+        };
+        authResponse = await api.postRequest("/signup", registerBody, true);
+        accessToken = authResponse.data.accessToken;
+      } else {
+        accessToken = data.accessToken;
+      }
+      // Save Google credentials to IndexedDB
+      const googleCredentials = {
+        id: decodedToken.sub, // unique identifier
+        token: response.credential,
+        email: decodedToken.email,
+        firstName: decodedToken.given_name,
+        lastName: decodedToken.family_name,
+        picture: decodedToken.picture,
+        accessToken: accessToken
+      };
+      SaveToIndexedDB('GoogleCredentialsDB', 'CredentialsStore', googleCredentials);
+      const projectAnswers = await getFirstItemFromIndexedDB('projectDB', 'answersStore')
+        .catch((error) => {
+          console.error('Error retrieving project answers:', error);
+          return null;
+        });
+
+      console.log('Retrieved Project Answers:', projectAnswers);
+      setIsAuthenticated(true);
+      if (projectAnswers) {
+        const projectName = localStorage.getItem('projectName');
+
+        const answersBody = {
+          projectName: projectName,
+          answers: projectAnswers
+        }
+        const answerResponse = await api.postRequest("/submit-auth", answersBody, true);
+        console.log('answers: ', answerResponse)
+      }
+
+
+      window.location.reload();
+
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
+  const errorMessage = (error) => {
+    console.log(error);
+  };
+
   // No project
   if (projects.length === 0) {
     return (
       <div>
-        <section className="about_section layout_padding2">
+        {/* modal */}
+        {!isAuthenticated &&
+          (
+            <Modal
+              show={!isAuthenticated}
+              onRequestClose={() => console.log("Modal closed")}
+              className="custom-modal"
+              overlayClassName="custom-overlay"
+            >
+              <div className="modal-content">
+                <h2>Sign In Required</h2>
+                <p>Please sign in to access the dashboard.</p>
+                <GoogleLogin onSuccess={onSuccess} onError={errorMessage} />
+                <Button onClick={(e) => {
+                  history.push("/");
+                }}>
+                  Go to Home Page
+                </Button>
+              </div>
+            </Modal>
+
+          )}
+        {/* end of modal */}
+
+
+        <section className={`about_section layout_padding2 ${isAuthenticated ? "" : "blur"}`}>
           <div class="container">
             <div class="detail-box">
               <div className="row">
@@ -628,9 +700,9 @@ const DashboardScreen = () => {
                                 color: getColorBasedOnNumber(
                                   currentEvaluation.score[3], 100
                                 ),
-                                  width:'fit-content'
+                                width: 'fit-content'
                               }}>
-                              {getPerformanceLabel(normalizeScoreFun(currentEvaluation.score[3], 100, 100))}
+                                {getPerformanceLabel(normalizeScoreFun(currentEvaluation.score[3], 100, 100))}
                               </span>
                             </h4>
                             <div
@@ -713,7 +785,7 @@ const DashboardScreen = () => {
                                   currentEvaluation.score[0], 100
                                 )
                               }}>
-                              {getPerformanceLabel(normalizeScoreFun(currentEvaluation.score[0], 100, 100))}
+                                {getPerformanceLabel(normalizeScoreFun(currentEvaluation.score[0], 100, 100))}
                               </span>
                             </p>
                           </div>
@@ -745,7 +817,7 @@ const DashboardScreen = () => {
                                   currentEvaluation.score[1], 100
                                 )
                               }}>
-                              {getPerformanceLabel(normalizeScoreFun(currentEvaluation.score[1], 100, 100))}
+                                {getPerformanceLabel(normalizeScoreFun(currentEvaluation.score[1], 100, 100))}
                               </span>
                             </p>
                           </div>
@@ -776,7 +848,7 @@ const DashboardScreen = () => {
                                   currentEvaluation.score[2], 100
                                 )
                               }}>
-                              {getPerformanceLabel(normalizeScoreFun(currentEvaluation.score[2], 100, 100))}
+                                {getPerformanceLabel(normalizeScoreFun(currentEvaluation.score[2], 100, 100))}
                               </span>
                             </p>
                           </div>
