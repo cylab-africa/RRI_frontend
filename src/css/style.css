@@ -188,7 +188,7 @@ a:focus {
 }
 
 .custom_nav-container {
-  z-index: 99999;
+  z-index: 999;
   padding: 0;
   height: 80px;
   -webkit-box-pack: justify;
@@ -322,7 +322,11 @@ a:focus {
   right: 30px;
   font-size: 60px;
 }
-
+.auth-modal{
+  top: 50%; /* Start at the middle of the screen */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Offset to truly center the modal */
+}
 .overlay a {
   padding: 0px;
   text-decoration: none;
