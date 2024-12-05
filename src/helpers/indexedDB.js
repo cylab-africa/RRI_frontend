@@ -1,37 +1,55 @@
 export const SaveToIndexedDB = (dbName, storeName, data) => {
-  const request = indexedDB.open(dbName, 2);
+  const request = indexedDB.open(dbName); // Open or create the database
 
   request.onupgradeneeded = (event) => {
     const db = event.target.result;
     console.log("Upgrade needed: ", event);
+
     if (!db.objectStoreNames.contains(storeName)) {
       console.log(`Creating object store: ${storeName}`);
-      db.createObjectStore(storeName, { keyPath: "id" });
-    } else {
-      console.log(`Object store already exists: ${storeName}`);
+      db.createObjectStore(storeName, { autoIncrement: true });
     }
   };
 
   request.onsuccess = (event) => {
     const db = event.target.result;
-    console.log("Database opened successfully: ", event);
 
     // Check if the object store exists
     if (!db.objectStoreNames.contains(storeName)) {
       console.error(`Object store not found: ${storeName}`);
-      return;
+      db.close();
+      // Increment version and reopen the database
+      const upgradeRequest = indexedDB.open(dbName, db.version + 1);
+
+      upgradeRequest.onupgradeneeded = (event) => {
+        const upgradeDB = event.target.result;
+        console.log(`Creating object store: ${storeName} during upgrade.`);
+        upgradeDB.createObjectStore(storeName, { autoIncrement: true });
+      };
+
+      upgradeRequest.onsuccess = (event) => {
+        console.log(`Object store ${storeName} created. Reattempting data save.`);
+        SaveToIndexedDB(dbName, storeName, data); // Retry saving after creating store
+      };
+
+      upgradeRequest.onerror = (event) => {
+        console.error("Error creating object store during upgrade:", event.target.error);
+      };
+
+      return; // Exit to wait for upgrade to complete
     }
 
+    // Proceed to save data
     const transaction = db.transaction([storeName], "readwrite");
     const store = transaction.objectStore(storeName);
 
-    store.put(data);
+    const putRequest = store.put(data);
 
-    transaction.oncomplete = () => {
+    putRequest.onsuccess = () => {
       console.log("Data saved to IndexedDB successfully.");
     };
 
-    transaction.onerror = (event) => {
+    putRequest.onerror = (event) => {
       console.error("Error saving data to IndexedDB:", event.target.error);
     };
   };
@@ -43,15 +61,33 @@ export const SaveToIndexedDB = (dbName, storeName, data) => {
 
 export const getFirstItemFromIndexedDB = (dbName, storeName) => {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(dbName, 2);
+    const request = indexedDB.open(dbName);
 
     request.onsuccess = (event) => {
       const db = event.target.result;
 
       // Check if the object store exists
       if (!db.objectStoreNames.contains(storeName)) {
-        console.error(`Object store not found: ${storeName}`);
-        resolve(null); // No data found if the store doesn't exist
+        console.error(`Object store not found get: ${storeName}`);
+        db.close(); // Close the current connection
+
+        // Increment version and reopen the database
+        const upgradeRequest = indexedDB.open(dbName, db.version + 1);
+
+        upgradeRequest.onupgradeneeded = (event) => {
+          const upgradeDB = event.target.result;
+          console.log(`Creating object store: ${storeName} during upgrade.`);
+          upgradeDB.createObjectStore(storeName, { autoIncrement: true });
+        };
+
+        upgradeRequest.onsuccess = () => {
+          console.log(`Object store ${storeName} created. Retrying operation.`);
+          resolve(getFirstItemFromIndexedDB(dbName, storeName)); // Retry after store creation
+        };
+
+        upgradeRequest.onerror = (event) => {
+          reject("Error creating object store: " + event.target.error);
+        };
         return;
       }
 
@@ -83,100 +119,86 @@ export const getFirstItemFromIndexedDB = (dbName, storeName) => {
 };
 
 
-  // Function to check if the user is logged in
-  export const checkUserLoggedIn = (dbName, storeName) => {
-    return new Promise((resolve, reject) => {
-      // Open the IndexedDB database with version 2
-      const request = indexedDB.open(dbName, 2);
-  
-      request.onupgradeneeded = (event) => {
-        // If the database needs to be upgraded, create the object store
-        const db = event.target.result;
-        if (!db.objectStoreNames.contains(storeName)) {
-          // If the object store doesn't exist, create it, but this should
-          // only happen if the user is signing in.
-          db.createObjectStore(storeName, { keyPath: "id" });
-        }
-      };
-  
-      request.onsuccess = (event) => {
-        const db = event.target.result;
-  
-        // Check if the object store exists in the database
-        if (!db.objectStoreNames.contains(storeName)) {
-          // If the store doesn't exist, it means the user has not signed in yet
-          resolve(false);  // No user credentials found, so user is not logged in
-          return;
-        }
-  
-        // If the store exists, check if it has any credentials
-        const transaction = db.transaction([storeName], 'readonly');
-        const store = transaction.objectStore(storeName);
-  
-        const getAllRequest = store.getAll(); // Retrieve all user credentials
-  
-        getAllRequest.onsuccess = (event) => {
-          const data = event.target.result;
-          // Check if any credentials are stored
-          if (data.length > 0) {
-            resolve(true);  // User credentials exist, user is logged in
-          } else {
-            resolve(false); // No credentials found, user is not logged in
-          }
-        };
-  
-        getAllRequest.onerror = () => {
-          reject("Error retrieving data from IndexedDB");
-        };
-      };
-  
-      request.onerror = (event) => {
-        // Error occurred while trying to open the database (likely doesn't exist)
-        if (event.target.error.name === 'NotFoundError') {
-          resolve(false);  // If the database is not found, assume the user is not logged in
+// Function to check if the user is logged in
+export const checkUserLoggedIn = (dbName, storeName) => {
+  return new Promise((resolve, reject) => {
+    // Open the IndexedDB database with version 2
+    const request = indexedDB.open(dbName);
+
+    request.onupgradeneeded = (event) => {
+      // If the database needs to be upgraded, create the object store
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(storeName)) {
+        // If the object store doesn't exist, create it, but this should
+        // only happen if the user is signing in.
+        db.createObjectStore(storeName, { keyPath: "id" });
+      }
+    };
+
+    request.onsuccess = (event) => {
+      const db = event.target.result;
+
+      // Check if the object store exists in the database
+      if (!db.objectStoreNames.contains(storeName)) {
+        // If the store doesn't exist, it means the user has not signed in yet
+        resolve(false);  // No user credentials found, so user is not logged in
+        return;
+      }
+
+      // If the store exists, check if it has any credentials
+      const transaction = db.transaction([storeName], 'readonly');
+      const store = transaction.objectStore(storeName);
+
+      const getAllRequest = store.getAll(); // Retrieve all user credentials
+
+      getAllRequest.onsuccess = (event) => {
+        const data = event.target.result;
+        // Check if any credentials are stored
+        if (data.length > 0) {
+          resolve(true);  // User credentials exist, user is logged in
         } else {
-          reject("Error opening IndexedDB: " + event.target.error);
+          resolve(false); // No credentials found, user is not logged in
         }
       };
-    });
-  };
-  
-  // Function to log out the user by clearing the credentials from IndexedDB
-export const logoutUser = (dbName, storeName) => {
-  const request = indexedDB.open(dbName, 2);
 
-  request.onupgradeneeded = (event) => {
-    const db = event.target.result;
-    console.log("Upgrade needed: ", event);
-    if (!db.objectStoreNames.contains(storeName)) {
-      db.createObjectStore(storeName, { keyPath: "id" });
-    }
-  };
-
-  request.onsuccess = (event) => {
-    const db = event.target.result;
-
-    if (!db.objectStoreNames.contains(storeName)) {
-      console.error(`Object store not found: ${storeName}`);
-      return;
-    }
-
-    const transaction = db.transaction([storeName], "readwrite");
-    const store = transaction.objectStore(storeName);
-
-    // Clear all data from the object store to "log out" the user
-    const clearRequest = store.clear();
-
-    clearRequest.onsuccess = () => {
-      console.log("User logged out successfully. Data cleared from IndexedDB.");
+      getAllRequest.onerror = () => {
+        reject("Error retrieving data from IndexedDB");
+      };
     };
 
-    clearRequest.onerror = (event) => {
-      console.error("Error clearing data from IndexedDB:", event.target.error);
+    request.onerror = (event) => {
+      // Error occurred while trying to open the database (likely doesn't exist)
+      if (event.target.error.name === 'NotFoundError') {
+        resolve(false);  // If the database is not found, assume the user is not logged in
+      } else {
+        reject("Error opening IndexedDB: " + event.target.error);
+      }
     };
-  };
-
-  request.onerror = (event) => {
-    console.error("Error opening IndexedDB:", event.target.error);
-  };
+  });
 };
+
+// Function to log out the user by clearing the credentials from IndexedDB
+export const logoutUser = async () => {
+  // Get the names of all IndexedDB databases
+  const databases = await indexedDB.databases(); // This returns a list of all databases
+
+  // Delete each database
+  databases.forEach((db) => {
+    const deleteRequest = indexedDB.deleteDatabase(db.name); // Delete the database by name
+
+    deleteRequest.onsuccess = () => {
+      console.log(`Database ${db.name} deleted successfully.`);
+    };
+
+    deleteRequest.onerror = (event) => {
+      console.error(`Error deleting database ${db.name}:`, event.target.error);
+    };
+
+    deleteRequest.onblocked = () => {
+      console.warn(
+        `Database ${db.name} deletion is blocked. Ensure no open connections exist.`
+      );
+    };
+  });
+};
+

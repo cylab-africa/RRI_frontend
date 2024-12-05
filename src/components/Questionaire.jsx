@@ -7,7 +7,7 @@ import swal from "sweetalert";
 import { API } from "../apis/http";
 import { useHistory, useLocation } from "react-router-dom";
 import { addToken } from "../utils/localStorageUtils";
-import { checkUserLoggedIn } from "../helpers/indexedDB";
+import { checkUserLoggedIn, SaveToIndexedDB } from "../helpers/indexedDB";
 
 const EvaluationForm = (props) => {
   const { scrollUp, questions } = props;
@@ -100,53 +100,66 @@ const EvaluationForm = (props) => {
     try {
       setLoadingSubmit(true);
       console.log(answers)
+      // const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
+      // if (!isLoggedIn) {
+      //   swal({
+      //     title: "Not Logged In",
+      //     text: "You need to be logged in to view the report.",
+      //     icon: "warning",  // You can change the icon as needed
+      //     buttons: {
+      //       confirm: {
+      //         text: "OK",
+      //         value: true,
+      //         visible: true,
+      //         className: "",
+      //         closeModal: true, // Close the modal when clicked
+      //       },
+      //     },
+      //     closeOnClickOutside: false, // Prevent clicking outside to close the modal
+      //     closeOnEsc: false,
+      //   }).then((willRedirect) => {
+      //     if (willRedirect) {
+      //       // Redirect to the landing page
+      //       history.push("/"); // Adjust the path to your landing page    
+      //       return;
+
+      //     }
+
+      //   });
+      // }
+      const body = { layerId: 1, projectId: props.projectId, answers: answers };
+      
       const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
-      if (!isLoggedIn) {
-        swal({
-          title: "Not Logged In",
-          text: "You need to be logged in to view the report.",
-          icon: "warning",  // You can change the icon as needed
-          buttons: {
-            confirm: {
-              text: "OK",
-              value: true,
-              visible: true,
-              className: "",
-              closeModal: true, // Close the modal when clicked
-            },
-          },
-          closeOnClickOutside: false, // Prevent clicking outside to close the modal
-          closeOnEsc: false,
-        }).then((willRedirect) => {
-          if (willRedirect) {
-            // Redirect to the landing page
-            history.push("/"); // Adjust the path to your landing page    
-            return;
+      if(isLoggedIn){
+        let response = await api.postRequest("/answers", body, true);
+        if (response.status === 200) {
+          // Some stuffs will be recorded here
+          setTimeout(() => {
+            setLoadingSubmit(false);
+  
+            history.push({
+              pathname: "/dashboard",
+              state: { projectId: props.projectId },
+            });
+          }, 1000);
+        }
+      }else{
+        
+        SaveToIndexedDB('projectDB', 'answersStore', body);
 
-          }
-
+        history.push({
+          pathname: "/dashboard",
+          state: { projectId: props.projectId },
         });
       }
-      const body = { layerId: 1, projectId: props.projectId, answers: answers };
-      let response = await api.postRequest("/answers", body, true);
-
+      
 
       // if (response.status === 202) {
       //   addToken(response.data.data.token);
       //   response = await api.postRequest("/answers", body, true);
       // }
 
-      if (response.status === 200) {
-        // Some stuffs will be recorded here
-        setTimeout(() => {
-          setLoadingSubmit(false);
-
-          history.push({
-            pathname: "/dashboard",
-            state: { projectId: props.projectId },
-          });
-        }, 1000);
-      }
+      
     } catch (e) {
       console.log('error in submit ansers', e)
       setLoadingSubmit(false);

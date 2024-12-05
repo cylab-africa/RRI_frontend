@@ -5,7 +5,7 @@ import swal from "sweetalert";
 import { API } from "../apis/http";
 import { addToken } from '../utils/localStorageUtils';
 import { useHistory, useLocation } from "react-router-dom";
-import { checkUserLoggedIn } from '../helpers/indexedDB';
+import { checkUserLoggedIn, SaveToIndexedDB } from '../helpers/indexedDB';
 
 const Overlay = styled.div`
   position: fixed;
@@ -93,61 +93,60 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
   const api = new API()
   const history = useHistory()
 
-  const registerProject= async(projectName)=>{
+  const registerProject = async (projectName) => {
     setLoading(false)
 
     // Validate name
-    if(!projectName || projectName.length < 2)
-    {
+    if (!projectName || projectName.length < 2) {
       swal("Error!", `Provide a valid project name.`);
 
       // setModalOpen(false)
       return
     }
     const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
-    try{
-    let respo = await api.postRequest("/project", { projectName: projectName }, true);
-    console.log('respo: ',respo);
-        if(respo.status === 202){
-          console.log(respo.data)
-            addToken(respo.data.data.token);
-            swal({
-              title: 'project created successfully',
-              text: `${respo.data.data.name}`,
-              button: "Start",
-            }).then((val) => {
-              history.push({
-                pathname: "/consent",
-                state: { project: respo.data.data },
-              });
-            });
-        }
+    try {
+      let respo = await api.postRequest("/project", { projectName: projectName }, true);
+      console.log('respo: ', respo);
+      if (respo.status === 202) {
+        console.log(respo.data)
+        addToken(respo.data.data.token);
+        swal({
+          title: 'project created successfully',
+          text: `${respo.data.data.name}`,
+          button: "Start",
+        }).then((val) => {
+          history.push({
+            pathname: "/consent",
+            state: { project: respo.data.data },
+          });
+        });
+      }
 
-        if(respo.status === 200){
+      if (respo.status === 200) {
 
-            swal({
-                title: respo.data.message,
-                text: `${respo.data.data.name}`,
-                button: "Start",
-              }).then((val) => {
-                history.push({
-                  pathname: "/consent",
-                  state: { project: respo.data.data },
-                });
-              });
-        }
+        swal({
+          title: respo.data.message,
+          text: `${respo.data.data.name}`,
+          button: "Start",
+        }).then((val) => {
+          history.push({
+            pathname: "/consent",
+            state: { project: respo.data.data },
+          });
+        });
+      }
 
-        if(respo.status > 299){
-            swal("Error!", `${respo.data.message}`);
-        }
+      if (respo.status > 299) {
+        swal("Error!", `${respo.data.message}`);
+      }
 
 
-    }catch(e){
-      console.log("Errora!", `${e.response?e.response.data.message:e.message}`);
-      swal("Error!", `${e.response?e.response.data.message:e.message}`);
+    } catch (e) {
+      console.log("Errora!", `${e.response ? e.response.data.message : e.message}`);
+      swal("Error!", `${e.response ? e.response.data.message : e.message}`);
       if (e) {
         // console.log(e)
-        swal("Error!", `${e.response?e.response.data.message:e.message}`);
+        swal("Error!", `${e.response ? e.response.data.message : e.message}`);
       }
     }
     // setModalOpen(false)
@@ -157,9 +156,9 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
 
 
   const handleSubmit = () => {
-    if(selectedProject != ''){
-       registerProject(selectedProject);
-    }else if( newProjectName != ''&&newProjectName){
+    if (selectedProject != '') {
+      registerProject(selectedProject);
+    } else if (newProjectName != '' && newProjectName) {
       registerProject(newProjectName)
     }
   };
@@ -170,33 +169,33 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
         <CloseButton onClick={onClose}>&times;</CloseButton>
         <Title>Start the evaluation</Title>
         <p>Create a project/Select existing one</p>
-        {projects.length > 0 &&  
-        (<>
-        <label style={{textAlign:'left'}} htmlFor="">Select from previous projects</label>
-        <Select
-          value={selectedProject}
-          onChange={(e) => setSelectedProject(e.target.value)}
-        >
-          <option value="" disabled>Select a project</option>
-          {projects.map((project, index) => (
-            <option key={index} value={project.name}>
-              {project.name}
-            </option>
+        {projects.length > 0 &&
+          (<>
+            <label style={{ textAlign: 'left' }} htmlFor="">Select from previous projects</label>
+            <Select
+              value={selectedProject}
+              onChange={(e) => setSelectedProject(e.target.value)}
+            >
+              <option value="" disabled>Select a project</option>
+              {projects.map((project, index) => (
+                <option key={index} value={project.name}>
+                  {project.name}
+                </option>
 
-          ))}
-          <option value="" >Clear</option>
-        </Select></>)}
+              ))}
+              <option value="" >Clear</option>
+            </Select></>)}
         <br />
         {selectedProject === '' && projects.length > 0 && <p>Or</p>}
-            {selectedProject === '' && <>   
-        <label style={{textAlign:'left'}} htmlFor="">Start a new project evaluation</label>
+        {selectedProject === '' && <>
+          <label style={{ textAlign: 'left' }} htmlFor="">Start a new project evaluation</label>
 
-         <Input
-          type="text"
-          placeholder="Project name"
-          value={newProjectName}
-          onChange={(e) => setNewProjectName(e.target.value)}
-        /> </>}
+          <Input
+            type="text"
+            placeholder="Project name"
+            value={newProjectName}
+            onChange={(e) => setNewProjectName(e.target.value)}
+          /> </>}
         <br />
         <br />
         {loading ? <Button >Sending...</Button> : <Button onClick={handleSubmit}>Submit</Button>}
