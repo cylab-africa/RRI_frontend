@@ -4,7 +4,7 @@ metadata:
   labels:
     app: rri-frontend
   name: rri-frontend-service-prod
-  namespace: dhis-mosip
+  namespace: rri
 spec:
   type: ClusterIP
   ports:
@@ -20,7 +20,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: rri-frontend-account 
-  namespace: dhis-mosip
+  namespace: rri
   labels:
     app: rri-frontend
 ---
@@ -30,7 +30,7 @@ metadata:
   labels:
     app: rri-frontend 
   name: rri-frontend-deployment-prod 
-  namespace: dhis-mosip
+  namespace: rri
 spec:
   replicas: 1  
   selector:
@@ -43,7 +43,9 @@ spec:
         revision: prod_v1.0  
         app: rri-frontend 
     spec:
-      serviceAccountName: rri-frontend-account  
+      serviceAccountName: rri-frontend-account 
+      imagePullSecrets:
+        - name: ghcr-secret 
       containers:  
       - image: ghcr.io/cylab-africa/rri-frontend:latest
         name: rri-frontend-container 
@@ -65,7 +67,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: rri-frontend-ingress
-  namespace: dhis-mosip
+  namespace: rri
   labels:
     app: rri-frontend 
 spec:
