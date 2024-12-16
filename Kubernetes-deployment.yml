@@ -45,7 +45,7 @@ spec:
     spec:
       serviceAccountName: rri-frontend-account  
       containers:  
-      - image: 0789421906/rri-frontend:latest
+      - image: ghcr.io/cylab-africa/rri-frontend:latest
         name: rri-frontend-container 
         ports:
         - containerPort: 3000 
