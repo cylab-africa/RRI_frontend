@@ -29,3 +29,6 @@ jobs:
           context: .
           push: true
           tags: ${{ vars.CONTAINER_REGISTRY }}/rri-frontend
+          build-args: |
+            REACT_APP_CLIENT_ID=${{secrets.REACT_APP_CLIENT_ID}}
+          
