@@ -23,80 +23,10 @@ import LoadingModal from "../components/LoadingModal";
 import { PDFDocument } from "../components/PDFDocument";
 //import {PDFaltered} from "../components/PDFaltered";
 import ReactPDF from "@react-pdf/renderer";
-import { IconContext } from "react-icons";
 import { checkUserLoggedIn, getFirstItemFromIndexedDB, SaveToIndexedDB } from "../helpers/indexedDB";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 
-const ChipList = ({ items, setEvaluation, active }) => {
-  const [startIndex, setStartIndex] = useState(0);
-
-  const TruncatedBadgeActive = ({ item, index }) => {
-    const truncatedText =
-      item.name.length > 9 ? `${item.name.slice(0, 9)}...` : item.name;
-
-    return (
-      <Badge
-        title={item.name}
-        style={{ cursor: "pointer" }}
-        onClick={() => {
-          setEvaluation(item);
-        }}
-        key={index}
-        pill
-        className="m-1"
-        bg="dark"
-      >
-        {truncatedText}
-      </Badge>
-    );
-  };
-  const TruncatedBadge = ({ item, index }) => {
-    const truncatedText =
-      item.name.length > 9 ? `${item.name.slice(0, 9)}...` : item.name;
-
-    return (
-      <Badge
-        title={item.name}
-        style={{ cursor: "pointer" }}
-        onClick={() => {
-          setEvaluation(item);
-        }}
-        key={index}
-        pill
-        className="m-1"
-        bg="secondary"
-      >
-        {truncatedText}
-      </Badge>
-    );
-  };
-
-  const handleGetMore = () => {
-    setStartIndex((prevIndex) => prevIndex + 3);
-  };
-
-  const handleGoBack = () => {
-    setStartIndex((prevIndex) => Math.max(0, prevIndex - 3));
-  };
-
-  const displayedItems = items.slice(startIndex, startIndex + 3);
-  const isBeginning = startIndex === 0;
-  const isEnd = startIndex + 3 >= items.length;
-
-  return (
-    <div style={{ padding: 0 }}>
-      {!isBeginning && <FaAngleLeft onClick={handleGoBack} />}
-      {displayedItems.map((item, index) => {
-        if (item.id === active.id) {
-          return <TruncatedBadgeActive index={index} item={item} />;
-        }
-        return <TruncatedBadge index={index} item={item} />;
-      })}
-      {!isEnd && <FaAngleRight onClick={handleGetMore} />}
-    </div>
-  );
-};
 
 
 const DashboardScreen = () => {
@@ -164,33 +94,6 @@ const DashboardScreen = () => {
       return '(Requires Attention)';
     }
   }
-  const getEvaluations = async (pId) => {
-    try {
-      const response = await api.getRequest(
-        "/evaluation?projectId=" + pId,
-        true
-      );
-
-      if (response.data.data.length > 0) {
-        setEvaluations(response.data.data);
-
-        if (location.state) {
-          setEvaluation(
-            response.data.data.filter(
-              (item) => item.id === location.state.projectId
-            )[0]
-          );
-        } else {
-          setEvaluation(response.data.data[0]);
-        }
-      } else {
-        setEvaluation(undefined);
-      }
-    } catch (e) {
-      // console.log(evaluations);
-      swal(e.response.data.message);
-    }
-  };
 
 
 
@@ -320,48 +223,6 @@ const DashboardScreen = () => {
   };
 
 
-  const trafficLights = (color, score, type) => {
-    if (color === "red") {
-      if (getColorBasedOnNumber(score) === "red") {
-        if (type === "light") {
-          return red_image;
-        }
-        return "image-container";
-      } else {
-        if (type === "light") {
-          return red_dotted_image;
-        }
-        return "image-container-dotted";
-      }
-    } else if (color === "green") {
-      if (getColorBasedOnNumber(score) === "green") {
-        if (type === "light") {
-          return green_image;
-        }
-        return "image-container";
-      } else {
-        if (type === "light") {
-          return green_dotted_image;
-        }
-        return "image-container-dotted";
-      }
-    } else if (color === "orange") {
-      if (getColorBasedOnNumber(score) === "orange") {
-        if (type === "light") {
-          return amber_image;
-        }
-        return "image-container";
-      } else {
-        if (type === "light") {
-          return amber_dotted_image;
-        }
-        return "image-container-dotted";
-      }
-    }
-    // src={require("../images/red-dotted.png")}
-  };
-
-
   const chekIflightIsOn = (color, score) => {
     if (score >= 70) {
       if (color === 'green') {
@@ -413,11 +274,13 @@ const DashboardScreen = () => {
 
   useEffect(() => {
     // getEvaluations();
-
+    
     let pid = location.state?.projectId;
 
-    getProjects(pid);
-  }, []);
+    if (isAuthenticated) {
+      getProjects(pid);
+    }
+  }, [isAuthenticated]);
 
   const checkAuthentication = async () => {
     try {
@@ -530,25 +393,25 @@ const DashboardScreen = () => {
         {!isAuthenticated &&
           (
             <div className="auth-modal">
-            <Modal
-              show={!isAuthenticated}
-              onRequestClose={() => console.log("Modal closed")}
-              className="auth-modal custom-modal"
-              overlayClassName="custom-overlay"
-            >
-              <div className="modal-content">
-                <h2>Sign In Required</h2>
-                <p>Please sign in to access the dashboard.</p>
-                <GoogleLogin onSuccess={onSuccess} onError={errorMessage} />
-                <Button onClick={(e) => {
-                  history.push("/");
-                }}>
-                  Go to Home Page
-                </Button>
-              </div>
-            </Modal>
+              <Modal
+                show={!isAuthenticated}
+                onRequestClose={() => console.log("Modal closed")}
+                className="auth-modal custom-modal"
+                overlayClassName="custom-overlay"
+              >
+                <div className="modal-content">
+                  <h2>Sign In Required</h2>
+                  <p>Please sign in to access the dashboard.</p>
+                  <GoogleLogin onSuccess={onSuccess} onError={errorMessage} />
+                  <Button onClick={(e) => {
+                    history.push("/");
+                  }}>
+                    Go to Home Page
+                  </Button>
+                </div>
+              </Modal>
             </div>
-            
+
 
           )}
         {/* end of modal */}
