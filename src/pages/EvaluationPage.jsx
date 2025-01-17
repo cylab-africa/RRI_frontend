@@ -24,21 +24,6 @@ const EvaluationPage = (props) => {
 
   // console.log(project)
 
-  const DisplayQuestions = (questions) => {
-    if (layerId === 1) {
-
-    }
-  }
-
-
-  const validateForm = () => {
-    if (questions.length != answers.length) {
-      swal("Please assign a score to each question.");
-      return false
-    }
-    return true
-  }
-
 
   const getQuestionsLayer = async () => {
     setLoading(true)
@@ -47,11 +32,11 @@ const EvaluationPage = (props) => {
       const response = await api.getRequest('/questions')
       console.log('response questions: ',response)
       setQuestions(response.data.questions)
+      setLoading(false)
     } catch (e) {
       // console.log(e)
     }
     setTimeout(() => {
-      setLoading(false)
       window.scrollTo(0, 0)
     }, 1000)
 
@@ -114,7 +99,7 @@ const EvaluationPage = (props) => {
         </div>
       }
 
-      <LoadingModal show={loading} />
+      <LoadingModal show={loading}  setShow={setLoading}/>
       <ConfirmModal
         setShow={(val) => { setShowConfirm(false) }}
         show={showConfirm}

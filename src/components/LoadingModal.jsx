@@ -7,7 +7,6 @@ function LoadingModal(props) {
 //   const [show, setShow] = useState(false);
   const {setShow, show} = props;
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   return (
     

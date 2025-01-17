@@ -28,75 +28,6 @@ import { checkUserLoggedIn, getFirstItemFromIndexedDB, SaveToIndexedDB } from ".
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 
-const ChipList = ({ items, setEvaluation, active }) => {
-  const [startIndex, setStartIndex] = useState(0);
-
-  const TruncatedBadgeActive = ({ item, index }) => {
-    const truncatedText =
-      item.name.length > 9 ? `${item.name.slice(0, 9)}...` : item.name;
-
-    return (
-      <Badge
-        title={item.name}
-        style={{ cursor: "pointer" }}
-        onClick={() => {
-          setEvaluation(item);
-        }}
-        key={index}
-        pill
-        className="m-1"
-        bg="dark"
-      >
-        {truncatedText}
-      </Badge>
-    );
-  };
-  const TruncatedBadge = ({ item, index }) => {
-    const truncatedText =
-      item.name.length > 9 ? `${item.name.slice(0, 9)}...` : item.name;
-
-    return (
-      <Badge
-        title={item.name}
-        style={{ cursor: "pointer" }}
-        onClick={() => {
-          setEvaluation(item);
-        }}
-        key={index}
-        pill
-        className="m-1"
-        bg="secondary"
-      >
-        {truncatedText}
-      </Badge>
-    );
-  };
-
-  const handleGetMore = () => {
-    setStartIndex((prevIndex) => prevIndex + 3);
-  };
-
-  const handleGoBack = () => {
-    setStartIndex((prevIndex) => Math.max(0, prevIndex - 3));
-  };
-
-  const displayedItems = items.slice(startIndex, startIndex + 3);
-  const isBeginning = startIndex === 0;
-  const isEnd = startIndex + 3 >= items.length;
-
-  return (
-    <div style={{ padding: 0 }}>
-      {!isBeginning && <FaAngleLeft onClick={handleGoBack} />}
-      {displayedItems.map((item, index) => {
-        if (item.id === active.id) {
-          return <TruncatedBadgeActive index={index} item={item} />;
-        }
-        return <TruncatedBadge index={index} item={item} />;
-      })}
-      {!isEnd && <FaAngleRight onClick={handleGetMore} />}
-    </div>
-  );
-};
 
 
 const DashboardScreen = () => {
@@ -164,33 +95,6 @@ const DashboardScreen = () => {
       return '(Requires Attention)';
     }
   }
-  const getEvaluations = async (pId) => {
-    try {
-      const response = await api.getRequest(
-        "/evaluation?projectId=" + pId,
-        true
-      );
-
-      if (response.data.data.length > 0) {
-        setEvaluations(response.data.data);
-
-        if (location.state) {
-          setEvaluation(
-            response.data.data.filter(
-              (item) => item.id === location.state.projectId
-            )[0]
-          );
-        } else {
-          setEvaluation(response.data.data[0]);
-        }
-      } else {
-        setEvaluation(undefined);
-      }
-    } catch (e) {
-      // console.log(evaluations);
-      swal(e.response.data.message);
-    }
-  };
 
 
 
@@ -271,39 +175,42 @@ const DashboardScreen = () => {
     setLoading(true);
     try {
       let response;
-      response = await api.getRequest("/projects", true);
-      console.log('projects: ', response)
-      if (response.status === 200) {
+      if(isAuthenticated==true){
+        response = await api.getRequest("/projects", true);
+        if (response.status === 200) {
 
-        let allProjects = response.data.data;
-        allProjects.sort((a, b) => {
-          return new Date(b.dateCreated) - new Date(a.dateCreated);
-        });
-        setProjects(allProjects);
-        let seectedProject;
-        if (pid) {
-
-
-          console.log('selected project data: ', response.data.data)
+          let allProjects = response.data.data;
+          allProjects.sort((a, b) => {
+            return new Date(b.dateCreated) - new Date(a.dateCreated);
+          });
+          setProjects(allProjects);
+          let seectedProject;
           if (pid) {
-            seectedProject = response.data.data.find((obj) => obj.id === pid);
-          }
-          console.log('pid', pid)
-          if (seectedProject) {
-            console.log('selected project:', seectedProject)
-            setCurrentProject(seectedProject);
+  
+  
+            console.log('selected project data: ', response.data.data)
+            if (pid) {
+              seectedProject = response.data.data.find((obj) => obj.id === pid);
+            }
+            console.log('pid', pid)
+            if (seectedProject) {
+              console.log('selected project:', seectedProject)
+              setCurrentProject(seectedProject);
+            } else {
+              seectedProject = response.data.data[0];
+              setCurrentProject(seectedProject);
+            }
           } else {
             seectedProject = response.data.data[0];
             setCurrentProject(seectedProject);
           }
-        } else {
-          seectedProject = response.data.data[0];
-          setCurrentProject(seectedProject);
+          console.log('seectedProject.evaluations[0]: ', seectedProject.evaluations[0])
+          setCurrentEvaluation(seectedProject.evaluations[0]);
         }
-        console.log('seectedProject.evaluations[0]: ', seectedProject.evaluations[0])
-        setCurrentEvaluation(seectedProject.evaluations[0]);
-        setLoading(false);
       }
+      
+      setLoading(false);
+      
     } catch (e) {
       setNoAccount(true);
       setLoading(false);
@@ -311,55 +218,8 @@ const DashboardScreen = () => {
     setNoAccount(false);
   };
 
-  const downloadReport = () => {
-    let content = getHtmlContent(
-      currentProject.name,
-      currentProject.evaluations[0].score[3]
-    );
-    generatePDF(content);
-  };
 
 
-  const trafficLights = (color, score, type) => {
-    if (color === "red") {
-      if (getColorBasedOnNumber(score) === "red") {
-        if (type === "light") {
-          return red_image;
-        }
-        return "image-container";
-      } else {
-        if (type === "light") {
-          return red_dotted_image;
-        }
-        return "image-container-dotted";
-      }
-    } else if (color === "green") {
-      if (getColorBasedOnNumber(score) === "green") {
-        if (type === "light") {
-          return green_image;
-        }
-        return "image-container";
-      } else {
-        if (type === "light") {
-          return green_dotted_image;
-        }
-        return "image-container-dotted";
-      }
-    } else if (color === "orange") {
-      if (getColorBasedOnNumber(score) === "orange") {
-        if (type === "light") {
-          return amber_image;
-        }
-        return "image-container";
-      } else {
-        if (type === "light") {
-          return amber_dotted_image;
-        }
-        return "image-container-dotted";
-      }
-    }
-    // src={require("../images/red-dotted.png")}
-  };
 
 
   const chekIflightIsOn = (color, score) => {
@@ -417,13 +277,11 @@ const DashboardScreen = () => {
     let pid = location.state?.projectId;
 
     getProjects(pid);
-  }, []);
+  }, [isAuthenticated]);
 
   const checkAuthentication = async () => {
     try {
       const isLoggedIn = await checkUserLoggedIn("GoogleCredentialsDB", "CredentialsStore");
-      console.log('isloggedin: ', isLoggedIn)
-
       setIsAuthenticated(isLoggedIn); // Update state based on authentication status
     } catch (error) {
       console.error("Error checking authentication:", error);
@@ -434,8 +292,11 @@ const DashboardScreen = () => {
 
 
     checkAuthentication();
-    let page = switchLights();
-    setPage(page);
+
+    if (isAuthenticated) {
+      let page = switchLights();
+      setPage(page);
+    }
   }, [evaluation, isAuthenticated]);
 
   if (noAccount) {
@@ -501,7 +362,13 @@ const DashboardScreen = () => {
       setIsAuthenticated(true);
       if (projectAnswers) {
         const projectName = localStorage.getItem('projectName');
+        // 1. creating a project
+        if (!projectName) {
+          swal('No project name specified');
+          return;
+        }
 
+        // 2. submit answers
         const answersBody = {
           projectName: projectName,
           answers: projectAnswers
@@ -530,25 +397,25 @@ const DashboardScreen = () => {
         {!isAuthenticated &&
           (
             <div className="auth-modal">
-            <Modal
-              show={!isAuthenticated}
-              onRequestClose={() => console.log("Modal closed")}
-              className="auth-modal custom-modal"
-              overlayClassName="custom-overlay"
-            >
-              <div className="modal-content">
-                <h2>Sign In Required</h2>
-                <p>Please sign in to access the dashboard.</p>
-                <GoogleLogin onSuccess={onSuccess} onError={errorMessage} />
-                <Button onClick={(e) => {
-                  history.push("/");
-                }}>
-                  Go to Home Page
-                </Button>
-              </div>
-            </Modal>
+              <Modal
+                show={!isAuthenticated}
+                onRequestClose={() => console.log("Modal closed")}
+                className="auth-modal custom-modal"
+                overlayClassName="custom-overlay"
+              >
+                <div className="modal-content">
+                  <h2>Sign In Required</h2>
+                  <p>Please sign in to access the dashboard.</p>
+                  <GoogleLogin onSuccess={onSuccess} onError={errorMessage} />
+                  <Button onClick={(e) => {
+                    history.push("/");
+                  }}>
+                    Go to Home Page
+                  </Button>
+                </div>
+              </Modal>
             </div>
-            
+
 
           )}
         {/* end of modal */}

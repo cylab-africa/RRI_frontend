@@ -230,6 +230,7 @@ const EvaluationForm = (props) => {
 
           return (
             <QuestionCard
+              key={index}
               number={q_number}
               q_number={cQuestion[0].number}
               question={question}

@@ -79,7 +79,7 @@ const ConsentPage = (props) => {
         <Button onClick={submitEvaluation} style={{minWidth:'80%'}} variant="dark">Start</Button>
         </Col>
       </Row>
-     <LoadingModal show={loading}  />
+     <LoadingModal show={loading}  setShow={setLoading}/>
      
     </div>
   );
