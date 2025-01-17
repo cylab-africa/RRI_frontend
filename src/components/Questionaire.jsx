@@ -100,37 +100,13 @@ const EvaluationForm = (props) => {
     try {
       setLoadingSubmit(true);
       console.log(answers)
-      // const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
-      // if (!isLoggedIn) {
-      //   swal({
-      //     title: "Not Logged In",
-      //     text: "You need to be logged in to view the report.",
-      //     icon: "warning",  // You can change the icon as needed
-      //     buttons: {
-      //       confirm: {
-      //         text: "OK",
-      //         value: true,
-      //         visible: true,
-      //         className: "",
-      //         closeModal: true, // Close the modal when clicked
-      //       },
-      //     },
-      //     closeOnClickOutside: false, // Prevent clicking outside to close the modal
-      //     closeOnEsc: false,
-      //   }).then((willRedirect) => {
-      //     if (willRedirect) {
-      //       // Redirect to the landing page
-      //       history.push("/"); // Adjust the path to your landing page    
-      //       return;
 
-      //     }
-
-      //   });
-      // }
-      const body = { layerId: 1, projectId: props.projectId, answers: answers };
       
       const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
+      
+      const body = { layerId: 1, projectName: props.projectName, answers: answers };
       if(isLoggedIn){
+        
         let response = await api.postRequest("/answers", body, true);
         if (response.status === 200) {
           // Some stuffs will be recorded here
