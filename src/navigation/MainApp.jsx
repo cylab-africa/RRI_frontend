@@ -26,10 +26,14 @@ import { API } from "../apis/http";
 import { checkUserLoggedIn, logoutUser, SaveToIndexedDB } from "../helpers/indexedDB.js";
 import AdminScreen from "../pages/admin.jsx";
 import Layout from "./Layout.jsx";
+import { AuthProvider } from "./AuthProvider.jsx";
 
 
 
 export default function MainApp() {
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const api = new API();
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
@@ -45,6 +49,7 @@ export default function MainApp() {
   useEffect(() => {
     checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore')
       .then((isLoggedIn) => {
+        setIsAuthenticated(isLoggedIn)
         if (isLoggedIn) {
           // Retrieve user data from IndexedDB
           const request = indexedDB.open('GoogleCredentialsDB', 2);
@@ -66,66 +71,20 @@ export default function MainApp() {
       })
       .catch((error) => console.error("Error checking logged-in status:", error));
   }, []);
-  const onSuccess = async (response) => {
-    try {
-      const checkUserBody = { token: response.credential };
-      // check if user exit
-      const checkUserResponse = await api.postRequest("/check-user", checkUserBody, true);
-      const data = await checkUserResponse.data;
-      console.log('true registration:', data)
-      const decodedToken = jwtDecode(response.credential);
-      let authResponse;
-      let accessToken;
-      if (data.userRegistered == false) {
-        console.log('false registration')
-        const registerBody = {
-          email: decodedToken.email,
-          firstName: decodedToken.given_name,
-          lastName: decodedToken.family_name,
-          googleCredential: response.credential
-        };
-        authResponse = await api.postRequest("/signup", registerBody, true);
-        accessToken = authResponse.data.accessToken;
-        setProfile(decodedToken);
-      } else {
-        accessToken = data.accessToken;
-        setProfile(decodedToken);
-      }
-      // Save Google credentials to IndexedDB
-      const googleCredentials = {
-        id: decodedToken.sub, // unique identifier
-        token: response.credential,
-        email: decodedToken.email,
-        firstName: decodedToken.given_name,
-        lastName: decodedToken.family_name,
-        picture: decodedToken.picture,
-        accessToken: accessToken
-      };
-      SaveToIndexedDB('GoogleCredentialsDB', 'CredentialsStore', googleCredentials);
-
-      openNav()
-
-    } catch (error) {
-      console.log(error)
-    }
-  };
 
   // log out function to log the user out of google and set the profile array to null
-  const logOut = (e) => {
-    logoutUser('GoogleCredentialsDB', 'CredentialsStore');
-    googleLogout(); // This should log the user out from Google
-    setUser(null);  // Reset user state
-    setProfile(null);
-    setProfilePic(null) // Reset profile state
-    openNav()
-  };
 
   return (
-    <Router>
+    <AuthProvider>
+      <Router>
       <Layout>
         <Switch>
           <Route exact path="/old" component={NewHomePage} />
-          <Route exact path="/" component={HomePage} />
+          <Route exact
+            path="/"
+            render={(props) => (
+              <HomePage {...props} />
+            )} />
           <Route exact path="/consent" component={ConsentPage} />
 
           <Route exact path="/evaluation" component={EvaluationPage} />
@@ -140,5 +99,7 @@ export default function MainApp() {
 
       </Layout>
     </Router>
+    </AuthProvider>
+    
   );
 }

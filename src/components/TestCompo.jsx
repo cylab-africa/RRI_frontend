@@ -90,7 +90,7 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
   const [loading, setLoading] = useState(false);
 
 
-  const api = new API()
+  // const api = new API()
   const history = useHistory()
 
   const registerProject = async (projectName) => {
@@ -103,47 +103,48 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
       // setModalOpen(false)
       return
     }
-    const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
+    // const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
     try {
-      let respo = await api.postRequest("/project", { projectName: projectName }, true);
-      console.log('respo: ', respo);
-      if (respo.status === 202) {
-        console.log(respo.data)
-        addToken(respo.data.data.token);
+      // let respo = await api.postRequest("/project", { projectName: projectName }, true);
+      localStorage.setItem('projectName',projectName)
+      // console.log('respo: ', respo);
+      // if (respo.status === 202) {
+      //   console.log(respo.data)
+      //   addToken(respo.data.data.token);
         swal({
           title: 'project created successfully',
-          text: `${respo.data.data.name}`,
+          text: `${projectName}`,
           button: "Start",
         }).then((val) => {
           history.push({
             pathname: "/consent",
-            state: { project: respo.data.data },
+            state: { project: projectName },
           });
         });
-      }
+      // }
 
-      if (respo.status === 200) {
+      // if (respo.status === 200) {
 
-        swal({
-          title: respo.data.message,
-          text: `${respo.data.data.name}`,
-          button: "Start",
-        }).then((val) => {
-          history.push({
-            pathname: "/consent",
-            state: { project: respo.data.data },
-          });
-        });
-      }
+      //   swal({
+      //     title: respo.data.message,
+      //     text: `${respo.data.data.name}`,
+      //     button: "Start",
+      //   }).then((val) => {
+      //     history.push({
+      //       pathname: "/consent",
+      //       state: { project: respo.data.data },
+      //     });
+      //   });
+      // }
 
-      if (respo.status > 299) {
-        swal("Error!", `${respo.data.message}`);
-      }
+      // if (respo.status > 299) {
+      //   swal("Error!", `${respo.data.message}`);
+      // }
 
 
     } catch (e) {
-      console.log("Errora!", `${e.response ? e.response.data.message : e.message}`);
-      swal("Error!", `${e.response ? e.response.data.message : e.message}`);
+      console.log("Error!", `${e}`);
+      swal("Error!", `${e}`);
       if (e) {
         // console.log(e)
         swal("Error!", `${e.response ? e.response.data.message : e.message}`);

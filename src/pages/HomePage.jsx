@@ -5,14 +5,16 @@ import { useHistory, useLocation } from "react-router-dom";
 import { addToken } from "../utils/localStorageUtils";
 import CreateProjectModel from "../components/CreateProjectModel";
 import TestCompo from "../components/TestCompo";
+import { checkUserLoggedIn, getFirstItemFromIndexedDB } from "../helpers/indexedDB";
+import { useAuth } from "../navigation/AuthProvider";
 
 const HomePage = () => {
+  const {isAuthenticated}=useAuth();
   const api = new API();
   const history = useHistory();
   const [projectName, setProjectName] = useState();
   const [isModalOpen, setModalOpen] = useState(false);
-
-
+ 
   const [projects, setProjects] = useState([
 
   ]);
@@ -29,14 +31,17 @@ const HomePage = () => {
       console.log(e)
     }
   }
+
   useEffect(() => {
-    getProject()
-  }, [])
+    console.log(isAuthenticated)
+    if (isAuthenticated) {
+      getProject();
+    }
+  }, [isAuthenticated]);
+
 
 
   return (
-
-
     <div>
       <section className="slider_section">
         <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">

@@ -182,23 +182,28 @@ export const logoutUser = async () => {
   // Get the names of all IndexedDB databases
   const databases = await indexedDB.databases(); // This returns a list of all databases
 
+    // List of databases to keep
+    const keepDbs = ["QuestionsDB"]; // Add other database names you want to keep here
+
   // Delete each database
   databases.forEach((db) => {
-    const deleteRequest = indexedDB.deleteDatabase(db.name); // Delete the database by name
+    if (!keepDbs.includes(db.name)) {
+      const deleteRequest = indexedDB.deleteDatabase(db.name);
 
-    deleteRequest.onsuccess = () => {
-      console.log(`Database ${db.name} deleted successfully.`);
-    };
+      deleteRequest.onsuccess = () => {
+        console.log(`Database "${db.name}" deleted successfully.`);
+      };
 
-    deleteRequest.onerror = (event) => {
-      console.error(`Error deleting database ${db.name}:`, event.target.error);
-    };
+      deleteRequest.onerror = (event) => {
+        console.error(`Error deleting database "${db.name}":`, event.target.error);
+      };
 
-    deleteRequest.onblocked = () => {
-      console.warn(
-        `Database ${db.name} deletion is blocked. Ensure no open connections exist.`
-      );
-    };
+      deleteRequest.onblocked = () => {
+        console.warn(`Database "${db.name}" deletion is blocked.`);
+      };
+    } else {
+      console.log(`Database "${db.name}" retained.`);
+    }
   });
 };
 

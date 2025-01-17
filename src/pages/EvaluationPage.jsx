@@ -8,6 +8,7 @@ import { addToken } from "../utils/localStorageUtils";
 import swal from 'sweetalert';
 import { useHistory, useLocation } from "react-router-dom";
 import EvaluationForm from "../components/Questionaire";
+import { fetchQuestions, getFirstItemFromIndexedDB, SaveToIndexedDB } from "../helpers/indexedDB";
 
 const EvaluationPage = (props) => {
   const api = new API()
@@ -24,36 +25,40 @@ const EvaluationPage = (props) => {
 
   // console.log(project)
 
-  const DisplayQuestions = (questions) => {
-    if (layerId === 1) {
-
-    }
-  }
-
-
-  const validateForm = () => {
-    if (questions.length != answers.length) {
-      swal("Please assign a score to each question.");
-      return false
-    }
-    return true
-  }
-
-
   const getQuestionsLayer = async () => {
-    setLoading(true)
-    try {
+    setLoading(true);
+    const dbName = "QuestionsDB";
+    const storeName = "QuestionsStore";
 
-      const response = await api.getRequest('/questions')
-      console.log('response questions: ',response)
-      setQuestions(response.data.questions)
-    } catch (e) {
-      // console.log(e)
+    try {
+      let questions = await getFirstItemFromIndexedDB(dbName, storeName);
+      if (questions) {
+        console.log('questions: ', questions);
+        setQuestions(questions);
+      } else {
+        setLoading(true)
+        try {
+          const response = await api.getRequest('/questions')
+          console.log('response questions: ', response)
+          SaveToIndexedDB(dbName, storeName, response.data.questions);
+          setQuestions(response.data.questions)
+        } catch (e) {
+          console.log(e)
+        }
+        setTimeout(() => {
+          setLoading(false)
+          window.scrollTo(0, 0)
+        }, 1000)
+
+      }
+      // const data = await fetchQuestions(dbName, storeName, api);
+      // setQuestions(data);  // Ensure correct state update
+    } catch (err) {
+      console.error("Error fetching questions:", err);
+    } finally {
+      setLoading(false);
+      window.scrollTo(0, 0);
     }
-    setTimeout(() => {
-      setLoading(false)
-      window.scrollTo(0, 0)
-    }, 1000)
 
   }
 
@@ -88,14 +93,14 @@ const EvaluationPage = (props) => {
   return (
     <div class="container layout_padding2" >
 
-      {!loading ? 
-      
-        <EvaluationForm 
-            projectId={projectId} 
-            questions={questions} 
-            scrollUp={() => { window.scrollTo(60, 60) }} 
-        /> 
-        
+      {!loading ?
+
+        <EvaluationForm
+          projectId={projectId}
+          questions={questions}
+          scrollUp={() => { window.scrollTo(60, 60) }}
+        />
+
         :
 
         <div>
