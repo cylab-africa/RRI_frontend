@@ -60,7 +60,7 @@ const HomePage = () => {
                   RRI <br />
                   <span>Responsible Research and Innovation</span>
                 </h1>
-                <p>Towards Responsible Innovation for Digital Public Goods</p>
+                <p>Championing responsible innovation for Digital Public Infrastructure(DPI) development</p>
                 <div className="btn-box">
                   <a onClick={() => setModalOpen(true)} className="btn-1">
                     Start evaluation
@@ -68,21 +68,33 @@ const HomePage = () => {
                 </div>
               </div>
             </div>
+
+
+
             <div className="carousel-item">
               <div className="detail-box">
-                <div className="number"></div>
+                {/* Heading */}
                 <h1>
-                  RRI <br />
-                  <span>Upanzi Network</span>
+                  Principles of <br />
+                  <span>Responsible Research and Innovation</span>
                 </h1>
-                <p>Promoting Responsible Innovation by Design</p>
+
+                {/* Description */}
+                <p>
+                  RRI is built upon principles like Ethics, Transparency, Inclusivity, and Sustainability.
+                  These principles form the foundation for fostering innovation that benefits society
+                  while respecting its values.
+                </p>
+
+                {/* Button */}
                 <div className="btn-box">
                   <a href="/principles" className="btn-1">
-                    Read More
+                    Learn More
                   </a>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </section>

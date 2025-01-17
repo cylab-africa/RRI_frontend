@@ -8,6 +8,9 @@ COPY . .
 # Expose 3000
 EXPOSE 3000
 
+ARG REACT_APP_CLIENT_ID
+ENV REACT_APP_CLIENT_ID=$REACT_APP_CLIENT_ID
+
 # ENV Definition 
 ENV GENERATE_SOURCEMAP=false
 # Define test/staging env (Will be changed in the future)
