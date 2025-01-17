@@ -5,14 +5,15 @@ import { getFirstItemFromIndexedDB, logoutUser, SaveToIndexedDB } from "../helpe
 import { jwtDecode } from "jwt-decode";
 import { API } from "../apis/http";
 import { Button } from "react-bootstrap";
+import { useAuth } from "./AuthProvider";
 
 function Layout({ children }) {
+    const { profile,setIsAuthenticated,setProfile } = useAuth();
+
     const api = new API();
     const location = useLocation();
     const isAdminRoute = location.pathname === '/admin';
     const [user, setUser] = useState(null);
-    const [profile, setProfile] = useState(null);
-    const [profilePic, setProfilePic] = useState('');
     const errorMessage = (error) => {
         console.log(error);
     };
@@ -30,7 +31,7 @@ function Layout({ children }) {
             if (storedCredentials) {
                 const decodedToken = jwtDecode(storedCredentials.token);
                 setProfile(decodedToken);
-                setProfilePic(storedCredentials.picture);
+                // setProfilePic(storedCredentials.picture);
                 setUser(storedCredentials);
             }
         };
@@ -40,6 +41,8 @@ function Layout({ children }) {
 
     const onSuccess = async (response) => {
         try {
+            
+            openNav()
             const checkUserBody = { token: response.credential };
             // check if user exit
             const checkUserResponse = await api.postRequest("/check-user", checkUserBody, true);
@@ -73,9 +76,9 @@ function Layout({ children }) {
                 picture: decodedToken.picture,
                 accessToken: accessToken
             };
+            setIsAuthenticated(true)
             SaveToIndexedDB('GoogleCredentialsDB', 'CredentialsStore', googleCredentials);
 
-            openNav()
 
         } catch (error) {
             console.log(error)
@@ -84,12 +87,13 @@ function Layout({ children }) {
 
     // log out function to log the user out of google and set the profile array to null
     const logOut = (e) => {
+        openNav()
         logoutUser('GoogleCredentialsDB', 'CredentialsStore');
         googleLogout(); // This should log the user out from Google
         setUser(null);  // Reset user state
         setProfile(null);
-        setProfilePic(null) // Reset profile state
-        openNav()
+        // setProfilePic(null) // Reset profile state
+        
     };
     return (
         <div>

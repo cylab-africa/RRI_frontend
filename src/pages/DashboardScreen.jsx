@@ -180,7 +180,7 @@ const DashboardScreen = () => {
 
         let allProjects = response.data.data;
         allProjects.sort((a, b) => {
-          return new Date(b.dateCreated) - new Date(a.dateCreated);
+          return new Date(b.createdAt) - new Date(a.createdAt);
         });
         setProjects(allProjects);
         let seectedProject;
@@ -367,7 +367,7 @@ const DashboardScreen = () => {
 
         const answersBody = {
           projectName: projectName,
-          answers: projectAnswers
+          projectAnswers:projectAnswers.projectAnswers
         }
         const answerResponse = await api.postRequest("/submit-auth", answersBody, true);
         console.log('answers: ', answerResponse)

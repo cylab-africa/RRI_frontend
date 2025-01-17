@@ -7,7 +7,7 @@ import swal from "sweetalert";
 import { API } from "../apis/http";
 import { useHistory, useLocation } from "react-router-dom";
 import { addToken } from "../utils/localStorageUtils";
-import { checkUserLoggedIn, SaveToIndexedDB } from "../helpers/indexedDB";
+import { checkUserLoggedIn, getFirstItemFromIndexedDB, SaveToIndexedDB } from "../helpers/indexedDB";
 
 const EvaluationForm = (props) => {
   const { scrollUp, questions } = props;
@@ -99,15 +99,16 @@ const EvaluationForm = (props) => {
 
     try {
       setLoadingSubmit(true);
-      console.log(answers)
+      console.log('answers',answers)
 
+      const body = { layerId: 1, projectName: localStorage.getItem('projectName'), projectAnswers:{answers: answers} };
       
+      SaveToIndexedDB('projectDB', 'answersStore', body);
       const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
       
-      const body = { layerId: 1, projectName: props.projectName, answers: answers };
       if(isLoggedIn){
         
-        let response = await api.postRequest("/answers", body, true);
+        let response = await api.postRequest("/submit-auth", body, true);
         if (response.status === 200) {
           // Some stuffs will be recorded here
           setTimeout(() => {
@@ -120,12 +121,9 @@ const EvaluationForm = (props) => {
           }, 1000);
         }
       }else{
-        
-        SaveToIndexedDB('projectDB', 'answersStore', body);
 
         history.push({
           pathname: "/dashboard",
-          state: { projectId: props.projectId },
         });
       }
       
@@ -140,10 +138,12 @@ const EvaluationForm = (props) => {
       console.log('error in submit ansers', e)
       setLoadingSubmit(false);
       if (e?.response?.data) {
-        swal(e.response.data.message);
+        swal(e.response.data);
       }
-      if (e.message) {
+      if (e?.message) {
         swal(e.message);
+      }else{
+        swal('Internal Server Error')
       }
       setTimeout(() => {
         if (e?.response?.status === 401) {

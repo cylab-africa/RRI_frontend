@@ -5,38 +5,44 @@ import { useHistory, useLocation } from "react-router-dom";
 import { addToken } from "../utils/localStorageUtils";
 import CreateProjectModel from "../components/CreateProjectModel";
 import TestCompo from "../components/TestCompo";
+import { checkUserLoggedIn, getFirstItemFromIndexedDB } from "../helpers/indexedDB";
+import { useAuth } from "../navigation/AuthProvider";
 
 const HomePage = () => {
+  const {isAuthenticated}=useAuth();
   const api = new API();
   const history = useHistory();
   const [projectName, setProjectName] = useState();
   const [isModalOpen, setModalOpen] = useState(false);
-
-
+ 
   const [projects, setProjects] = useState([
-  
+
   ]);
 
-  const getProject = async ()=>{
+  const getProject = async () => {
     try {
       let response;
       response = await api.getRequest("/projects", true);
       if (response.status === 200) {
         setProjects(response.data.data);
-        
+
       }
     } catch (e) {
       console.log(e)
     }
   }
-  useEffect(()=>{
-    getProject()
-  },[])
- 
-  
+
+  useEffect(() => {
+    console.log(isAuthenticated)
+    if (isAuthenticated) {
+      getProject();
+    }
+  }, [isAuthenticated]);
+
+
 
   return (
-      <div>
+    <div>
       <section className="slider_section">
         <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
           <ol style={{ zIndex: 1 }} className="carousel-indicators">
@@ -83,13 +89,13 @@ const HomePage = () => {
 
 
       <div class="center-line">
-        <img style={{width:50}} src={require('../images/ArrowDown.png')} alt="" srcset="" />
+        <img style={{ width: 50 }} src={require('../images/ArrowDown.png')} alt="" srcset="" />
       </div>
 
       <section class="about_section layout_padding2">
         <div class="container">
           <div class="heading_container">
-            <img style={{width: 30, marginBottom:2}} src={require('../images/about.png')} alt="" />
+            <img style={{ width: 30, marginBottom: 2 }} src={require('../images/about.png')} alt="" />
             <h2>About Responsible Research and Innovation (RRI)</h2>
           </div>
           <hr />
@@ -102,7 +108,7 @@ const HomePage = () => {
                   title="Designed by Eric semindu - CyLab Africa / Upanzi network"
                   alt=""
                 />
-                <label style={{fontSize:12}} for="">
+                <label style={{ fontSize: 12 }} for="">
                   Layered framework for RRI principles
                 </label>
               </div>
@@ -150,131 +156,131 @@ const HomePage = () => {
       </section>
 
 
-  <section class="us_section layout_padding2">
-    <div class="container">
-      <div class="heading_container">
-        <img style={{width:30}} src={require('../images/process.png')} alt=""/>
-        <h2>
-          Project evaluation process
-        </h2>
+      <section class="us_section layout_padding2">
+        <div class="container">
+          <div class="heading_container">
+            <img style={{ width: 30 }} src={require('../images/process.png')} alt="" />
+            <h2>
+              Project evaluation process
+            </h2>
 
-      </div>
-      <hr/>
-
-      <h4>
-        The evaluation process
-      </h4>
-
-      <div class="us_container">
-        <div class="box">
-          <div class="img1-box">
           </div>
-          <div  style={{width:100, height:100}}  class="img2-box">
-            <img src={require('../images/process_1.png')} alt=""/>
-          </div>
-          <div class="detail-box">
-            <h6>
-              A Form of questions
+          <hr />
 
-            </h6>
+          <h4>
+            The evaluation process
+          </h4>
+
+          <div class="us_container">
+            <div class="box">
+              <div class="img1-box">
+              </div>
+              <div style={{ width: 100, height: 100 }} class="img2-box">
+                <img src={require('../images/process_1.png')} alt="" />
+              </div>
+              <div class="detail-box">
+                <h6>
+                  A Form of questions
+
+                </h6>
+              </div>
+            </div>
+            <div class="box">
+              <div class="img1-box">
+              </div>
+              <div style={{ width: 100, height: 100 }} class="img2-box">
+                <img src={require('../images/process_2.png')} alt="" />
+              </div>
+              <div class="detail-box">
+                <h6>
+                  RRI index
+                </h6>
+              </div>
+            </div>
+            <div class="box">
+              <div class="img1-box">
+              </div>
+              <div style={{ width: 100, height: 100 }} class="img2-box">
+                <img src={require('../images/process_3.png')} alt="" />
+              </div>
+              <div class="detail-box">
+                <h6>
+                  Evaluation resuts
+                </h6>
+              </div>
+            </div>
+          </div>
+          <br />
+          <div class="heading_container">
+            <h4>
+              Understanding the scores
+            </h4>
+          </div>
+          <p>
+            After answering the questions, the system submits your responses to the <a href="">RRI Index</a> calculator, which classifies the results into three categories based on color.
+          </p>
+
+
+          <div class="color_container">
+            <div class="box">
+              <div class="img-box">
+                <img src={require('../images/red.png')} alt="Red color" />
+              </div>
+              <div class="detail-box">
+                <h6>
+                  Lower score
+                </h6>
+                <h6>
+                  0<span>%</span> - 49<span>%</span>
+                </h6>
+
+              </div>
+            </div>
+            <div class="box">
+              <div class="img-box">
+                <img src={require('../images/amber.png')} alt="Amber" />
+              </div>
+              <div class="detail-box">
+                <h6>
+                  Average score
+                </h6>
+                <h6>
+                  50<span>%</span> - 69<span>%</span>
+                </h6>
+
+              </div>
+            </div>
+            <div class="box">
+              <div class="img-box">
+                <img src={require('../images/green.png')} alt="Green" />
+              </div>
+              <div class="detail-box">
+                <h6>
+                  Higher score
+                </h6>
+                <h6>
+                  70<span>%</span> - 100<span>%</span>
+                </h6>
+
+              </div>
+            </div>
+          </div>
+          <div class="btn-box">
+            <a href="">
+              <span>
+                Read more
+              </span>
+              <img src={require('../images/link-arrow.png')} alt="" />
+            </a>
           </div>
         </div>
-        <div class="box">
-          <div class="img1-box">
-          </div>
-          <div  style={{width:100, height:100}}  class="img2-box">
-            <img src={require('../images/process_2.png')} alt=""/>
-          </div>
-          <div class="detail-box">
-            <h6>
-               RRI index
-            </h6>
-          </div>
-        </div>
-        <div class="box">
-          <div class="img1-box">
-          </div>
-          <div style={{width:100, height:100}} class="img2-box">
-            <img src={require('../images/process_3.png')} alt=""/>
-          </div>
-          <div class="detail-box">
-            <h6>
-              Evaluation resuts
-            </h6>
-          </div>
-        </div>
-      </div>
-      <br/>
-      <div class="heading_container">
-        <h4>
-          Understanding the scores 
-        </h4>
-      </div>
-      <p>
-        After answering the questions, the system submits your responses to the <a href="">RRI Index</a> calculator, which classifies the results into three categories based on color.
-      </p>
+      </section>
 
-
-      <div class="color_container">
-        <div class="box">
-          <div class="img-box">
-            <img src={require('../images/red.png')} alt="Red color"/>
-          </div>
-          <div class="detail-box">
-            <h6>
-              Lower score
-            </h6>
-            <h6>
-              0<span>%</span> - 49<span>%</span>
-            </h6>
-           
-          </div>
-        </div>
-        <div class="box">
-          <div class="img-box">
-            <img src={require('../images/amber.png')} alt="Amber"/>
-          </div>
-          <div class="detail-box">
-            <h6>
-              Average score
-            </h6>
-            <h6>
-              50<span>%</span> - 69<span>%</span>
-            </h6>
-           
-          </div>
-        </div>
-        <div class="box">
-          <div class="img-box">
-            <img src={require('../images/green.png')} alt="Green"/>
-          </div>
-          <div class="detail-box">
-            <h6>
-              Higher score
-            </h6>
-            <h6>
-              70<span>%</span> - 100<span>%</span>
-            </h6>
-           
-          </div>
-        </div>
-      </div>
-      <div class="btn-box">
-        <a href="">
-          <span>
-            Read more
-          </span>
-          <img src={require('../images/link-arrow.png')} alt=""/>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  {isModalOpen  && (
+      {isModalOpen && (
         <TestCompo
           projects={projects}
           onClose={() => setModalOpen(false)}
-          
+
         />
       )}
     </div>
