@@ -134,6 +134,8 @@ const DashboardScreen = () => {
       .then(async name => {
         if (!name) throw null;
         const report = await api.getRequest('/report/' + currentEvaluation.id, true);
+
+        console.log('response: ',report)
         const filtaredData = getQuestionsAndAnswers(report.data);
 
         const blob = await ReactPDF.pdf(<PDFDocument
@@ -275,6 +277,7 @@ const DashboardScreen = () => {
   useEffect(() => {
     // getEvaluations();
     
+    console.log('access token: ',localStorage.getItem('access token'));
     let pid = location.state?.projectId;
 
     if (isAuthenticated) {
@@ -343,6 +346,8 @@ const DashboardScreen = () => {
       } else {
         accessToken = data.accessToken;
       }
+      
+      localStorage.setItem('access token',accessToken)
       // Save Google credentials to IndexedDB
       const googleCredentials = {
         id: decodedToken.sub, // unique identifier
