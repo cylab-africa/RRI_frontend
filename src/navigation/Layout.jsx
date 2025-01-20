@@ -66,6 +66,8 @@ function Layout({ children }) {
                 accessToken = data.accessToken;
                 setProfile(decodedToken);
             }
+             
+            console.log('access token: ',accessToken)
             // Save Google credentials to IndexedDB
             const googleCredentials = {
                 id: decodedToken.sub, // unique identifier
