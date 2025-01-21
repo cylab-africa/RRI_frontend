@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
         margin: 'auto',
         flexDirection: 'row'
     },
-    
+
     tableCol: {
         width: '50%',
         borderStyle: 'solid',
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',  // Aligns text to the left (you can adjust as needed)
         marginBottom: 20,  // Adds space below the section
     },
-   
+
     scoreText: {
 
         fontSize: 12,
@@ -550,123 +550,133 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
                         <Text style={styles.scoreLabelText}>out of 100</Text>
                         <Text style={styles.performanceLabelText}>{getPerformanceLabel(generalScore.toFixed(1))}</Text>
                     </View>
-                {/* Layer section */}
-                <View style={[styles.textSection, styles.layerSection]}>
-                    <Text style={styles.sectionSubTitle}>b. Layer Results Overview</Text>
+                    {/* Layer section */}
+                    <View style={[styles.textSection, styles.layerSection]}>
+                        <Text style={styles.sectionSubTitle}>b. Layer Results Overview</Text>
 
-                    {/* Brief Explanation */}
-                    <Text style={styles.descriptionText}>
-                    The Responsible Research and Innovation (RRI) framework is divided into three layers, each reflecting a key aspect of ethical, societal, and sustainability considerations. Below is a breakdown of the results from the self-assessment tool, along with the RRI score for each layer. The scoring is based on a 0 to 100% scale, where higher scores indicate better alignment with the RRI principles.
-                    </Text>
-                    <View style={styles.spacer} />
+                        {/* Brief Explanation */}
+                        <Text style={styles.descriptionText}>
+                            The Responsible Research and Innovation (RRI) framework is divided into three layers, each reflecting a key aspect of ethical, societal, and sustainability considerations. Below is a breakdown of the results from the self-assessment tool, along with the RRI score for each layer. The scoring is based on a 0 to 100% scale, where higher scores indicate better alignment with the RRI principles.
+                        </Text>
+                        <View style={styles.spacer} />
 
-                    {/* Layer Scores */}
-                    {layerScores.map((score, index) => (
-                        <View key={index} style={[styles.layerScoreContainer]}>
-                            <Text style={styles.layerText}>Layer {index + 1}:</Text>
-                            <Text style={[styles.layerScore, getBadgeColorStyle(score.toFixed(1))]}>
-                                {score.toFixed(1)} out of 100  {getPerformanceLabel(score.toFixed(1))}
+                        {/* Layer Scores */}
+                        {layerScores.map((score, index) => (
+                            <View key={index} style={[styles.layerScoreContainer]}>
+                                <Text style={styles.layerText}>Layer {index + 1}:</Text>
+                                <Text style={[styles.layerScore, getBadgeColorStyle(score.toFixed(1))]}>
+                                    {score.toFixed(1)} out of 100  {getPerformanceLabel(score.toFixed(1))}
+                                </Text>
+                            </View>
+                        ))}
+                    </View>
+
+
+                    <View style={[styles.textSection, styles.principleSection]}>
+                        <Text style={styles.sectionSubTitle}>c. Principle Scores</Text>
+
+                        {/* Brief Explanation */}
+                        <Text style={styles.descriptionText}>
+                            The Principle Scores provide an in-depth evaluation of the project's alignment with individual Responsible
+                            Research and Innovation (RRI) principles. Each score highlights specific areas of strength and identifies
+                            opportunities for improvement.
+                        </Text>
+                        <View style={styles.spacer} />
+
+                        {/* Principles List */}
+                        {Object.keys(principleScores).map((principle, index) => (
+                            <View key={index} style={[styles.principleScoreContainer]}>
+                                <Text style={styles.principleText}>{principle}:</Text>
+                                <Text style={[styles.principleScore, getBadgeColorStyle((principleScores[principle]?.avg * 10).toFixed(1))]}>
+                                    {(principleScores[principle]?.avg * 10).toFixed(1)} out of 100  {getPerformanceLabel((principleScores[principle]?.avg * 10).toFixed(1))}
+                                </Text>
+                            </View>
+                        ))}
+                    </View>
+
+                    {/* Questions and Responses */}
+                    <View style={styles.textSection}>
+                        <Text style={styles.sectionTitle}>5. Questions and Responses </Text>
+                    </View>
+
+                    {surveyData.map((item, index) => (
+
+                        (index == 0)
+                            ? (
+                                <View key={index} style={styles.section}>
+                                    <Text style={styles.question}>{index + 1}. {item.question}</Text>
+                                    <Text style={styles.text}>{project.description}</Text>
+                                </View>
+                            )
+                            : (
+                                <View key={index} style={styles.section}>
+                                    <Text style={styles.question}>{index + 1}. {item.question}</Text>
+                                    {generateAnswerElement(item.answer)}
+                                </View>
+                            )
+                    ))}
+
+
+
+
+                    {/* Description Section */}
+                    <View style={styles.textSection}>
+                        <Text style={styles.sectionTitle}>6. Description of the Framework</Text>
+                    </View>
+                    <View style={styles.descriptionSection}>
+                        <Text style={styles.descriptionText}>
+                            The Responsible Research and Innovation (RRI) framework provides a comprehensive approach to embedding ethical, societal, and sustainability considerations into research and innovation projects.It evaluates projects across three distinct layers, each contributing to the overall RRI Index based on weighted importance:
+                        </Text>
+
+                        {/* Framework Layers */}
+                        <View style={styles.sectionSubTitle}>
+                            <Text style={styles.descriptionText}>Layer 1 assesses the privacy and security, benefit to society and ethics as well as governance. It ensures a project uphold the rights of individuals and communities. </Text>
+                            <Text style={styles.titleText}>Weight: 34.6%</Text>
+
+
+                            <Text style={styles.descriptionText}>Layer 2 emphasizes the need for transparency in decision-making and the promotion of gender equity throughout the innovation process. This includes open communication about project goals, the inclusion of diverse stakeholders, and ensuring that gender and other social biases do not impede participation in the project. </Text>
+                            <Text style={styles.titleText}>Weight: 33.1%</Text>
+
+
+                            <Text style={styles.descriptionText}>Layer 3 ensures that the project respects human agency, providing stakeholders with a voice in decision-making. It also emphasizes on open access making sure that projects are open to contributions from different individuals. </Text>
+                            <Text style={styles.titleText}>Weight: 32.3%</Text>
+
+                        </View>
+
+                        <Text style={styles.descriptionText}>
+                            Each layer is evaluated using its principles, and scores are weighted to calculate the final RRI Index. The higher the score, the greater the alignment with RRI principles, offering a measurable benchmark for responsible innovation.
+                        </Text>
+                    </View>
+
+                    {/* Score Explanation */}
+                    <View style={styles.scoreSection}>
+                        <Text style={styles.descriptionText}>The RRI Index is transformed into a simple traffic light system for ease of interpretation:</Text>
+
+                        {/* Visual Legend */}
+                        <View style={styles.scoreLegend}>
+                            <View style={[styles.scoreBox, styles.scoreBoxRed]} />
+                            <Text style={styles.legendText}>
+                                <Text style={styles.severityText}>Red </Text>
+                                {'(Indicates critical issues requiring immediate action to address gaps)'}: <Text style={styles.percentageRange}>0-49%</Text>
                             </Text>
                         </View>
-                    ))}
-                </View>
-
-
-                <View style={[styles.textSection, styles.principleSection]}>
-                    <Text style={styles.sectionSubTitle}>c. Principle Scores</Text>
-
-                    {/* Brief Explanation */}
-                    <Text style={styles.descriptionText}>
-                        The Principle Scores provide an in-depth evaluation of the project's alignment with individual Responsible
-                        Research and Innovation (RRI) principles. Each score highlights specific areas of strength and identifies
-                        opportunities for improvement.
-                    </Text>
-                    <View style={styles.spacer} />
-
-                    {/* Principles List */}
-                    {Object.keys(principleScores).map((principle, index) => (
-                        <View key={index} style={[styles.principleScoreContainer]}>
-                            <Text style={styles.principleText}>{principle}:</Text>
-                            <Text style={[styles.principleScore, getBadgeColorStyle((principleScores[principle]?.avg * 10).toFixed(1))]}>
-                                {(principleScores[principle]?.avg * 10).toFixed(1)} out of 100  {getPerformanceLabel((principleScores[principle]?.avg * 10).toFixed(1))}
+                        <View style={styles.scoreLegend}>
+                            <View style={[styles.scoreBox, styles.scoreBoxOrange]} />
+                            <Text style={styles.legendText}>
+                                <Text style={styles.severityText}>Amber </Text>
+                                {'(Highlights moderate concerns and suggests areas for refinement to meet RRI principles)'}: <Text style={styles.percentageRange}>50-70%</Text>
                             </Text>
                         </View>
-                    ))}
-                </View>
+                        <View style={styles.scoreLegend}>
+                            <View style={[styles.scoreBox, styles.scoreBoxGreen]} />
+                            <Text style={styles.legendText}>
+                                <Text style={styles.severityText}>Green </Text>
+                                {'(Signifies excellent performance with minimal or no adjustments needed)'}: <Text style={styles.percentageRange}>70-100%</Text>
+                            </Text>
+                        </View>
 
-                {/* Questions and Responses */}
-                <View style={styles.textSection}>
-                    <Text style={styles.sectionTitle}>5. Questions and Responses </Text>
-                </View>
-
-                {surveyData.map((item, index) => (
-                    <View key={index} style={styles.section}>
-                        <Text style={styles.question}>{index + 1}. {item.question}</Text>
-                        {generateAnswerElement(item.answer)}
                     </View>
-                ))}
-
-
-
-
-                {/* Description Section */}
-                <View style={styles.textSection}>
-                    <Text style={styles.sectionTitle}>6. Description of the Framework</Text>
                 </View>
-                <View style={styles.descriptionSection}>
-                    <Text style={styles.descriptionText}>
-                        The Responsible Research and Innovation (RRI) framework provides a comprehensive approach to embedding ethical, societal, and sustainability considerations into research and innovation projects.It evaluates projects across three distinct layers, each contributing to the overall RRI Index based on weighted importance:
-                    </Text>
-
-                    {/* Framework Layers */}
-                    <View style={styles.sectionSubTitle}>
-                        <Text style={styles.descriptionText}>Layer 1 assesses the privacy and security, benefit to society and ethics as well as governance. It ensures a project uphold the rights of individuals and communities. </Text>
-                        <Text style={styles.titleText}>Weight: 34.6%</Text>
-                        
-
-                        <Text style={styles.descriptionText}>Layer 2 emphasizes the need for transparency in decision-making and the promotion of gender equity throughout the innovation process. This includes open communication about project goals, the inclusion of diverse stakeholders, and ensuring that gender and other social biases do not impede participation in the project. </Text>
-                        <Text style={styles.titleText}>Weight: 33.1%</Text>
-                        
-
-                        <Text style={styles.descriptionText}>Layer 3 ensures that the project respects human agency, providing stakeholders with a voice in decision-making. It also emphasizes on open access making sure that projects are open to contributions from different individuals. </Text>
-                        <Text style={styles.titleText}>Weight: 32.3%</Text>
-                        
-                    </View>
-
-                    <Text style={styles.descriptionText}>
-                        Each layer is evaluated using its principles, and scores are weighted to calculate the final RRI Index. The higher the score, the greater the alignment with RRI principles, offering a measurable benchmark for responsible innovation.
-                    </Text>
-                </View>
-
-                {/* Score Explanation */}
-                <View style={styles.scoreSection}>
-                    <Text style={styles.descriptionText}>The RRI Index is transformed into a simple traffic light system for ease of interpretation:</Text>
-
-                    {/* Visual Legend */}
-                    <View style={styles.scoreLegend}>
-                        <View style={[styles.scoreBox, styles.scoreBoxRed]} />
-                        <Text style={styles.legendText}>
-                            <Text style={styles.severityText}>Red </Text>
-                            {'(Indicates critical issues requiring immediate action to address gaps)'}: <Text style={styles.percentageRange}>0-49%</Text>
-                        </Text>
-                    </View>
-                    <View style={styles.scoreLegend}>
-                        <View style={[styles.scoreBox, styles.scoreBoxOrange]} />
-                        <Text style={styles.legendText}>
-                            <Text style={styles.severityText}>Amber </Text>
-                            {'(Highlights moderate concerns and suggests areas for refinement to meet RRI principles)'}: <Text style={styles.percentageRange}>50-70%</Text>
-                        </Text>
-                    </View>
-                    <View style={styles.scoreLegend}>
-                        <View style={[styles.scoreBox, styles.scoreBoxGreen]} />
-                        <Text style={styles.legendText}>
-                            <Text style={styles.severityText}>Green </Text>
-                            {'(Signifies excellent performance with minimal or no adjustments needed)'}: <Text style={styles.percentageRange}>70-100%</Text>
-                        </Text>
-                    </View>
-
-                </View>
-            </View>
             </View>
         </Page>
     </Document>

@@ -8,7 +8,7 @@ import { Button } from "react-bootstrap";
 import { useAuth } from "./AuthProvider";
 
 function Layout({ children }) {
-    const { profile,setIsAuthenticated,setProfile } = useAuth();
+    const { profile,isauthenticated,setIsAuthenticated,setProfile } = useAuth();
 
     const api = new API();
     const location = useLocation();
@@ -143,7 +143,10 @@ function Layout({ children }) {
 
                                     </div>
                                     <div id="myNav" class="overlay">
-                                        <div class="overlay-content">
+                                        <div class="overlay-content"
+                                        style={{
+                                            marginTop:profile?'70px':'10px'
+                                        }}>
                                             <a href="/">Home</a>
                                             <a href="/about">About</a>
                                             <a href="/dashboard">Dashboard</a>
