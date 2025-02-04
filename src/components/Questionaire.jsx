@@ -127,12 +127,6 @@ const EvaluationForm = (props) => {
         });
       }
       
-
-      // if (response.status === 202) {
-      //   addToken(response.data.data.token);
-      //   response = await api.postRequest("/answers", body, true);
-      // }
-
       
     } catch (e) {
       console.log('error in submit ansers', typeof(e.response.status))

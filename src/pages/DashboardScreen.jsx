@@ -128,7 +128,7 @@ const DashboardScreen = () => {
           // if (!name) throw null;
           const report = await api.getRequest('/report/' + currentEvaluation.id, true);
   
-          console.log('response report: ',report)
+          console.log('response report: ',report.data.project.description)
           const filtaredData = getQuestionsAndAnswers(report.data);
   
           const blob = await ReactPDF.pdf(<PDFDocument
@@ -137,6 +137,7 @@ const DashboardScreen = () => {
             principleScores={report.data.project.principleScores}
             names={`${report.data.project.firstName}  ${report.data.project.lastName}`} 
             project={currentProject}
+            description={report.data.project.description}
             generalScore={currentEvaluation.score[3]} />).toBlob();
           const url = URL.createObjectURL(blob);
           const link = document.createElement('a');

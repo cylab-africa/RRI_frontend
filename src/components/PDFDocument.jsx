@@ -429,7 +429,7 @@ const generateAnswerElement = (answer) => {
     }
 };
 
-const PDFDocument = ({ surveyData, names, project, generalScore, principleScores, layerScores, logoUrl }) => (
+const PDFDocument = ({ surveyData, names, project, generalScore, principleScores, layerScores, description, logoUrl }) => (
     <Document>
         <Page size="A4" style={styles.page}>
             <View style={styles.pageView}>
@@ -606,7 +606,7 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
                                 <View key={index} style={styles.section}>
                                     <Text style={styles.question}>{index + 1}. {item.question}:</Text>
                                     <Text style={styles.text}></Text>
-                                    <Text style={styles.text}>{project.description}</Text>
+                                    <Text style={styles.text}>{description}</Text>
                                 </View>
                             )
                             : (
