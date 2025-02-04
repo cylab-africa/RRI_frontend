@@ -135,8 +135,12 @@ const EvaluationForm = (props) => {
 
       
     } catch (e) {
-      console.log('error in submit ansers', e)
+      console.log('error in submit ansers', typeof(e.response.status))
       setLoadingSubmit(false);
+      if(e?.response?.status==401){
+        swal('Session expired or Unauthorized');
+        return
+      }
       if (e?.response?.data) {
         swal(e.response.data);
       }

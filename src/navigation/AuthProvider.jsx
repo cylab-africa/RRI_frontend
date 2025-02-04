@@ -12,7 +12,6 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkLoginStatus = async () => {
       const storedCredentials = await getFirstItemFromIndexedDB('GoogleCredentialsDB', 'CredentialsStore');
-      console.log('storedCredentials: ',storedCredentials)
       if (storedCredentials) {
         setProfile(storedCredentials);
         setIsAuthenticated(true);

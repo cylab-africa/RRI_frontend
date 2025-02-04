@@ -604,7 +604,8 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
                         (index == 0)
                             ? (
                                 <View key={index} style={styles.section}>
-                                    <Text style={styles.question}>{index + 1}. {item.question}</Text>
+                                    <Text style={styles.question}>{index + 1}. {item.question}:</Text>
+                                    <Text style={styles.text}></Text>
                                     <Text style={styles.text}>{project.description}</Text>
                                 </View>
                             )

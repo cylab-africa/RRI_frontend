@@ -98,7 +98,7 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
 
     // Validate name
     if (!projectName || projectName.length < 2) {
-      swal("Error!", `Provide a valid project name.`);
+      swal("Error!", `Please provide a valid project name.`);
 
       // setModalOpen(false)
       return
@@ -157,16 +157,12 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
 
 
   const handleSubmit = () => {
-    if (selectedProject != '') {
-      registerProject(selectedProject);
-    } else if (newProjectName != '' && newProjectName) {
       registerProject(newProjectName)
-    }
   };
 
   return (
     <Overlay>
-      <PopupContainer>
+      <div className='PopupContainer'>
         <CloseButton onClick={onClose}>&times;</CloseButton>
         <Title>Start the evaluation</Title>
         <p>Create a project/Select existing one</p>
@@ -175,7 +171,11 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
             <label style={{ textAlign: 'left' }} htmlFor="">Select from previous projects</label>
             <Select
               value={selectedProject}
-              onChange={(e) => setSelectedProject(e.target.value)}
+              onChange={(e) => {
+                
+                setSelectedProject(e.target.value)
+                setNewProjectName(e.target.value)
+              }}
             >
               <option value="" disabled>Select a project</option>
               {projects.map((project, index) => (
@@ -200,7 +200,7 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
         <br />
         <br />
         {loading ? <Button >Sending...</Button> : <Button onClick={handleSubmit}>Submit</Button>}
-      </PopupContainer>
+      </div>
     </Overlay>
   );
 };
