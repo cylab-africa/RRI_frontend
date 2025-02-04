@@ -27,6 +27,7 @@ export class API {
         console.error('Error:', error);
         return null; // Return null if there's an error
       });
+      console.log('accesstoken: ',data)
     // Check if data exists and retrieve the accessToken
     if (data && data.accessToken) {
       this.token = data.accessToken; // Save the token
@@ -35,8 +36,8 @@ export class API {
       this.token = null; // Ensure token is null if not found
     }
 
-    const headers = (protectedRoute && this.token)
-      ? { ...this.baseJsonHeaders, Authorization: this.token }
+    const headers = (protectedRoute==true && this.token)
+      ? { ...this.baseJsonHeaders, authorization: this.token }
       : this.baseJsonHeaders;
 
     // console.log(headers)
@@ -64,6 +65,7 @@ export class API {
     try {
       // Await the result of getHeaders (which returns a promise)
       const headers = await this.getHeaders(protectedRoute);
+      console.log('headers: ',headers)
 
       // Make the POST request with axios
       const response = await axios({

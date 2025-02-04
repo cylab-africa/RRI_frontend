@@ -123,48 +123,68 @@ const DashboardScreen = () => {
       });
       return;
     }
-    swal({
-      text: 'Your names',
-      content: "input",
-      button: {
-        text: "Download",
-        closeModal: false,
-      },
-    })
-      .then(async name => {
-        if (!name) throw null;
-        const report = await api.getRequest('/report/' + currentEvaluation.id, true);
 
-        console.log('response: ',report)
-        const filtaredData = getQuestionsAndAnswers(report.data);
+    // async name => {
+          // if (!name) throw null;
+          const report = await api.getRequest('/report/' + currentEvaluation.id, true);
+  
+          console.log('response report: ',report)
+          const filtaredData = getQuestionsAndAnswers(report.data);
+  
+          const blob = await ReactPDF.pdf(<PDFDocument
+            layerScores={[currentEvaluation.score[0], currentEvaluation.score[1], currentEvaluation.score[2]]}
+            surveyData={filtaredData}
+            principleScores={report.data.project.principleScores}
+            names={`${report.data.project.firstName}  ${report.data.project.lastName}`} 
+            project={currentProject}
+            generalScore={currentEvaluation.score[3]} />).toBlob();
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'RRI_Report.pdf';
+          link.click();
+    // swal({
+    //   text: 'Your names',
+    //   content: "input",
+    //   button: {
+    //     text: "Download",
+    //     closeModal: false,
+    //   },
+    // })
+    //   .then(async name => {
+    //     if (!name) throw null;
+    //     const report = await api.getRequest('/report/' + currentEvaluation.id, true);
 
-        const blob = await ReactPDF.pdf(<PDFDocument
-          layerScores={[currentEvaluation.score[0], currentEvaluation.score[1], currentEvaluation.score[2]]}
-          surveyData={filtaredData}
-          principleScores={report.data.project.principleScores}
-          names={name} project={currentProject}
-          generalScore={currentEvaluation.score[3]} />).toBlob();
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'RRI_Report.pdf';
-        link.click();
-        swal.close();
+    //     console.log('response: ',report)
+    //     const filtaredData = getQuestionsAndAnswers(report.data);
 
-      })
+    //     const blob = await ReactPDF.pdf(<PDFDocument
+    //       layerScores={[currentEvaluation.score[0], currentEvaluation.score[1], currentEvaluation.score[2]]}
+    //       surveyData={filtaredData}
+    //       principleScores={report.data.project.principleScores}
+    //       names={name} project={currentProject}
+    //       generalScore={currentEvaluation.score[3]} />).toBlob();
+    //     const url = URL.createObjectURL(blob);
+    //     const link = document.createElement('a');
+    //     link.href = url;
+    //     link.download = 'RRI_Report.pdf';
+    //     link.click();
+    //     swal.close();
 
-      .catch(err => {
-        console.log('error in report generating: ', err)
-        if (err?.response) {
-          // API error
-          swal("Error fetching report data: " + err.response.data.message);
-        } else if (err === null) {
-          swal("You must provide a name for the report.");
-        } else {
-          // Generic error
-          swal("Something went wrong while generating the report.");
-        }
-      });
+    //   })
+
+    //   .catch(err => {
+    //     console.log('error in report generating: ', err)
+    //     if (err?.response) {
+    //       // API error
+    //       swal("Error fetching report data: " + err.response.data.message);
+    //     } else if (err === null) {
+    //       swal("You must provide a name for the report.");
+    //     } else {
+    //       // Generic error
+    //       swal("Something went wrong while generating the report.");
+    //     }
+    //   });
 
   };
 
@@ -605,11 +625,11 @@ const DashboardScreen = () => {
                           {currentProject.evaluations.map((element, index) => {
                             if (element.id === currentEvaluation.id) {
                               return (
-                                <li
+                                <li key={index}
                                   onClick={() => setCurrentEvaluation(element)}
                                   style={{ textDecoration: "underline" }}
                                 >
-                                  Evaluation {currentProject.evaluations.length - index} :{" "}
+                                  Evaluation {currentProject.evaluations.length - index}{' '} :{" "}
                                   {formatDate(element.startTime)}
                                 </li>
                               );

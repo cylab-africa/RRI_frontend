@@ -28,7 +28,7 @@ const HomePage = () => {
 
       }
     } catch (e) {
-      console.log(e)
+      console.log('fetch projects',e)
     }
   }
 
