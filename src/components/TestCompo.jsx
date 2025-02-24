@@ -106,21 +106,21 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
     // const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
     try {
       // let respo = await api.postRequest("/project", { projectName: projectName }, true);
-      localStorage.setItem('projectName',projectName)
+      localStorage.setItem('projectName', projectName)
       // console.log('respo: ', respo);
       // if (respo.status === 202) {
       //   console.log(respo.data)
       //   addToken(respo.data.data.token);
-        swal({
-          title: 'project created successfully',
-          text: `${projectName}`,
-          button: "Start",
-        }).then((val) => {
-          history.push({
-            pathname: "/consent",
-            state: { project: projectName },
-          });
+      swal({
+        title: 'project created successfully',
+        text: `${projectName}`,
+        button: "Start",
+      }).then((val) => {
+        history.push({
+          pathname: "/consent",
+          state: { project: projectName },
         });
+      });
       // }
 
       // if (respo.status === 200) {
@@ -157,7 +157,7 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
 
 
   const handleSubmit = () => {
-      registerProject(newProjectName)
+    registerProject(newProjectName)
   };
 
   return (
@@ -172,7 +172,7 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
             <Select
               value={selectedProject}
               onChange={(e) => {
-                
+
                 setSelectedProject(e.target.value)
                 setNewProjectName(e.target.value)
               }}
@@ -184,7 +184,11 @@ const TestCompo = ({ projects, onClose, onSubmit }) => {
                 </option>
 
               ))}
-              <option value="" >Clear</option>
+              <option
+                style={{
+                  color: '#7F7F7F'
+                }}
+                value="" >Clear</option>
             </Select></>)}
         <br />
         {selectedProject === '' && projects.length > 0 && <p>Or</p>}
