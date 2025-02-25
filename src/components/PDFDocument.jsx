@@ -429,6 +429,48 @@ const generateAnswerElement = (answer) => {
     }
 };
 
+const getOverallRecommendation = (generalScore, principleScores, layerScores) => {
+    let recommendations = [];
+
+    if (generalScore < 50) {
+        recommendations.push("Your project requires significant improvements to align with RRI principles. Below are suggestion for improvement:");
+    } else if (generalScore < 70) {
+        recommendations.push("Your project meets some RRI standards but needs enhancements. Here are few suggestion:");
+    } else {
+        recommendations.push("Your project is well-aligned with RRI principles. Keep up the good work and look for continuous improvement opportunities.");
+    }
+
+    Object.keys(principleScores).forEach(principle => {
+        let score = principleScores[principle]?.avg * 10;
+        if (score < 50) {
+            recommendations.push(`Improve your approach to ${principle} by implementing stronger policies and more rigorous assessments.`);
+        } else if (score < 70) {
+            recommendations.push(`Your ${principle} score is moderate. Consider refining current policies to ensure better compliance and impact.`);
+        }
+    });
+    layerScores.forEach((score, index) => {
+        if (score < 50) {
+            if (index == 0) {
+                recommendations.push(`Layer ${index + 1} requires critical improvements in Privacy & Security, Benefits to Society & Public Engagement and Ethics & Governance.`);
+            } else if (index == 1) {
+                recommendations.push(`Layer ${index + 1} requires critical improvements in Responsiveness, Transparency & Accountability, Fairness, Gender Equality & Inclusivity.`);
+            } else {
+                recommendations.push(`Layer ${index + 1} requires critical improvements in Human Agency & Oversight, and Open Access.`);
+            }
+        } else if (score < 70) {
+            if (index == 0) {
+                recommendations.push(`Layer ${index + 1} has moderate adherence. Focus on enhancing Privacy & Security, Benefits to Society & Public Engagement and Ethics & Governance`);
+            } else if (index == 1) {
+                recommendations.push(`Layer ${index + 1} has moderate adherence. Focus on enhancing Responsiveness, Transparency & Accountability, Fairness, Gender Equality & Inclusivity.`);
+            } else {
+                recommendations.push(`Layer ${index + 1} has moderate adherence. Focus on enhancing Human Agency & Oversight, and Open Access.`);
+            }
+        }
+    });
+
+    return recommendations.join(" \n-- ");
+};
+
 const PDFDocument = ({ surveyData, names, project, generalScore, principleScores, layerScores, description, logoUrl }) => (
     <Document>
         <Page size="A4" style={styles.page}>
@@ -585,15 +627,25 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
 
                         {/* Principles List */}
                         {Object.keys(principleScores).map((principle, index) => (
-                            <View key={index} style={[styles.principleScoreContainer]}>
-                                <Text style={styles.principleText}>{principle}:</Text>
-                                <Text style={[styles.principleScore, getBadgeColorStyle((principleScores[principle]?.avg * 10).toFixed(1))]}>
-                                    {(principleScores[principle]?.avg * 10).toFixed(1)} out of 100  {getPerformanceLabel((principleScores[principle]?.avg * 10).toFixed(1))}
-                                </Text>
-                            </View>
+                                <View key={index} style={[styles.principleScoreContainer]}>
+                                    <Text style={styles.principleText}>{principle}:</Text>
+                                    <Text style={[styles.principleScore, getBadgeColorStyle((principleScores[principle]?.avg * 10).toFixed(1))]}>
+                                        {(principleScores[principle]?.avg * 10).toFixed(1)} out of 100  {getPerformanceLabel((principleScores[principle]?.avg * 10).toFixed(1))}
+                                    </Text>
+                                </View>
                         ))}
                     </View>
 
+
+                    {/* Overall Recommendation Section */}
+                    <View style={styles.scoreSection}>
+                        <View style={styles.textSection}>
+                            <Text style={styles.sectionTitle}>7. Overall Recommendation</Text>
+                        </View>
+                        <View style={styles.descriptionSection}>
+                            <Text style={styles.descriptionText}>{getOverallRecommendation(generalScore, principleScores, layerScores)}</Text>
+                        </View>
+                    </View>
                     {/* Questions and Responses */}
                     <View style={styles.textSection}>
                         <Text style={styles.sectionTitle}>5. Questions and Responses </Text>
