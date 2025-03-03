@@ -207,7 +207,7 @@ a:focus {
 }
 
 .custom_nav-container {
-  z-index: 999;
+  z-index: 2;
   padding: 0;
   height: 80px;
   -webkit-box-pack: justify;

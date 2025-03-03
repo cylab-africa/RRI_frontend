@@ -634,12 +634,12 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
 
                         {/* Principles List */}
                         {Object.keys(principleScores).map((principle, index) => (
-                            <View key={index} style={[styles.principleScoreContainer]}>
-                                <Text style={styles.principleText}>{principle}:</Text>
-                                <Text style={[styles.principleScore, getBadgeColorStyle((principleScores[principle]?.avg * 10).toFixed(1))]}>
-                                    {(principleScores[principle]?.avg * 10).toFixed(1)} out of 100  {getPerformanceLabel((principleScores[principle]?.avg * 10).toFixed(1))}
-                                </Text>
-                            </View>
+                                <View key={index} style={[styles.principleScoreContainer]}>
+                                    <Text style={styles.principleText}>{principle}:</Text>
+                                    <Text style={[styles.principleScore, getBadgeColorStyle((principleScores[principle]?.avg * 10).toFixed(1))]}>
+                                        {(principleScores[principle]?.avg * 10).toFixed(1)} out of 100  {getPerformanceLabel((principleScores[principle]?.avg * 10).toFixed(1))}
+                                    </Text>
+                                </View>
                         ))}
                     </View>
 
