@@ -429,6 +429,55 @@ const generateAnswerElement = (answer) => {
     }
 };
 
+const getOverallRecommendation = (generalScore, principleScores, layerScores) => {
+    let recommendations = [];
+
+    if (generalScore < 50) {
+        recommendations.push("Your project requires significant improvements to align with RRI principles. Below are key recommendations based on specific gaps:");
+    } else if (generalScore < 70) {
+        recommendations.push("Your project meets some RRI standards but needs enhancements. Here are a few improvements to consider:");
+    } else {
+        recommendations.push("Your project is well-aligned with RRI principles. Keep up the good work and look for continuous improvement opportunities.");
+    }
+
+    const principleRecommendations = {
+        "Benefits to Society & Public Engagement": "Increase societal impact by addressing pressing global challenges and enhance public involvement.",
+        "Ethics & Governance": "Follow ethical guidelines, avoid conflicts of interest, and conduct regular ethical reviews. Develop clear accountability structures.",
+        "Privacy & Security": "Ensure data anonymization, obtain explicit user consent, and implement robust encryption. Strengthen cybersecurity with multi-factor authentication.",
+        "Fairness, Gender Equality & Inclusivity": "Ensure unbiased and equal treatment, promote gender-balanced research teams, and enhance accessibility for diverse populations.",
+        "Responsiveness, Transparency & Accountability": "Adapt research based on real-time feedback, make decision-making processes transparent, and ensure accountability for actions taken.",
+        "Human Agency & Oversight": "Enable users to have greater control over technological decisions and ensure human values guide development and deployment.",
+        "Open Access": "Promote collaboration by making research findings freely accessible."
+    };
+
+    let wellAlignedPrinciples = []; // To collect principles that are doing well
+    let improvementRecommendations = []; // To collect principles that need improvements
+
+    // Loop through each principle and score
+    Object.entries(principleScores).forEach(([principle, scoreData]) => {
+        let score = scoreData?.avg * 10;
+        if (score < 50) {
+            improvementRecommendations.push(`Critical improvement needed in ${principle}: ${principleRecommendations[principle]}`);
+        } else if (score < 70) {
+            improvementRecommendations.push(`Moderate improvements required in ${principle}: ${principleRecommendations[principle]}`);
+        } else {
+            wellAlignedPrinciples.push(principle);
+        }
+    });
+
+    // Construct the final output
+    if (wellAlignedPrinciples.length > 0) {
+        recommendations.push(`Your project is doing well in the following principles: ${wellAlignedPrinciples.join(', ')}.`);
+    }
+
+    // Append the improvement recommendations if any
+    if (improvementRecommendations.length > 0) {
+        recommendations.push(improvementRecommendations.join(" \n-- "));
+    }
+
+    return recommendations.join(" \n-- ");
+};
+
 const PDFDocument = ({ surveyData, names, project, generalScore, principleScores, layerScores, description, logoUrl }) => (
     <Document>
         <Page size="A4" style={styles.page}>
@@ -594,6 +643,16 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
                         ))}
                     </View>
 
+
+                    {/* Overall Recommendation Section */}
+                    <View style={styles.scoreSection}>
+                        <View style={styles.textSection}>
+                            <Text style={styles.sectionTitle}>7. Overall Recommendation</Text>
+                        </View>
+                        <View style={styles.descriptionSection}>
+                            <Text style={styles.descriptionText}>{getOverallRecommendation(generalScore, principleScores, layerScores)}</Text>
+                        </View>
+                    </View>
                     {/* Questions and Responses */}
                     <View style={styles.textSection}>
                         <Text style={styles.sectionTitle}>5. Questions and Responses </Text>
