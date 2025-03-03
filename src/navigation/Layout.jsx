@@ -11,7 +11,9 @@ import loadingGif from '../images/loading.gif'
 function Layout({ children }) {
     const { profile, isauthenticated, setIsAuthenticated, setProfile } = useAuth();
     const [loading, setLoading] = useState(false);
+    const [imageKey, setImageKey] = useState(Date.now());
     const [isSideBarOpen, setisSideBarOpen] = useState(false);
+    const [profilePic, setProfilePic] = useState(null)
     const api = new API();
     const location = useLocation();
     const isAdminRoute = location.pathname === '/admin';
@@ -30,15 +32,20 @@ function Layout({ children }) {
         document.querySelector(".custom_menu-btn").classList.toggle("menu_btn-style")
     }
 
+    useEffect(() => {
+        if (profilePic) {
+            setImageKey(Date.now()); // Forces re-render
+        }
+    }, [profilePic]);
     // Check if the user is logged in on component mount
     useEffect(() => {
         const checkLoginStatus = async () => {
             const storedCredentials = await getFirstItemFromIndexedDB('GoogleCredentialsDB', 'CredentialsStore');
             if (storedCredentials) {
-                console.log('stored credential: ',storedCredentials)
+                console.log('stored credential: ', storedCredentials)
                 const decodedToken = jwtDecode(storedCredentials.accessToken);
                 setProfile(decodedToken);
-                // setProfilePic(storedCredentials.picture);
+                setProfilePic(storedCredentials.picture);
                 setUser(storedCredentials);
             }
         };
@@ -47,18 +54,22 @@ function Layout({ children }) {
     }, [isauthenticated]); // Empty dependency array means this runs once when the component mounts
 
     const onSuccess = async (response) => {
+        setIsAuthenticated(true)
         try {
             setLoading(true);  // Set loading state to true when the process starts
             openNav()
             const checkUserBody = { token: response.credential };
+            // Start checking if the user exists and don't wait for it yet
+            const checkUserPromise = api.postRequest("/check-user", checkUserBody, true);
+
+            // Wait for the check-user response
+            const checkUserResponse = await checkUserPromise;
             // check if user exit
-            const checkUserResponse = api.postRequest("/check-user", checkUserBody, true);
-            
-            const data = (await checkUserResponse).data;
+            const data = checkUserResponse.data;
             const decodedToken = jwtDecode(response.credential);
             let authResponse;
             let accessToken;
-            if (data?.userRegistered == false) {
+            if (data?.userRegistered === false) {
                 console.log('false registration')
                 const registerBody = {
                     email: decodedToken.email,
@@ -69,12 +80,14 @@ function Layout({ children }) {
                 authResponse = await api.postRequest("/signup", registerBody, true);
                 accessToken = authResponse.data.accessToken;
                 setProfile(decodedToken);
+                setProfilePic(decodedToken.picture);
             } else {
-                console.log('auth response: ',data)
+                console.log('auth response: ', data)
                 accessToken = data?.accessToken;
+                setProfilePic(decodedToken.picture);
                 setProfile(decodedToken);
             }
-            
+
             setIsAuthenticated(true)
 
             console.log('access token: ', accessToken)
@@ -97,13 +110,20 @@ function Layout({ children }) {
     };
 
     // log out function to log the user out of google and set the profile array to null
-    const logOut = (e) => {
-        openNav()
-        logoutUser('GoogleCredentialsDB', 'CredentialsStore');
-        googleLogout(); // This should log the user out from Google
-        setUser(null);  // Reset user state
-        setProfile(null);
-        // setProfilePic(null) // Reset profile state
+    const logOut = async (e) => {
+        e.preventDefault();
+        try {
+            googleLogout(); // Immediately log out from Google
+            await logoutUser(); // Ensure IndexedDB operations complete
+
+            setUser(null);
+            setProfilePic(null)
+            setProfile(null);
+            setIsAuthenticated(false);
+            openNav()
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
 
     };
     return (

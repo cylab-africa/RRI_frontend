@@ -7,7 +7,7 @@ import swal from "sweetalert";
 import { API } from "../apis/http";
 import { useHistory, useLocation } from "react-router-dom";
 import { addToken } from "../utils/localStorageUtils";
-import { checkUserLoggedIn, getFirstItemFromIndexedDB, SaveToIndexedDB } from "../helpers/indexedDB";
+import { checkUserLoggedIn, deleteIndexedDB, getFirstItemFromIndexedDB, SaveToIndexedDB } from "../helpers/indexedDB";
 
 const EvaluationForm = (props) => {
   const { scrollUp, questions } = props;
@@ -98,11 +98,14 @@ const EvaluationForm = (props) => {
     setLoadingSubmit(true);
 
     try {
-      setLoadingSubmit(true);
       console.log('answers',answers)
 
       const body = { layerId: 1, projectName: localStorage.getItem('projectName'), projectAnswers:{answers: answers} };
-      
+      // first delete answers which are there
+      let isThereAnswers=getFirstItemFromIndexedDB('projectDB','answersStore');
+      if(isThereAnswers){
+       await deleteIndexedDB('projectDB')
+      }
       SaveToIndexedDB('projectDB', 'answersStore', body);
       const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
       
@@ -116,20 +119,29 @@ const EvaluationForm = (props) => {
   
             history.push({
               pathname: "/dashboard",
-              state: { projectId: props.projectId },
+              state: { projectId: response?.data?.evaluation?.projectId },
             });
           }, 1000);
         }
       }else{
-
-        history.push({
-          pathname: "/dashboard",
-        });
+        let response = await api.postRequest("/submit-auth", body, false);
+        if (response.status === 200) {
+          // Some stuffs will be recorded here
+          setTimeout(() => {
+            setLoadingSubmit(false);
+  
+            history.push({
+              pathname: "/dashboard",
+              state: { projectId: response?.data?.evaluation?.projectId },
+            });
+          }, 1000);
+        }
+        // history.push({
+        //   pathname: "/dashboard",
+        // });
       }
-      
-      
     } catch (e) {
-      console.log('error in submit ansers', typeof(e.response.status))
+      console.log('error in submit answers', e.response)
       setLoadingSubmit(false);
       if(e?.response?.status==401){
         swal('Session expired or Unauthorized');
@@ -140,7 +152,7 @@ const EvaluationForm = (props) => {
       }
       if (e?.message) {
         swal(e.message);
-      }else{
+      } else {
         swal('Internal Server Error')
       }
       setTimeout(() => {

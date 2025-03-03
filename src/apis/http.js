@@ -74,7 +74,7 @@ export class API {
         headers: headers,  // Use the resolved headers here
         data: body,        // Pass the body of the request
       });
-      console.log('response: ',response)
+      console.log('response: ',response.data)
 
       return response;  // Return the response after the request
     } catch (e) {

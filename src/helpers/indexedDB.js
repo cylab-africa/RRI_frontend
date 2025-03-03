@@ -207,3 +207,25 @@ export const logoutUser = async () => {
   });
 };
 
+// delete specific db
+export const deleteIndexedDB = (dbName) => {
+  return new Promise((resolve, reject) => {
+    const deleteRequest = indexedDB.deleteDatabase(dbName);
+
+    deleteRequest.onsuccess = () => {
+      console.log(`Database "${dbName}" deleted successfully.`);
+      resolve(true);
+    };
+
+    deleteRequest.onerror = (event) => {
+      console.error(`Error deleting database "${dbName}":`, event.target.error);
+      reject(event.target.error);
+    };
+
+    deleteRequest.onblocked = () => {
+      console.warn(`Database "${dbName}" deletion is blocked. Close any open connections.`);
+      reject("Deletion blocked");
+    };
+  });
+};
+

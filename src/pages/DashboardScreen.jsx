@@ -36,6 +36,7 @@ const DashboardScreen = () => {
   const [evaluation, setEvaluation] = useState({});
   const [evaluations, setEvaluations] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const location = useLocation();
   const [text, setText] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -115,35 +116,30 @@ const DashboardScreen = () => {
   const generatePDF = async () => {
     const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
     if (!isLoggedIn) {
-      swal({
-        title: "Not Logged In",
-        text: "You need to be logged in to download the report.",
-        icon: "warning",  // You can change the icon as needed
-        button: "OK",
-      });
+      setShowModal(true)
       return;
     }
 
     // async name => {
-          // if (!name) throw null;
-          const report = await api.getRequest('/report/' + currentEvaluation.id, true);
-  
-          console.log('response report: ',report.data.project.description)
-          const filtaredData = getQuestionsAndAnswers(report.data);
-  
-          const blob = await ReactPDF.pdf(<PDFDocument
-            layerScores={[currentEvaluation.score[0], currentEvaluation.score[1], currentEvaluation.score[2]]}
-            surveyData={filtaredData}
-            principleScores={report.data.project.principleScores}
-            names={`${report.data.project.firstName}  ${report.data.project.lastName}`} 
-            project={currentProject}
-            description={report.data.project.description}
-            generalScore={currentEvaluation.score[3]} />).toBlob();
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = 'RRI_Report.pdf';
-          link.click();
+    // if (!name) throw null;
+    const report = await api.getRequest('/report/' + currentEvaluation.id, true);
+
+    console.log('response report: ', report.data.project.description)
+    const filtaredData = getQuestionsAndAnswers(report.data);
+
+    const blob = await ReactPDF.pdf(<PDFDocument
+      layerScores={[currentEvaluation.score[0], currentEvaluation.score[1], currentEvaluation.score[2]]}
+      surveyData={filtaredData}
+      principleScores={report.data.project.principleScores}
+      names={`${report.data.project.firstName}  ${report.data.project.lastName}`}
+      project={currentProject}
+      description={report.data.project.description}
+      generalScore={currentEvaluation.score[3]} />).toBlob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'RRI_Report.pdf';
+    link.click();
     // swal({
     //   text: 'Your names',
     //   content: "input",
@@ -237,6 +233,40 @@ const DashboardScreen = () => {
     setNoAccount(false);
   };
 
+  const getProject = async (pid = null) => {
+    setLoading(true);
+    try {
+      let response;
+      
+        response = await api.getRequest('/projects/' + pid, true);
+
+      if (response.status === 200) {
+
+        let project = response.data;
+        if(project){
+          setProjects([project]);
+        }
+        
+        let seectedProject;
+        if (pid) {
+          seectedProject=response.data
+          
+          console.log('pid', seectedProject)
+          if (seectedProject) {
+            seectedProject = response.data;
+            setCurrentProject(seectedProject.project);
+          }
+        } 
+        console.log('seectedProject.evaluations[0]: ', seectedProject.project.evaluations)
+        setCurrentEvaluation(seectedProject.project.evaluations[0]);
+        setLoading(false);
+      }
+    } catch (e) {
+      setNoAccount(true);
+      setLoading(false);
+    }
+    setNoAccount(false);
+  };
   const downloadReport = () => {
     let content = getHtmlContent(
       currentProject.name,
@@ -304,6 +334,9 @@ const DashboardScreen = () => {
     if (isAuthenticated) {
       getProjects(pid);
     }
+    else if(pid){
+      getProject(pid);
+    }
   }, [isAuthenticated]);
 
   const checkAuthentication = async () => {
@@ -318,8 +351,6 @@ const DashboardScreen = () => {
     }
   };
   useEffect(() => {
-
-
     checkAuthentication();
     let page = switchLights();
     setPage(page);
@@ -346,16 +377,16 @@ const DashboardScreen = () => {
 
   const onSuccess = async (response) => {
     try {
+      let authResponse;
+      let accessToken;
+      setShowModal(false)
       const checkUserBody = { token: response.credential };
       // check if user exit
       const checkUserResponse = await api.postRequest("/check-user", checkUserBody, true);
       const data = await checkUserResponse.data;
-      console.log('true registration:', data)
       const decodedToken = jwtDecode(response.credential);
-      let authResponse;
-      let accessToken;
+      
       if (data.userRegistered == false) {
-        console.log('false registration')
         const registerBody = {
           email: decodedToken.email,
           firstName: decodedToken.given_name,
@@ -367,7 +398,7 @@ const DashboardScreen = () => {
       } else {
         accessToken = data.accessToken;
       }
-      
+
       localStorage.setItem('access token',accessToken)
       // Save Google credentials to IndexedDB
       const googleCredentials = {
@@ -380,14 +411,15 @@ const DashboardScreen = () => {
         accessToken: accessToken
       };
       SaveToIndexedDB('GoogleCredentialsDB', 'CredentialsStore', googleCredentials);
+
+      // const body = { layerId: 1, projectName: localStorage.getItem('projectName'), projectAnswers:{answers: answers} };
       const projectAnswers = await getFirstItemFromIndexedDB('projectDB', 'answersStore')
         .catch((error) => {
           console.error('Error retrieving project answers:', error);
           return null;
         });
 
-      console.log('Retrieved Project Answers:', projectAnswers);
-      setIsAuthenticated(true);
+        // submit answers
       if (projectAnswers) {
         const projectName = localStorage.getItem('projectName');
 
@@ -395,12 +427,18 @@ const DashboardScreen = () => {
           projectName: projectName,
           projectAnswers:projectAnswers.projectAnswers
         }
-        const answerResponse = await api.postRequest("/submit-auth", answersBody, true);
-        console.log('answers: ', answerResponse)
+        try {
+          const answerResponse = await api.postRequest("/submit-auth", answersBody, true);
+          
+        } catch (error) {
+          console.error('error: ',error)
+          swal("Something went wrong while generating the report.");
+        }
+        
       }
+      setIsAuthenticated(true);
 
-
-      window.location.reload();
+      // window.location.reload();
 
     } catch (error) {
       console.log(error)
@@ -416,30 +454,7 @@ const DashboardScreen = () => {
     return (
       <div>
         {/* modal */}
-        {!isAuthenticated &&
-          (
-            <div className="auth-modal">
-              <Modal
-                show={!isAuthenticated}
-                onRequestClose={() => console.log("Modal closed")}
-                className="auth-modal custom-modal"
-                overlayClassName="custom-overlay"
-              >
-                <div className="modal-content">
-                  <h2>Sign In Required</h2>
-                  <p>Please sign in to access the dashboard.</p>
-                  <GoogleLogin onSuccess={onSuccess} onError={errorMessage} />
-                  <Button onClick={(e) => {
-                    history.push("/");
-                  }}>
-                    Go to Home Page
-                  </Button>
-                </div>
-              </Modal>
-            </div>
-
-
-          )}
+       
         {/* end of modal */}
 
 
@@ -469,6 +484,28 @@ const DashboardScreen = () => {
 
   return (
     <div>
+    {(showModal==true) &&
+          (
+            <div className="auth-modal">
+              <Modal
+                show={showModal}
+                onRequestClose={() => console.log("Modal closed")}
+                className="auth-modal custom-modal"
+                overlayClassName="custom-overlay"
+              >
+                <div className="modal-content">
+                  <h2>Sign In </h2>
+                  <p>Please sign in to To download The full report.</p>
+                  <GoogleLogin onSuccess={onSuccess} onError={errorMessage} />
+                  <Button onClick={(e) => {
+                    history.push("/");
+                  }}>
+                    Go to Home Page
+                  </Button>
+                </div>
+              </Modal>
+            </div>
+          )}
       <section className="about_section layout_padding2 blur">
         <div class="container">
           <div class="detail-box">
@@ -623,7 +660,7 @@ const DashboardScreen = () => {
                       <div className="col"></div>
                       <div className="col-md-3">
                         <ol className="evaluation-list">
-                          {currentProject.evaluations.map((element, index) => {
+                          {currentProject.evaluations?.map((element, index) => {
                             if (element.id === currentEvaluation.id) {
                               return (
                                 <li key={index}
