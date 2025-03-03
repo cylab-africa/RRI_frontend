@@ -433,40 +433,47 @@ const getOverallRecommendation = (generalScore, principleScores, layerScores) =>
     let recommendations = [];
 
     if (generalScore < 50) {
-        recommendations.push("Your project requires significant improvements to align with RRI principles. Below are suggestion for improvement:");
+        recommendations.push("Your project requires significant improvements to align with RRI principles. Below are key recommendations based on specific gaps:");
     } else if (generalScore < 70) {
-        recommendations.push("Your project meets some RRI standards but needs enhancements. Here are few suggestion:");
+        recommendations.push("Your project meets some RRI standards but needs enhancements. Here are a few improvements to consider:");
     } else {
         recommendations.push("Your project is well-aligned with RRI principles. Keep up the good work and look for continuous improvement opportunities.");
     }
 
-    Object.keys(principleScores).forEach(principle => {
-        let score = principleScores[principle]?.avg * 10;
+    const principleRecommendations = {
+        "Benefits to Society & Public Engagement": "Increase societal impact by addressing pressing global challenges and enhance public involvement.",
+        "Ethics & Governance": "Follow ethical guidelines, avoid conflicts of interest, and conduct regular ethical reviews. Develop clear accountability structures.",
+        "Privacy & Security": "Ensure data anonymization, obtain explicit user consent, and implement robust encryption. Strengthen cybersecurity with multi-factor authentication.",
+        "Fairness, Gender Equality & Inclusivity": "Ensure unbiased and equal treatment, promote gender-balanced research teams, and enhance accessibility for diverse populations.",
+        "Responsiveness, Transparency & Accountability": "Adapt research based on real-time feedback, make decision-making processes transparent, and ensure accountability for actions taken.",
+        "Human Agency & Oversight": "Enable users to have greater control over technological decisions and ensure human values guide development and deployment.",
+        "Open Access": "Promote collaboration by making research findings freely accessible."
+    };
+
+    let wellAlignedPrinciples = []; // To collect principles that are doing well
+    let improvementRecommendations = []; // To collect principles that need improvements
+
+    // Loop through each principle and score
+    Object.entries(principleScores).forEach(([principle, scoreData]) => {
+        let score = scoreData?.avg * 10;
         if (score < 50) {
-            recommendations.push(`Improve your approach to ${principle} by implementing stronger policies and more rigorous assessments.`);
+            improvementRecommendations.push(`Critical improvement needed in ${principle}: ${principleRecommendations[principle]}`);
         } else if (score < 70) {
-            recommendations.push(`Your ${principle} score is moderate. Consider refining current policies to ensure better compliance and impact.`);
+            improvementRecommendations.push(`Moderate improvements required in ${principle}: ${principleRecommendations[principle]}`);
+        } else {
+            wellAlignedPrinciples.push(principle);
         }
     });
-    layerScores.forEach((score, index) => {
-        if (score < 50) {
-            if (index == 0) {
-                recommendations.push(`Layer ${index + 1} requires critical improvements in Privacy & Security, Benefits to Society & Public Engagement and Ethics & Governance.`);
-            } else if (index == 1) {
-                recommendations.push(`Layer ${index + 1} requires critical improvements in Responsiveness, Transparency & Accountability, Fairness, Gender Equality & Inclusivity.`);
-            } else {
-                recommendations.push(`Layer ${index + 1} requires critical improvements in Human Agency & Oversight, and Open Access.`);
-            }
-        } else if (score < 70) {
-            if (index == 0) {
-                recommendations.push(`Layer ${index + 1} has moderate adherence. Focus on enhancing Privacy & Security, Benefits to Society & Public Engagement and Ethics & Governance`);
-            } else if (index == 1) {
-                recommendations.push(`Layer ${index + 1} has moderate adherence. Focus on enhancing Responsiveness, Transparency & Accountability, Fairness, Gender Equality & Inclusivity.`);
-            } else {
-                recommendations.push(`Layer ${index + 1} has moderate adherence. Focus on enhancing Human Agency & Oversight, and Open Access.`);
-            }
-        }
-    });
+
+    // Construct the final output
+    if (wellAlignedPrinciples.length > 0) {
+        recommendations.push(`Your project is doing well in the following principles: ${wellAlignedPrinciples.join(', ')}.`);
+    }
+
+    // Append the improvement recommendations if any
+    if (improvementRecommendations.length > 0) {
+        recommendations.push(improvementRecommendations.join(" \n-- "));
+    }
 
     return recommendations.join(" \n-- ");
 };
