@@ -9,7 +9,7 @@ import { useAuth } from "./AuthProvider";
 import loadingGif from '../images/loading.gif'
 
 function Layout({ children }) {
-    const { profile, isauthenticated, setIsAuthenticated, setProfile } = useAuth();
+    const { profile, isAuthenticated, setIsAuthenticated, setProfile } = useAuth();
     const [loading, setLoading] = useState(false);
     const [imageKey, setImageKey] = useState(Date.now());
     const [isSideBarOpen, setisSideBarOpen] = useState(false);
@@ -42,16 +42,18 @@ function Layout({ children }) {
         const checkLoginStatus = async () => {
             const storedCredentials = await getFirstItemFromIndexedDB('GoogleCredentialsDB', 'CredentialsStore');
             if (storedCredentials) {
-                console.log('stored credential: ', storedCredentials)
-                const decodedToken = jwtDecode(storedCredentials.accessToken);
+                console.log('stored credential: ', storedCredentials.picture)
+                let decodedToken = jwtDecode(storedCredentials.accessToken);
+                console.log('picture: ', decodedToken)
                 setProfile(decodedToken);
                 setProfilePic(storedCredentials.picture);
                 setUser(storedCredentials);
+                setIsAuthenticated(true)
             }
         };
 
         checkLoginStatus();
-    }, [isauthenticated]); // Empty dependency array means this runs once when the component mounts
+    }, [isAuthenticated]); // Empty dependency array means this runs once when the component mounts
 
     const onSuccess = async (response) => {
         setIsAuthenticated(true)
@@ -81,16 +83,15 @@ function Layout({ children }) {
                 accessToken = authResponse.data.accessToken;
                 setProfile(decodedToken);
                 setProfilePic(decodedToken.picture);
+                setLoading(false)
             } else {
                 console.log('auth response: ', data)
                 accessToken = data?.accessToken;
                 setProfilePic(decodedToken.picture);
                 setProfile(decodedToken);
+                setLoading(false)
             }
-
             setIsAuthenticated(true)
-
-            console.log('access token: ', accessToken)
             // Save Google credentials to IndexedDB
             const googleCredentials = {
                 id: decodedToken.sub, // unique identifier
@@ -101,7 +102,7 @@ function Layout({ children }) {
                 accessToken: accessToken
             };
             SaveToIndexedDB('GoogleCredentialsDB', 'CredentialsStore', googleCredentials);
-            setLoading(false)
+
 
         } catch (error) {
 
@@ -156,7 +157,7 @@ function Layout({ children }) {
                                                         borderRadius: '50%',
                                                         marginBottom: '30px'
                                                     }}
-                                                    src={`${profile.picture}?v=${new Date().getTime()}`}
+                                                    src={`${profilePic}?v=${new Date().getTime()}`}
                                                     referrerPolicy="no-referrer"
                                                     alt=""
                                                     loading="lazy" />
@@ -223,7 +224,7 @@ function Layout({ children }) {
                                                             borderRadius: '50%',
                                                             marginBottom: '30px'
                                                         }}
-                                                        src={`${profile?.picture}?v=${new Date().getTime()}`}
+                                                        src={profilePic}
                                                         referrerPolicy="no-referrer"
                                                         alt=""
                                                         loading="lazy" />

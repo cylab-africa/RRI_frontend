@@ -1,4 +1,4 @@
-export const SaveToIndexedDB = (dbName, storeName, data) => {
+export const SaveToIndexedDB = async (dbName, storeName, data) => {
   const request = indexedDB.open(dbName); // Open or create the database
 
   request.onupgradeneeded = (event) => {
