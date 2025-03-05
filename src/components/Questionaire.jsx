@@ -102,15 +102,15 @@ const EvaluationForm = (props) => {
 
       const body = { layerId: 1, projectName: localStorage.getItem('projectName'), projectAnswers:{answers: answers} };
       // first delete answers which are there
-      let isThereAnswers=getFirstItemFromIndexedDB('projectDB','answersStore');
+      let isThereAnswers=await getFirstItemFromIndexedDB('projectDB','answersStore');
       if(isThereAnswers){
+        alert('there is answers')
        await deleteIndexedDB('projectDB')
       }
-      SaveToIndexedDB('projectDB', 'answersStore', body);
+      await SaveToIndexedDB('projectDB', 'answersStore', body);
       const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
       
-      if(isLoggedIn){
-        
+      if(isLoggedIn){ 
         let response = await api.postRequest("/submit-auth", body, true);
         if (response.status === 200) {
           // Some stuffs will be recorded here
