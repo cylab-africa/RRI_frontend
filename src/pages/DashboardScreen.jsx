@@ -26,6 +26,7 @@ import ReactPDF from "@react-pdf/renderer";
 import { checkUserLoggedIn, getFirstItemFromIndexedDB, SaveToIndexedDB } from "../helpers/indexedDB";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import { useAuth } from "../navigation/AuthProvider";
 
 
 
@@ -39,7 +40,7 @@ const DashboardScreen = () => {
   const [showModal, setShowModal] = useState(false);
   const location = useLocation();
   const [text, setText] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated, setIsAuthenticated, setProfile } = useAuth();
   const [noAccount, setNoAccount] = useState(false);
   const [page, setPage] = useState(0);
   const [buttonText, setButtonText] = useState("Home Page");
@@ -237,26 +238,26 @@ const DashboardScreen = () => {
     setLoading(true);
     try {
       let response;
-      
-        response = await api.getRequest('/projects/' + pid, true);
+
+      response = await api.getRequest('/projects/' + pid, true);
 
       if (response.status === 200) {
 
         let project = response.data;
-        if(project){
+        if (project) {
           setProjects([project]);
         }
-        
+
         let seectedProject;
         if (pid) {
-          seectedProject=response.data
-          
+          seectedProject = response.data
+
           console.log('pid', seectedProject)
           if (seectedProject) {
             seectedProject = response.data;
             setCurrentProject(seectedProject.project);
           }
-        } 
+        }
         console.log('seectedProject.evaluations[0]: ', seectedProject.project.evaluations)
         setCurrentEvaluation(seectedProject.project.evaluations[0]);
         setLoading(false);
@@ -326,35 +327,25 @@ const DashboardScreen = () => {
 
 
   useEffect(() => {
-    // getEvaluations();
-    
-    console.log('access token: ',localStorage.getItem('access token'));
-    let pid = location.state?.projectId;
-
-    if (isAuthenticated) {
-      getProjects(pid);
+    const fetchProject=async()=>{
+  
+      console.log('isAuthenticated changed: ', isAuthenticated);
+      let pid = location.state?.projectId;
+      if (isAuthenticated) {
+        await getProjects(pid);
+      }
+      else if (pid) {
+        await getProject(pid);
+      }
     }
-    else if(pid){
-      getProject(pid);
-    }
-  }, [isAuthenticated]);
+    fetchProject()
+  }, [isAuthenticated, location.state?.projectId]);
 
-  const checkAuthentication = async () => {
-    try {
-      const isLoggedIn = await checkUserLoggedIn("GoogleCredentialsDB", "CredentialsStore");
-      console.log('isloggedin: ', isLoggedIn)
-
-      setIsAuthenticated(isLoggedIn); // Update state based on authentication status
-    } catch (error) {
-      console.error("Error checking authentication:", error);
-      setIsAuthenticated(false); // Handle errors by defaulting to unauthenticated
-    }
-  };
+  
   useEffect(() => {
-    checkAuthentication();
     let page = switchLights();
     setPage(page);
-  }, [evaluation, isAuthenticated]);
+  }, [evaluation, isAuthenticated, switchLights]);
 
   if (noAccount) {
     return (
@@ -385,7 +376,7 @@ const DashboardScreen = () => {
       const checkUserResponse = await api.postRequest("/check-user", checkUserBody, true);
       const data = await checkUserResponse.data;
       const decodedToken = jwtDecode(response.credential);
-      
+     
       if (data.userRegistered == false) {
         const registerBody = {
           email: decodedToken.email,
@@ -398,8 +389,7 @@ const DashboardScreen = () => {
       } else {
         accessToken = data.accessToken;
       }
-
-      localStorage.setItem('access token',accessToken)
+      localStorage.setItem('access token', accessToken)
       // Save Google credentials to IndexedDB
       const googleCredentials = {
         id: decodedToken.sub, // unique identifier
@@ -410,7 +400,15 @@ const DashboardScreen = () => {
         picture: decodedToken.picture,
         accessToken: accessToken
       };
-      SaveToIndexedDB('GoogleCredentialsDB', 'CredentialsStore', googleCredentials);
+      await SaveToIndexedDB('GoogleCredentialsDB', 'CredentialsStore', googleCredentials);
+
+      // update profile 
+      const storedCredentials = await getFirstItemFromIndexedDB('GoogleCredentialsDB', 'CredentialsStore');
+      if (storedCredentials) {
+        console.log('stored credential: ', storedCredentials)
+        const decodedToken = jwtDecode(storedCredentials.accessToken);
+        setProfile(decodedToken);
+      }
 
       // const body = { layerId: 1, projectName: localStorage.getItem('projectName'), projectAnswers:{answers: answers} };
       const projectAnswers = await getFirstItemFromIndexedDB('projectDB', 'answersStore')
@@ -418,26 +416,41 @@ const DashboardScreen = () => {
           console.error('Error retrieving project answers:', error);
           return null;
         });
-
-        // submit answers
+      
+      // submit answers
       if (projectAnswers) {
         const projectName = localStorage.getItem('projectName');
 
         const answersBody = {
           projectName: projectName,
-          projectAnswers:projectAnswers.projectAnswers
-        }
-        try {
-          const answerResponse = await api.postRequest("/submit-auth", answersBody, true);
-          
-        } catch (error) {
-          console.error('error: ',error)
-          swal("Something went wrong while generating the report.");
+          projectAnswers: projectAnswers.projectAnswers
         }
         
-      }
-      setIsAuthenticated(true);
+        try {
+          let evalResponse;
+          console.log('curr: ',currentEvaluation)
+          if (answersBody) {
+            evalResponse = await api.postRequest("/submit-auth", answersBody, true);
+  
+            // Ensure evalResponse contains data before setting state
+            if (evalResponse && evalResponse.data) {
+              setCurrentEvaluation(evalResponse.data.evaluation);
 
+              // Wait for the state update (optional, if needed)
+              await new Promise((resolve) => setTimeout(resolve, 0));
+            }
+
+            setIsAuthenticated(true);
+          }
+
+        } catch (error) {
+          console.error('error: ', error)
+          swal("Something went wrong while generating the report.");
+        }
+
+      }
+
+      await generatePDF();
       // window.location.reload();
 
     } catch (error) {
@@ -454,7 +467,7 @@ const DashboardScreen = () => {
     return (
       <div>
         {/* modal */}
-       
+
         {/* end of modal */}
 
 
@@ -484,28 +497,28 @@ const DashboardScreen = () => {
 
   return (
     <div>
-    {(showModal==true) &&
-          (
-            <div className="auth-modal">
-              <Modal
-                show={showModal}
-                onRequestClose={() => console.log("Modal closed")}
-                className="auth-modal custom-modal"
-                overlayClassName="custom-overlay"
-              >
-                <div className="modal-content">
-                  <h2>Sign In </h2>
-                  <p>Please sign in to To download The full report.</p>
-                  <GoogleLogin onSuccess={onSuccess} onError={errorMessage} />
-                  <Button onClick={(e) => {
-                    history.push("/");
-                  }}>
-                    Go to Home Page
-                  </Button>
-                </div>
-              </Modal>
-            </div>
-          )}
+      {(showModal == true) &&
+        (
+          <div className="auth-modal">
+            <Modal
+              show={showModal}
+              onRequestClose={() => console.log("Modal closed")}
+              className="auth-modal custom-modal"
+              overlayClassName="custom-overlay"
+            >
+              <div className="modal-content">
+                <h2>Sign In </h2>
+                <p>Please sign in to To download The full report.</p>
+                <GoogleLogin onSuccess={onSuccess} onError={errorMessage} />
+                <Button onClick={(e) => {
+                  history.push("/");
+                }}>
+                  Go to Home Page
+                </Button>
+              </div>
+            </Modal>
+          </div>
+        )}
       <section className="about_section layout_padding2 blur">
         <div class="container">
           <div class="detail-box">
