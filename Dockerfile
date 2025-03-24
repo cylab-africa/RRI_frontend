@@ -14,9 +14,9 @@ ENV REACT_APP_CLIENT_ID=$REACT_APP_CLIENT_ID
 # ENV Definition 
 ENV GENERATE_SOURCEMAP=false
 # Define test/staging env (Will be changed in the future)
-ENV REACT_APP_BASE_URL_LOCAL=https://rri-backend.mosipcmuafrica.me/api
+ENV REACT_APP_BASE_URL_LOCAL=https://rri.upanzi.net/api
 # Define production env (Will be changed in the future)
-ENV REACT_APP_BASE_URL_PRODUCTION=https://rri-backend.mosipcmuafrica.me/api
+ENV REACT_APP_BASE_URL_PRODUCTION=https://rri.upanzi.net/api
 # Install production server
 RUN npm install -g serve
 # Build the project
