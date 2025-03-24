@@ -490,7 +490,7 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
 
                 <Image style={styles.image} src={require('../images/Upanzi-Network-logo.png')} />
                 <View style={styles.header}>
-                    <Text style={styles.title}>Responsible Research and Innovation Report</Text>
+                    <Text style={styles.title}>{`RRI Self-Assessment Report for ${project.name}`}</Text>
                 </View>
 
 
@@ -582,26 +582,28 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
 
                 <View style={[styles.textSection, styles.overall]}>
 
-                    <Text style={styles.sectionSubTitle}>a. Overall Assessment:</Text>
-                    <Text style={styles.descriptionText}>
-                        The Overall Assessment summarizes the project's performance against Responsible Research and Innovation (RRI) principles,
-                        aggregating scores from all layers and principles.
-                    </Text>
+                    <View wrap={false}>
+                        <Text style={styles.sectionSubTitle}>a. Overall Assessment:</Text>
+                        <Text style={styles.descriptionText}>
+                            The Overall Assessment summarizes the project's performance against Responsible Research and Innovation (RRI) principles,
+                            aggregating scores from all layers and principles.
+                        </Text>
 
-                    {/* Key Points */}
-                    <View style={styles.bullets}>
-                        <Text style={styles.bulletText}>• High scores: Strong adherence to RRI values</Text>
-                        <Text style={styles.bulletText}>• Low scores: Highlight areas for improvement</Text>
-                    </View>
+                        {/* Key Points */}
+                        <View style={styles.bullets}>
+                            <Text style={styles.bulletText}>• High scores: Strong adherence to RRI values</Text>
+                            <Text style={styles.bulletText}>• Low scores: Highlight areas for improvement</Text>
+                        </View>
 
-                    {/* Spacer */}
-                    <View style={styles.spacer} />
+                        {/* Spacer */}
+                        <View style={styles.spacer} />
 
-                    {/* Highlighted Score */}
-                    <View style={[styles.scoreContainer, getBadgeColorStyle(generalScore.toFixed(1))]}>
-                        <Text style={styles.scoreTextLarge}>{generalScore.toFixed(1)}</Text>
-                        <Text style={styles.scoreLabelText}>out of 100</Text>
-                        <Text style={styles.performanceLabelText}>{getPerformanceLabel(generalScore.toFixed(1))}</Text>
+                        {/* Highlighted Score */}
+                        <View style={[styles.scoreContainer, getBadgeColorStyle(generalScore.toFixed(1))]}>
+                            <Text style={styles.scoreTextLarge}>{generalScore.toFixed(1)}</Text>
+                            <Text style={styles.scoreLabelText}>out of 100</Text>
+                            <Text style={styles.performanceLabelText}>{getPerformanceLabel(generalScore.toFixed(1))}</Text>
+                        </View>
                     </View>
                     {/* Layer section */}
                     <View style={[styles.textSection, styles.layerSection]}>
@@ -625,7 +627,7 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
                     </View>
 
 
-                    <View style={[styles.textSection, styles.principleSection]}>
+                    <View style={[styles.textSection, styles.principleSection]} wrap={false}>
                         <Text style={styles.sectionSubTitle}>c. Principle Scores</Text>
 
                         {/* Brief Explanation */}
@@ -649,7 +651,7 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
 
 
                     {/* Overall Recommendation Section */}
-                    <View style={styles.scoreSection}>
+                    <View style={styles.scoreSection} wrap={false}>
                         <View style={styles.textSection}>
                             <Text style={styles.sectionTitle}>5. Overall Recommendation</Text>
                         </View>
@@ -673,7 +675,7 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
                 </View>
 
                 <View style={styles.textSection}>
-                    <Text style={styles.sectionTitle}>6. Questions and Responses </Text>
+                    <Text style={styles.sectionTitle}>A. Questions and Answers </Text>
                 </View>
 
                 {surveyData.map((item, index) => (
@@ -696,7 +698,7 @@ const PDFDocument = ({ surveyData, names, project, generalScore, principleScores
 
                 {/* Description Section */}
                 <View style={styles.textSection}>
-                    <Text style={styles.sectionTitle}>7. Description of the Framework</Text>
+                    <Text style={styles.sectionTitle}>B. Description of the Framework</Text>
                 </View>
                 <View style={styles.descriptionSection}>
                     <Text style={styles.descriptionText}>
