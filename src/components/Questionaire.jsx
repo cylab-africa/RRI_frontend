@@ -104,7 +104,7 @@ const EvaluationForm = (props) => {
       // first delete answers which are there
       let isThereAnswers=await getFirstItemFromIndexedDB('projectDB','answersStore');
       if(isThereAnswers){
-        alert('there is answers')
+        // alert('there is answers')
        await deleteIndexedDB('projectDB')
       }
       await SaveToIndexedDB('projectDB', 'answersStore', body);
