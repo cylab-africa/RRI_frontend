@@ -82,31 +82,23 @@ const EvaluationForm = (props) => {
     scrollUp();
   };
 
-  const validateForm = () => {
-    console.log(questions.length);
-    console.log(answers.length);
-
-    if (questions.length != answers.length) {
-      swal("Please assign a score to each question.");
-      return false;
-    }
-    return true;
-  };
 
   // Function to handle form submission
   const handleSubmit = async () => {
     setLoadingSubmit(true);
-
-    try {
-      console.log('answers',answers)
+    console.log('answers',answers)
 
       const body = { layerId: 1, projectName: localStorage.getItem('projectName'), projectAnswers:{answers: answers} };
       // first delete answers which are there
       let isThereAnswers=await getFirstItemFromIndexedDB('projectDB','answersStore');
       if(isThereAnswers){
         // alert('there is answers')
-       await deleteIndexedDB('projectDB')
+        deleteIndexedDB('projectDB')
+        .then(() => console.log('Database deleted successfully'))
+        .catch(error => console.error('Database deletion failed:', error));
       }
+
+    try {
       await SaveToIndexedDB('projectDB', 'answersStore', body);
       const isLoggedIn = await checkUserLoggedIn('GoogleCredentialsDB', 'CredentialsStore');
       
